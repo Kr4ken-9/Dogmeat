@@ -1,0 +1,11 @@
+C:\Users\Kr4ken\Documents\Visual Studio 2017\Projects\C#\Dogmeat 2.0\Dogmeat 2.0\bin\Release\netcoreapp1.1\Dogmeat 2.0.deps.json
+C:\Users\Kr4ken\Documents\Visual Studio 2017\Projects\C#\Dogmeat 2.0\Dogmeat 2.0\bin\Release\netcoreapp1.1\Dogmeat 2.0.dll
+C:\Users\Kr4ken\Documents\Visual Studio 2017\Projects\C#\Dogmeat 2.0\Dogmeat 2.0\bin\Release\netcoreapp1.1\Dogmeat 2.0.pdb
+C:\Users\Kr4ken\Documents\Visual Studio 2017\Projects\C#\Dogmeat 2.0\Dogmeat 2.0\obj\Release\netcoreapp1.1\Dogmeat 2.0.csprojResolveAssemblyReference.cache
+C:\Users\Kr4ken\Documents\Visual Studio 2017\Projects\C#\Dogmeat 2.0\Dogmeat 2.0\obj\Release\netcoreapp1.1\Dogmeat 2.0.AssemblyInfo.cs
+C:\Users\Kr4ken\Documents\Visual Studio 2017\Projects\C#\Dogmeat 2.0\Dogmeat 2.0\obj\Release\netcoreapp1.1\Dogmeat 2.0.dll
+C:\Users\Kr4ken\Documents\Visual Studio 2017\Projects\C#\Dogmeat 2.0\Dogmeat 2.0\obj\Release\netcoreapp1.1\Dogmeat 2.0.pdb
+C:\Users\Kr4ken\Documents\Visual Studio 2017\Projects\C#\Dogmeat 2.0\Dogmeat 2.0\bin\Release\netcoreapp1.1\Microsoft.DiaSymReader.Native.x86.dll
+C:\Users\Kr4ken\Documents\Visual Studio 2017\Projects\C#\Dogmeat 2.0\Dogmeat 2.0\bin\Release\netcoreapp1.1\Microsoft.DiaSymReader.Native.amd64.dll
+C:\Users\Kr4ken\Documents\Visual Studio 2017\Projects\C#\Dogmeat 2.0\Dogmeat 2.0\bin\Release\netcoreapp1.1\Dogmeat 2.0.runtimeconfig.json
+C:\Users\Kr4ken\Documents\Visual Studio 2017\Projects\C#\Dogmeat 2.0\Dogmeat 2.0\bin\Release\netcoreapp1.1\Dogmeat 2.0.runtimeconfig.dev.json
