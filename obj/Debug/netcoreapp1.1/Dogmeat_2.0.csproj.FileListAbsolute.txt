@@ -1,0 +1,8 @@
+C:\Users\Kr4ken\Documents\Visual Studio 2017\Projects\C#\Dogmeat 2.0\Dogmeat 2.0\bin\Debug\netcoreapp1.1\Dogmeat_2.0.deps.json
+C:\Users\Kr4ken\Documents\Visual Studio 2017\Projects\C#\Dogmeat 2.0\Dogmeat 2.0\bin\Debug\netcoreapp1.1\Dogmeat_2.0.runtimeconfig.json
+C:\Users\Kr4ken\Documents\Visual Studio 2017\Projects\C#\Dogmeat 2.0\Dogmeat 2.0\bin\Debug\netcoreapp1.1\Dogmeat_2.0.runtimeconfig.dev.json
+C:\Users\Kr4ken\Documents\Visual Studio 2017\Projects\C#\Dogmeat 2.0\Dogmeat 2.0\bin\Debug\netcoreapp1.1\Dogmeat_2.0.dll
+C:\Users\Kr4ken\Documents\Visual Studio 2017\Projects\C#\Dogmeat 2.0\Dogmeat 2.0\bin\Debug\netcoreapp1.1\Dogmeat_2.0.pdb
+C:\Users\Kr4ken\Documents\Visual Studio 2017\Projects\C#\Dogmeat 2.0\Dogmeat 2.0\obj\Debug\netcoreapp1.1\Dogmeat_2.0.AssemblyInfo.cs
+C:\Users\Kr4ken\Documents\Visual Studio 2017\Projects\C#\Dogmeat 2.0\Dogmeat 2.0\obj\Debug\netcoreapp1.1\Dogmeat_2.0.dll
+C:\Users\Kr4ken\Documents\Visual Studio 2017\Projects\C#\Dogmeat 2.0\Dogmeat 2.0\obj\Debug\netcoreapp1.1\Dogmeat_2.0.pdb
