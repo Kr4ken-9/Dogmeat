@@ -83,13 +83,13 @@ namespace DogMeat
                     Client.ConnectAsync();
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine(DateTime.Now + ": Dogmeat has disconnected and automagically reconnected.");
-                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.ForegroundColor = ConsoleColor.Gray;
                 }
                 else
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine(DateTime.Now + ": Client still connected.");
-                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.ForegroundColor = ConsoleColor.Gray;
                 }
                 Thread.Sleep(3599000);
             }

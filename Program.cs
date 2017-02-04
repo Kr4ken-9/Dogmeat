@@ -3,19 +3,22 @@ using System.Threading;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
+using Discord.Commands;
 using System.Net.Http;
 
 namespace DogMeat
 {
     class Program
     {
-        static void Main(string[] args) => new Program().Run_Async().GetAwaiter().GetResult();
-
         private static DiscordSocketClient Client;
+
+        private CommandHandler Handler;
 
         private SocketGuild ManPAD;
 
         private SocketGuild Log;
+
+        static void Main(string[] args) => new Program().Run_Async().GetAwaiter().GetResult();
 
         public async Task Run_Async()
         {
@@ -27,7 +30,7 @@ namespace DogMeat
                     await WrongChannel_Async(msg);
                 else if (msg.Channel.Id == 242948289404600321 && msg.Content.ToUpper() == "MANPAD SOUNDS LIKE A FEMININE CLEANING PRODUCT")
                     await Access_Async(msg);
-                else if (msg.Content.ToUpper().Contains("DOGMEAT"))
+                else if (msg.Content.ToUpper().Contains("DOGMEAT") && !msg.Author.IsBot)
                     await Mentioned_Async(msg);
             };
 
@@ -36,6 +39,14 @@ namespace DogMeat
 
             Thread Connection = new Thread(() => Utilities.MaintainConnection(Client));
             Connection.Start();
+
+            #region Commands
+            DependencyMap Map = new DependencyMap();
+            Map.Add(Client);
+
+            Handler = new CommandHandler();
+            await Handler.Initialize(Map);
+            #endregion Commands
 
             ManPAD = Client.GetGuild(242946566296436739);
             Log = Client.GetGuild(272850920059174914);
@@ -60,7 +71,6 @@ namespace DogMeat
 
         public async Task Mentioned_Async(SocketMessage e)
         {
-            //String[] Responses = { "*Bark*", "*Ruff Ruff*", "*Sniff Sniff*", "*Bork*", "*Get fucked, cunt.*", "*I am not LGBT supportive.*", "*I dislike all un-Aryan races.*", "*Women are inferior. You know what we call them in my species? Bitches.*", "*According to all known laws of aviation...*", "*As the president, Hillary Clinton would have made the delete button great again.*", "*Donald Trump will deport Mexicans starting with Juan...*" };
             await e.Channel.SendMessageAsync(await Utilities.ResponsePicker_Async(e.Content.ToUpper()));
             Console.WriteLine("[" + (e.Channel as SocketGuildChannel).Guild.Name + "] " + e.Author.Username + " mentioned me.");
         }
