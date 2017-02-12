@@ -80,6 +80,7 @@ namespace DogMeat
                 Thread.Sleep(1000);
                 if (Client.ConnectionState == ConnectionState.Disconnected)
                 {
+                    Client.LoginAsync(TokenType.Bot, "MjcyNzk4MDIzODE2NDQ1OTU1.C2aPOQ.W9ixgQK30i-xiiHzcV6LwcSgCF8");
                     Client.ConnectAsync();
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine(DateTime.Now + ": Dogmeat has disconnected and automagically reconnected.");
@@ -93,6 +94,16 @@ namespace DogMeat
                 }
                 Thread.Sleep(3599000);
             }
+        }
+
+        public static SocketRole GetMasterRole(SocketGuild Guild)
+        {
+            foreach(SocketRole Role in Guild.Roles)
+            {
+                if (Role.Name == "Master")
+                    return Role;
+            }
+            return null;
         }
     }
 }

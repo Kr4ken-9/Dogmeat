@@ -40,7 +40,10 @@ namespace DogMeat
             IResult Result = await Commands.ExecuteAsync(Context, argPos, Map);
 
             if (!Result.IsSuccess)
-                await Message.Channel.SendMessageAsync($"**Error:** {Result.ErrorReason}");
+            {
+                if (Result.Error != CommandError.UnknownCommand)
+                    await Message.Channel.SendMessageAsync($"**Error:** {Result.ErrorReason}");
+            }
             else
                 Console.WriteLine("[" + (Message.Channel as SocketGuildChannel).Guild.Name + "] " + Message.Author.Username + " executed a command.");
         }

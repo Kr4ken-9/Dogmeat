@@ -9,7 +9,7 @@ namespace DogMeat
     public class CLenny : ModuleBase
     {
         [Command("lenny"), Summary("Prints a lenny face.")]
-        public async Task Lenny()
+        public async Task LennyAsync()
         {
             await ReplyAsync("( ͡° ͜ʖ ͡°)");
         }
