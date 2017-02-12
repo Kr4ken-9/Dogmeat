@@ -18,6 +18,8 @@ namespace DogMeat
 
         private SocketGuild Log;
 
+        public static bool KeepAlive = true;
+
         static void Main(string[] args) => new Program().RunAsync().GetAwaiter().GetResult();
 
         public async Task RunAsync()
@@ -34,11 +36,13 @@ namespace DogMeat
                     await MentionedAsync(msg);
             };
 
-            await Client.LoginAsync(TokenType.Bot, "MjcyNzk4MDIzODE2NDQ1OTU1.C2aPOQ.W9ixgQK30i-xiiHzcV6LwcSgCF8");
+            await Client.LoginAsync(TokenType.Bot, "MjcyNzk4MDIzODE2NDQ1OTU1.C4JoYg.HmHmL35UYKY3IkJC5phjbNZ3Ni8");
             await Client.ConnectAsync();
 
             Thread Connection = new Thread(() => Utilities.MaintainConnection(Client));
             Connection.Start();
+
+            Utilities.AwaitInput(Client);
 
             #region Commands
             DependencyMap Map = new DependencyMap();

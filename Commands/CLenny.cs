@@ -4,7 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Discord.Commands;
 
-namespace DogMeat
+namespace DogMeat.Commands
 {
     public class CLenny : ModuleBase
     {

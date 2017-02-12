@@ -75,12 +75,12 @@ namespace DogMeat
 
         public static void MaintainConnection(DiscordSocketClient Client)
         {
-            while (true)
+            while (Program.KeepAlive)
             {
                 Thread.Sleep(1000);
                 if (Client.ConnectionState == ConnectionState.Disconnected)
                 {
-                    Client.LoginAsync(TokenType.Bot, "MjcyNzk4MDIzODE2NDQ1OTU1.C2aPOQ.W9ixgQK30i-xiiHzcV6LwcSgCF8");
+                    Client.LoginAsync(TokenType.Bot, "MjcyNzk4MDIzODE2NDQ1OTU1.C4JoYg.HmHmL35UYKY3IkJC5phjbNZ3Ni8");
                     Client.ConnectAsync();
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine(DateTime.Now + ": Dogmeat has disconnected and automagically reconnected.");
@@ -96,11 +96,46 @@ namespace DogMeat
             }
         }
 
+        public static void AwaitInput(DiscordSocketClient Client)
+        {
+            while (true)
+            {
+                string Input = Console.ReadLine();
+                if (Input.ToUpper() == "SHUTDOWN")
+                {
+                    Program.KeepAlive = false;
+                    Client.DisconnectAsync();
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine(DateTime.Now + ": Dogmeat has been killed.");
+                    Console.ForegroundColor = ConsoleColor.Gray;
+                }
+                else if (Input.ToUpper() == "START")
+                {
+                    Client.LoginAsync(TokenType.Bot, "MjcyNzk4MDIzODE2NDQ1OTU1.C4JoYg.HmHmL35UYKY3IkJC5phjbNZ3Ni8");
+                    Client.ConnectAsync();
+                    Program.KeepAlive = true;
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine(DateTime.Now + ": Dogmeat has been revived.");
+                    Console.ForegroundColor = ConsoleColor.Gray;
+                }
+            }
+        }
+
         public static SocketRole GetMasterRole(SocketGuild Guild)
+        {
+            foreach (SocketRole Role in Guild.Roles)
+            {
+                if (Role.Name == "Master")
+                    return Role;
+            }
+            return null;
+        }
+
+        public static SocketRole GetMutedRole(SocketGuild Guild)
         {
             foreach(SocketRole Role in Guild.Roles)
             {
-                if (Role.Name == "Master")
+                if (Role.Name == "Muted")
                     return Role;
             }
             return null;
@@ -111,7 +146,9 @@ namespace DogMeat
             IReadOnlyCollection<IGuildUser> users = await Guild.GetUsersAsync();
             foreach (IGuildUser user in users)
             {
-                if (user.Username.Contains(Name) || user.Nickname.Contains(Name))
+                if (user.Username.Contains(Name))
+                    return user as SocketGuildUser;
+                else if (user.Nickname != null && user.Nickname.Contains(Name))
                     return user as SocketGuildUser;
             }
             return null;
@@ -120,20 +157,19 @@ namespace DogMeat
         public static async Task<SocketGuildUser> GetUserByID(IGuild Guild, String ID)
         {
             if (ulong.TryParse(ID, out ulong result))
-            {
                 if (await Guild.GetUserAsync(result) != null)
                     return await Guild.GetUserAsync(result) as SocketGuildUser;
-                return null;
-            }
             return null;
         }
 
         public static async Task<SocketGuildUser> GetUser(IGuild Guild, String Input)
         {
-            if (await GetUserByID(Guild, Input) != null)
-                return await GetUserByID(Guild, Input);
-            else if (await GetUserByName(Guild, Input) != null)
-                return await GetUserByName(Guild, Input);
+            SocketGuildUser nameResult = await GetUserByName(Guild, Input);
+            SocketGuildUser IDResult = await GetUserByID(Guild, Input);
+            if (nameResult != null)
+                return nameResult;
+            else if (IDResult != null)
+                return IDResult;
             else
                 return null;
         }

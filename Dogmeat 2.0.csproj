@@ -5,17 +5,19 @@
     <OutputTypeEx>exe</OutputTypeEx>
     <RuntimeIdentifier>win81-x64</RuntimeIdentifier>
     <WarningLevel>0</WarningLevel>
-    <AssemblyVersion>2.2.0.0</AssemblyVersion>
-    <FileVersion>2.2.0.0</FileVersion>
+    <AssemblyVersion>2.3.0.0</AssemblyVersion>
+    <FileVersion>2.3.0.0</FileVersion>
     <PackageReleaseNotes>
     </PackageReleaseNotes>
     <Company>Kr4ken</Company>
     <RootNamespace>DogMeat</RootNamespace>
-    <Description>2.2 Release Notes:
-2/11/17
-- Ban command
-- Master role
-- Better reconnection</Description>
+    <Description>2.3 Release Notes:
+2/12/17
+- Mute command
+- Mute role
+- Better reconnection
+- Manual reconnection
+- Organization</Description>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Discord.Net.Commands" Version="1.0.0-rc-00593" />
