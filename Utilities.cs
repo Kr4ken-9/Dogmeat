@@ -105,5 +105,37 @@ namespace DogMeat
             }
             return null;
         }
+
+        public static async Task<SocketGuildUser> GetUserByName(IGuild Guild, String Name)
+        {
+            IReadOnlyCollection<IGuildUser> users = await Guild.GetUsersAsync();
+            foreach (IGuildUser user in users)
+            {
+                if (user.Username.Contains(Name) || user.Nickname.Contains(Name))
+                    return user as SocketGuildUser;
+            }
+            return null;
+        }
+
+        public static async Task<SocketGuildUser> GetUserByID(IGuild Guild, String ID)
+        {
+            if (ulong.TryParse(ID, out ulong result))
+            {
+                if (await Guild.GetUserAsync(result) != null)
+                    return await Guild.GetUserAsync(result) as SocketGuildUser;
+                return null;
+            }
+            return null;
+        }
+
+        public static async Task<SocketGuildUser> GetUser(IGuild Guild, String Input)
+        {
+            if (await GetUserByID(Guild, Input) != null)
+                return await GetUserByID(Guild, Input);
+            else if (await GetUserByName(Guild, Input) != null)
+                return await GetUserByName(Guild, Input);
+            else
+                return null;
+        }
     }
 }

@@ -30,28 +30,12 @@ namespace DogMeat
                 await Context.Guild.AddBanAsync(Context.Message.MentionedUserIds.FirstOrDefault());
                 ReplyAsync(name + " is no more.");
             }
-            else if (ulong.TryParse(name, out ulong result))
+            else if (Utilities.GetUser(Context.Guild, name) != null)
             {
-                if (await Context.Guild.GetUserAsync(result) != null)
-                {
-                    Context.Guild.AddBanAsync(await Context.Guild.GetUserAsync(result));
-                    ReplyAsync(name + " is no more.");
-                }
+                Context.Guild.AddBanAsync(await Utilities.GetUser(Context.Guild, name));
+                ReplyAsync(name + " is no more.");
             }
-            else
-            {
-                var users = await Context.Guild.GetUsersAsync();
-                foreach (var user in users)
-                {
-                    if (user.Username == name || user.Nickname == name)
-                    {
-                        Context.Guild.AddBanAsync(user);
-                        ReplyAsync(name + " is no more.");
-                        return;
-                    }
-                }
-                await ReplyAsync("Who the fuck is " + name + "?");
-            }
+            ReplyAsync("Who the fuck is " + name + "?");
         }
     }
 }
