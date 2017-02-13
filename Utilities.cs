@@ -80,7 +80,7 @@ namespace DogMeat
                 Thread.Sleep(1000);
                 if (Client.ConnectionState == ConnectionState.Disconnected)
                 {
-                    Client.LoginAsync(TokenType.Bot, "MjcyNzk4MDIzODE2NDQ1OTU1.C4JoYg.HmHmL35UYKY3IkJC5phjbNZ3Ni8");
+                    Client.LoginAsync(TokenType.Bot, "");
                     Client.ConnectAsync();
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine(DateTime.Now + ": Dogmeat has disconnected and automagically reconnected.");
@@ -111,7 +111,7 @@ namespace DogMeat
                 }
                 else if (Input.ToUpper() == "START")
                 {
-                    Client.LoginAsync(TokenType.Bot, "MjcyNzk4MDIzODE2NDQ1OTU1.C4JoYg.HmHmL35UYKY3IkJC5phjbNZ3Ni8");
+                    Client.LoginAsync(TokenType.Bot, "");
                     Client.ConnectAsync();
                     Program.KeepAlive = true;
                     Console.ForegroundColor = ConsoleColor.Green;

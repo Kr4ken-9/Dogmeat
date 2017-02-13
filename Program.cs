@@ -36,7 +36,7 @@ namespace DogMeat
                     await MentionedAsync(msg);
             };
 
-            await Client.LoginAsync(TokenType.Bot, "MjcyNzk4MDIzODE2NDQ1OTU1.C4JoYg.HmHmL35UYKY3IkJC5phjbNZ3Ni8");
+            await Client.LoginAsync(TokenType.Bot, "");
             await Client.ConnectAsync();
 
             Thread Connection = new Thread(() => Utilities.MaintainConnection(Client));
