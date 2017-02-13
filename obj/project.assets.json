@@ -10748,10 +10748,10 @@
   },
   "project": {
     "restore": {
-      "projectUniqueName": "C:\\Users\\Kr4ken\\Documents\\Visual Studio 2017\\Projects\\C#\\Dogmeat 2.0\\Dogmeat 2.0.csproj",
+      "projectUniqueName": "C:\\Users\\Kr4ken\\documents\\visual studio 2017\\Projects\\C#\\DogMeat 2.0\\Dogmeat 2.0.csproj",
       "projectName": "Dogmeat 2.0",
-      "projectPath": "C:\\Users\\Kr4ken\\Documents\\Visual Studio 2017\\Projects\\C#\\Dogmeat 2.0\\Dogmeat 2.0.csproj",
-      "outputPath": "C:\\Users\\Kr4ken\\Documents\\Visual Studio 2017\\Projects\\C#\\Dogmeat 2.0\\obj\\",
+      "projectPath": "C:\\Users\\Kr4ken\\documents\\visual studio 2017\\Projects\\C#\\DogMeat 2.0\\Dogmeat 2.0.csproj",
+      "outputPath": "C:\\Users\\Kr4ken\\documents\\visual studio 2017\\Projects\\C#\\DogMeat 2.0\\obj\\",
       "projectStyle": "PackageReference",
       "originalTargetFrameworks": [
         "netcoreapp1.1"
