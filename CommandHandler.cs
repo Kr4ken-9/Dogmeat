@@ -29,11 +29,10 @@ namespace DogMeat
         public async Task HandleCommand(SocketMessage CommandParameter)
         {
             SocketUserMessage Message = CommandParameter as SocketUserMessage;
-            if (Message == null) return;
 
             int argPos = 0;
 
-            if (!(Message.HasMentionPrefix(Client.CurrentUser, ref argPos) || Message.HasCharPrefix('~', ref argPos))) return;
+            if (!(Message.HasMentionPrefix(Client.CurrentUser, ref argPos) || Message.HasCharPrefix('~', ref argPos)) || Message.HasStringPrefix("~~", ref argPos)) return;
 
             CommandContext Context = new CommandContext(Client, Message);
 
@@ -41,8 +40,7 @@ namespace DogMeat
 
             if (!Result.IsSuccess)
             {
-                if (Result.Error != CommandError.UnknownCommand)
-                    await Message.Channel.SendMessageAsync($"**Error:** {Result.ErrorReason}");
+                await Message.Channel.SendMessageAsync($"**Error:** {Result.ErrorReason}");
             }
             else
                 Console.WriteLine("[" + (Message.Channel as SocketGuildChannel).Guild.Name + "] " + Message.Author.Username + " executed a command.");

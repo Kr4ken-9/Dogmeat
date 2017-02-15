@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
 using Discord.Commands;
-using System.Net.Http;
 
 namespace DogMeat
 {
@@ -39,11 +38,6 @@ namespace DogMeat
             await Client.LoginAsync(TokenType.Bot, "");
             await Client.ConnectAsync();
 
-            Thread Connection = new Thread(() => Utilities.MaintainConnection(Client));
-            Connection.Start();
-
-            Utilities.AwaitInput(Client);
-
             #region Commands
             DependencyMap Map = new DependencyMap();
             Map.Add(Client);
@@ -51,6 +45,11 @@ namespace DogMeat
             Handler = new CommandHandler();
             await Handler.Initialize(Map);
             #endregion Commands
+
+            Thread Connection = new Thread(() => Utilities.MaintainConnection(Client));
+            Connection.Start();
+
+            Utilities.AwaitInput(Client);
 
             ManPAD = Client.GetGuild(242946566296436739);
             Log = Client.GetGuild(272850920059174914);
@@ -62,7 +61,7 @@ namespace DogMeat
         {
             await e.DeleteAsync();
             await (e.Author as SocketGuildUser).AddRolesAsync(ManPAD.GetRole(272789680821370881));
-            Console.WriteLine("[" + (e.Channel as SocketGuildChannel).Guild.Name + "] " + e.Author.Username + " underwent initiation.");
+            Utilities.Log("Underwent Initiation", ((SocketGuildChannel)e.Channel).Guild, e.Author);
         }
 
         public async Task WrongChannelAsync(SocketMessage e)
@@ -70,13 +69,13 @@ namespace DogMeat
             await e.DeleteAsync();
             Discord.Rest.RestDMChannel channel = await e.Author.CreateDMChannelAsync();
             await channel.SendMessageAsync("You are not permitted to chat in that channel.");
-            Console.WriteLine("[" + (e.Channel as SocketGuildChannel).Guild.Name + "] " + e.Author.Username + " attempted to chat in a restricted channel.");
+            Utilities.Log("Attempted to chat in a restricted channel.", ((SocketGuildChannel)e.Channel).Guild, e.Author);
         }
 
         public async Task MentionedAsync(SocketMessage e)
         {
             await e.Channel.SendMessageAsync(await Utilities.ResponsePicker_Async(e.Content.ToUpper()));
-            Console.WriteLine("[" + (e.Channel as SocketGuildChannel).Guild.Name + "] " + e.Author.Username + " mentioned me.");
+            Utilities.Log("Mentioned me.", ((SocketGuildChannel)e.Channel).Guild, e.Author);
         }
     }
 }

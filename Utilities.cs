@@ -11,6 +11,8 @@ namespace DogMeat
 {
     public class Utilities
     {
+        private static bool ContinueShutdown;
+
         private static async Task<String[]> DogmeatResponses_Async()
         {
             HttpClient Client = new HttpClient();
@@ -101,24 +103,92 @@ namespace DogMeat
             while (true)
             {
                 string Input = Console.ReadLine();
-                if (Input.ToUpper() == "SHUTDOWN")
+                switch (Input.ToUpperInvariant())
                 {
-                    Program.KeepAlive = false;
-                    Client.DisconnectAsync();
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine(DateTime.Now + ": Dogmeat has been killed.");
-                    Console.ForegroundColor = ConsoleColor.Gray;
-                }
-                else if (Input.ToUpper() == "START")
-                {
-                    Client.LoginAsync(TokenType.Bot, "");
-                    Client.ConnectAsync();
-                    Program.KeepAlive = true;
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine(DateTime.Now + ": Dogmeat has been revived.");
-                    Console.ForegroundColor = ConsoleColor.Gray;
+                    case "SHUTDOWN":
+                        Shutdown(Client);
+                        break;
+                    case "QUIT":
+                        Shutdown(Client);
+                        break;
+                    case "EXIT":
+                        Shutdown(Client);
+                        break;
+                    case "DISCONNECT":
+                        Disconnect(Client);
+                        break;
+                    case "RECONNECT":
+                        Program.KeepAlive = true;
+                        Log("Dogmeat was revived.", ConsoleColor.Green);
+                        break;
+                    case "CANCEL":
+                        Log("Shutdown canceled", ConsoleColor.Green);
+                        ContinueShutdown = false;
+                        break;
+                    default:
+                        Log("That is not a command.", ConsoleColor.Red);
+                        break;
                 }
             }
+        }
+
+        private static void Shutdown(DiscordSocketClient Client)
+        {
+            Program.KeepAlive = false;
+            ContinueShutdown = true;
+            Client.DisconnectAsync();
+            Log("Client is shutting down in five seconds.", ConsoleColor.Red);
+            new Thread(() =>
+            {
+                if (!ContinueShutdown) return;
+                Log("5", ConsoleColor.Red);
+                Thread.Sleep(1000);
+                if (!ContinueShutdown) return;
+                Log("4", ConsoleColor.Red);
+                Thread.Sleep(1000);
+                if (!ContinueShutdown) return;
+                Log("3", ConsoleColor.Red);
+                Thread.Sleep(1000);
+                if (!ContinueShutdown) return;
+                Log("2", ConsoleColor.Red);
+                Thread.Sleep(1000);
+                if (!ContinueShutdown) return;
+                Log("1", ConsoleColor.Red);
+                Thread.Sleep(1000);
+                if (!ContinueShutdown) return;
+                Environment.Exit(0);
+            }).Start();
+        }
+
+        private static void Disconnect(DiscordSocketClient Client)
+        {
+            Program.KeepAlive = false;
+            Client.DisconnectAsync();
+            Log("Dogmeat disconnected.", ConsoleColor.Red);
+        }
+
+        public static void Log(String Message)
+        {
+            Log(Message, ConsoleColor.Gray);
+        }
+
+        public static void Log(String Message, ConsoleColor Color)
+        {
+            Console.ForegroundColor = Color;
+            Console.WriteLine(DateTime.Now + ": " + Message);
+            Console.ResetColor();
+        }
+
+        public static void Log(String Message, SocketGuild Guild, SocketUser User)
+        {
+            Log(Message, ConsoleColor.Gray, Guild, User);
+        }
+
+        public static void Log(String Message, ConsoleColor Color, SocketGuild Guild, SocketUser User)
+        {
+            Console.ForegroundColor = Color;
+            Console.WriteLine(DateTime.Now + ": [" + Guild.Name + "] " + User.Username + " " + Message);
+            Console.ResetColor();
         }
 
         public static SocketRole GetMasterRole(SocketGuild Guild)
