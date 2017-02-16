@@ -4,6 +4,7 @@ Release notes for different versions of Dogmeat
 ---
 
 **2.1.5**
+
 2/15/17
 - Better user retrieval
 - Kick command
