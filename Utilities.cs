@@ -11,7 +11,29 @@ namespace DogMeat
 {
     public class Utilities
     {
+        #region Variables
+
         private static bool ContinueShutdown;
+
+        public static SocketRole GetMasterRole(SocketGuild Guild)
+        {
+            foreach (SocketRole Role in Guild.Roles)
+            {
+                if (Role.Name == "Master")
+                    return Role;
+            }
+            return null;
+        }
+
+        public static SocketRole GetMutedRole(SocketGuild Guild)
+        {
+            foreach (SocketRole Role in Guild.Roles)
+            {
+                if (Role.Name == "Muted")
+                    return Role;
+            }
+            return null;
+        }
 
         private static async Task<String[]> DogmeatResponses_Async()
         {
@@ -19,7 +41,7 @@ namespace DogMeat
             String url = "http://198.245.61.226/kr4ken/dogmeat_replies.txt";
             HttpResponseMessage Response = await Client.GetAsync(url);
             string Content = await Response.Content.ReadAsStringAsync();
-            return Content.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
+            return Content.Split(new String[] { "\r\n", "\n" }, StringSplitOptions.None);
         }
 
         public static async Task<String> ResponsePicker_Async(String Content)
@@ -74,6 +96,8 @@ namespace DogMeat
                 return Responses[r.Next(0, Responses.Length)];
             }
         }
+
+        #endregion Variables
 
         public static void MaintainConnection(DiscordSocketClient Client)
         {
@@ -167,6 +191,8 @@ namespace DogMeat
             Log("Dogmeat disconnected.", ConsoleColor.Red);
         }
 
+        #region Logging
+
         public static void Log(String Message)
         {
             Log(Message, ConsoleColor.Gray);
@@ -191,51 +217,35 @@ namespace DogMeat
             Console.ResetColor();
         }
 
-        public static SocketRole GetMasterRole(SocketGuild Guild)
-        {
-            foreach (SocketRole Role in Guild.Roles)
-            {
-                if (Role.Name == "Master")
-                    return Role;
-            }
-            return null;
-        }
+        #endregion Logging
 
-        public static SocketRole GetMutedRole(SocketGuild Guild)
-        {
-            foreach(SocketRole Role in Guild.Roles)
-            {
-                if (Role.Name == "Muted")
-                    return Role;
-            }
-            return null;
-        }
+        #region Users
 
-        public static async Task<SocketGuildUser> GetUserByName(IGuild Guild, String Name)
+        private static async Task<IGuildUser> GetUserByName(IGuild Guild, String Name)
         {
             IReadOnlyCollection<IGuildUser> users = await Guild.GetUsersAsync();
             foreach (IGuildUser user in users)
             {
                 if (user.Username.Contains(Name))
-                    return user as SocketGuildUser;
+                    return user;
                 else if (user.Nickname != null && user.Nickname.Contains(Name))
-                    return user as SocketGuildUser;
+                    return user;
             }
             return null;
         }
 
-        public static async Task<SocketGuildUser> GetUserByID(IGuild Guild, String ID)
+        private static async Task<IGuildUser> GetUserByID(IGuild Guild, String ID)
         {
             if (ulong.TryParse(ID, out ulong result))
                 if (await Guild.GetUserAsync(result) != null)
-                    return await Guild.GetUserAsync(result) as SocketGuildUser;
+                    return await Guild.GetUserAsync(result);
             return null;
         }
 
-        public static async Task<SocketGuildUser> GetUser(IGuild Guild, String Input)
+        public static async Task<IGuildUser> GetUser(IGuild Guild, String Input)
         {
-            SocketGuildUser nameResult = await GetUserByName(Guild, Input);
-            SocketGuildUser IDResult = await GetUserByID(Guild, Input);
+            IGuildUser nameResult = await GetUserByName(Guild, Input);
+            IGuildUser IDResult = await GetUserByID(Guild, Input);
             if (nameResult != null)
                 return nameResult;
             else if (IDResult != null)
@@ -243,5 +253,7 @@ namespace DogMeat
             else
                 return null;
         }
+
+        #endregion Users
     }
 }

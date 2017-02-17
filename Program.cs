@@ -9,6 +9,8 @@ namespace DogMeat
 {
     class Program
     {
+        #region Variables
+
         private static DiscordSocketClient Client;
 
         private CommandHandler Handler;
@@ -18,6 +20,8 @@ namespace DogMeat
         private SocketGuild Log;
 
         public static bool KeepAlive = true;
+
+        #endregion Variables
 
         static void Main(string[] args) => new Program().RunAsync().GetAwaiter().GetResult();
 

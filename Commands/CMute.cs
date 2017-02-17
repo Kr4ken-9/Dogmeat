@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections;
-using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Discord.Commands;
 using Discord.WebSocket;
@@ -39,7 +36,7 @@ namespace DogMeat.Commands
             }
             else if (await Utilities.GetUser(Context.Guild, name) != null)
             {
-                SocketGuildUser target = await Utilities.GetUser(Context.Guild, name);
+                IGuildUser target = await Utilities.GetUser(Context.Guild, name);
                 SocketRole muted = Utilities.GetMutedRole((SocketGuild)Context.Guild);
                 if (target.RoleIds.Contains(muted.Id))
                 {
