@@ -8,10 +8,10 @@ using DogMeat;
 
 namespace DogMeat.Commands
 {
-    public class CBan : ModuleBase
+    public class CSoftBan : ModuleBase
     {
-        [Command("ban"), Summary("Bans a player by id or name")]
-        public async Task BanAsync([Summary("Id or name of person to ban")] string name)
+        [Command("softban"), Summary("Softbans a player by id or name")]
+        public async Task SoftBanAsync([Summary("Id or name of person to softban")] string name)
         {
             if (Utilities.GetMasterRole((SocketGuild)Context.Guild) == null)
                 await ReplyAsync("I have no master on this server.");
@@ -19,12 +19,12 @@ namespace DogMeat.Commands
                 await ReplyAsync("You must be my master to execute this command.");
             else if (Context.Message.MentionedUserIds.Count != 0 && Context.Guild.GetUserAsync(Context.Message.MentionedUserIds.FirstOrDefault()) != null)
             {
-                await Context.Guild.AddBanAsync(Context.Message.MentionedUserIds.FirstOrDefault(), 7); // according to the api, it should prune their past messages from the entire week
+                await Context.Guild.AddBanAsync(Context.Message.MentionedUserIds.FirstOrDefault());
                 await ReplyAsync(name + " is no more.");
             }
             else if (await Utilities.GetUser(Context.Guild, name) != null)
             {
-                Context.Guild.AddBanAsync(await Utilities.GetUser(Context.Guild, name), 7);
+                Context.Guild.AddBanAsync(await Utilities.GetUser(Context.Guild, name));
                 await ReplyAsync(name + " is no more.");
             }
             else
