@@ -78,7 +78,7 @@ namespace DogMeat
 
         public async Task MentionedAsync(SocketMessage e)
         {
-            await e.Channel.SendMessageAsync(await Utilities.ResponsePicker_Async(e.Content.ToUpper()));
+            await e.Channel.SendMessageAsync(await Utilities.ResponsePickerAsync(e.Content.ToUpper()));
             Utilities.Log("Mentioned me.", ((SocketGuildChannel)e.Channel).Guild, e.Author);
         }
     }

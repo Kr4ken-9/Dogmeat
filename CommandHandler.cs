@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
@@ -39,11 +40,9 @@ namespace DogMeat
             IResult Result = await Commands.ExecuteAsync(Context, argPos, Map);
 
             if (!Result.IsSuccess)
-            {
                 await Message.Channel.SendMessageAsync($"**Error:** {Result.ErrorReason}");
-            }
             else
-                Console.WriteLine("[" + (Message.Channel as SocketGuildChannel).Guild.Name + "] " + Message.Author.Username + " executed a command.");
+                Utilities.Log("Executed a command.", (Message.Channel as SocketGuildChannel).Guild, Message.Author);
         }
     }
 }

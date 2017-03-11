@@ -35,7 +35,7 @@ namespace DogMeat
             return null;
         }
 
-        private static async Task<String[]> DogmeatResponses_Async()
+        private static async Task<String[]> DogmeatResponsesAsync()
         {
             HttpClient Client = new HttpClient();
             String url = "http://198.245.61.226/kr4ken/dogmeat_replies.txt";
@@ -44,9 +44,12 @@ namespace DogMeat
             return Content.Split(new String[] { "\r\n", "\n" }, StringSplitOptions.None);
         }
 
-        public static async Task<String> ResponsePicker_Async(String Content)
+        public static async Task<String> ResponsePickerAsync(String Content)
         {
-            String[] Responses = await DogmeatResponses_Async();
+            String[] Responses = await DogmeatResponsesAsync();
+            Random r = new Random();
+
+            #region Mexican
 
             if (Content.Contains("JUAN") ||
                 Content.Contains("MEXICO") ||
@@ -55,12 +58,35 @@ namespace DogMeat
                 Content.Contains("TRUMP") ||
                 Content.Contains("DONALD") ||
                 Content.Contains("PRESIDENT"))
-                return Responses[10];
+                return Responses[r.Next(19, 21)];
+
+            #endregion Mexican
+
+            #region Jew
+
+            else if (Content.Contains("JEW"))
+                return Responses[r.Next(16, 19)];
+
+            #endregion Jew
+
+            #region AA
+
+            else if (Content.Contains("BLACK") ||
+                Content.Contains("NIGGER"))
+                return Responses[15];
+
+            #endregion AA
+
+            #region Clinton
 
             else if (Content.Contains("HILLARY") ||
                 Content.Contains("CLINTON") ||
                 Content.Contains("MEME QUEEN"))
                 return Responses[9];
+
+            #endregion Clinton
+
+            #region Insult
 
             else if (Content.Contains("FUCK") ||
                 Content.Contains("CUNT") ||
@@ -71,16 +97,28 @@ namespace DogMeat
                 Content.Contains("COCK"))
                 return Responses[4];
 
+            #endregion Insult
+
+            #region LGBT
+
             else if (Content.Contains("GAY") ||
                 Content.Contains("LESBIAN") ||
                 Content.Contains("TRANS") ||
                 Content.Contains("SEXUAL"))
                 return Responses[5];
 
+            #endregion LGBT
+
+            #region Arya
+
             else if (Content.Contains("RACIS") ||
                 Content.Contains("HITLER") ||
                 Content.Contains("RACE"))
                 return Responses[6];
+
+            #endregion Arya
+
+            #region Female
 
             else if (Content.Contains("WOMEN") ||
                 Content.Contains("GIRL") ||
@@ -90,11 +128,10 @@ namespace DogMeat
                 Content.Contains("PUSSY"))
                 return Responses[7];
 
+            #endregion Female
+
             else
-            {
-                Random r = new Random();
                 return Responses[r.Next(0, Responses.Length)];
-            }
         }
 
         #endregion Variables

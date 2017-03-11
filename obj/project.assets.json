@@ -211,7 +211,7 @@
           "lib/netstandard1.3/Microsoft.CSharp.dll": {}
         }
       },
-      "Microsoft.DiaSymReader.Native/1.4.0": {
+      "Microsoft.DiaSymReader.Native/1.4.1": {
         "type": "package",
         "build": {
           "build/Microsoft.DiaSymReader.Native.props": {}
@@ -243,16 +243,16 @@
           }
         }
       },
-      "Microsoft.NETCore.App/1.1.0": {
+      "Microsoft.NETCore.App/1.1.1": {
         "type": "package",
         "dependencies": {
           "Libuv": "1.9.1",
           "Microsoft.CSharp": "4.3.0",
           "Microsoft.CodeAnalysis.CSharp": "1.3.0",
           "Microsoft.CodeAnalysis.VisualBasic": "1.3.0",
-          "Microsoft.DiaSymReader.Native": "1.4.0",
+          "Microsoft.DiaSymReader.Native": "1.4.1",
           "Microsoft.NETCore.DotNetHostPolicy": "1.1.0",
-          "Microsoft.NETCore.Runtime.CoreCLR": "1.1.0",
+          "Microsoft.NETCore.Runtime.CoreCLR": "1.1.1",
           "Microsoft.VisualBasic": "10.1.0",
           "NETStandard.Library": "1.6.1",
           "System.Buffers": "4.3.0",
@@ -311,7 +311,7 @@
           "Microsoft.NETCore.DotNetHost": "1.1.0"
         }
       },
-      "Microsoft.NETCore.Jit/1.1.0": {
+      "Microsoft.NETCore.Jit/1.1.1": {
         "type": "package"
       },
       "Microsoft.NETCore.Platforms/1.1.0": {
@@ -323,10 +323,10 @@
           "lib/netstandard1.0/_._": {}
         }
       },
-      "Microsoft.NETCore.Runtime.CoreCLR/1.1.0": {
+      "Microsoft.NETCore.Runtime.CoreCLR/1.1.1": {
         "type": "package",
         "dependencies": {
-          "Microsoft.NETCore.Jit": "1.1.0",
+          "Microsoft.NETCore.Jit": "1.1.1",
           "Microsoft.NETCore.Windows.ApiSets": "1.0.1"
         }
       },
@@ -2627,7 +2627,7 @@
           "lib/netstandard1.3/Microsoft.CSharp.dll": {}
         }
       },
-      "Microsoft.DiaSymReader.Native/1.4.0": {
+      "Microsoft.DiaSymReader.Native/1.4.1": {
         "type": "package",
         "native": {
           "runtimes/win-x64/native/Microsoft.DiaSymReader.Native.amd64.dll": {}
@@ -2636,16 +2636,16 @@
           "build/Microsoft.DiaSymReader.Native.props": {}
         }
       },
-      "Microsoft.NETCore.App/1.1.0": {
+      "Microsoft.NETCore.App/1.1.1": {
         "type": "package",
         "dependencies": {
           "Libuv": "1.9.1",
           "Microsoft.CSharp": "4.3.0",
           "Microsoft.CodeAnalysis.CSharp": "1.3.0",
           "Microsoft.CodeAnalysis.VisualBasic": "1.3.0",
-          "Microsoft.DiaSymReader.Native": "1.4.0",
+          "Microsoft.DiaSymReader.Native": "1.4.1",
           "Microsoft.NETCore.DotNetHostPolicy": "1.1.0",
-          "Microsoft.NETCore.Runtime.CoreCLR": "1.1.0",
+          "Microsoft.NETCore.Runtime.CoreCLR": "1.1.1",
           "Microsoft.VisualBasic": "10.1.0",
           "NETStandard.Library": "1.6.1",
           "System.Buffers": "4.3.0",
@@ -2709,10 +2709,10 @@
           "runtime.win7-x64.Microsoft.NETCore.DotNetHostResolver": "1.1.0"
         }
       },
-      "Microsoft.NETCore.Jit/1.1.0": {
+      "Microsoft.NETCore.Jit/1.1.1": {
         "type": "package",
         "dependencies": {
-          "runtime.win7-x64.Microsoft.NETCore.Jit": "1.1.0"
+          "runtime.win7-x64.Microsoft.NETCore.Jit": "1.1.1"
         }
       },
       "Microsoft.NETCore.Platforms/1.1.0": {
@@ -2724,12 +2724,12 @@
           "lib/netstandard1.0/_._": {}
         }
       },
-      "Microsoft.NETCore.Runtime.CoreCLR/1.1.0": {
+      "Microsoft.NETCore.Runtime.CoreCLR/1.1.1": {
         "type": "package",
         "dependencies": {
-          "Microsoft.NETCore.Jit": "1.1.0",
+          "Microsoft.NETCore.Jit": "1.1.1",
           "Microsoft.NETCore.Windows.ApiSets": "1.0.1",
-          "runtime.win7-x64.Microsoft.NETCore.Runtime.CoreCLR": "1.1.0"
+          "runtime.win7-x64.Microsoft.NETCore.Runtime.CoreCLR": "1.1.1"
         }
       },
       "Microsoft.NETCore.Targets/1.1.0": {
@@ -3319,13 +3319,13 @@
           "runtimes/win7-x64/native/hostfxr.dll": {}
         }
       },
-      "runtime.win7-x64.Microsoft.NETCore.Jit/1.1.0": {
+      "runtime.win7-x64.Microsoft.NETCore.Jit/1.1.1": {
         "type": "package",
         "native": {
           "runtimes/win7-x64/native/clrjit.dll": {}
         }
       },
-      "runtime.win7-x64.Microsoft.NETCore.Runtime.CoreCLR/1.1.0": {
+      "runtime.win7-x64.Microsoft.NETCore.Runtime.CoreCLR/1.1.1": {
         "type": "package",
         "compile": {
           "ref/netstandard1.0/_._": {}
@@ -5219,13 +5219,13 @@
         "ref/xamarinwatchos10/_._"
       ]
     },
-    "Microsoft.DiaSymReader.Native/1.4.0": {
-      "sha512": "6HpEBMxIi9KJHKnF2ISRy3HsxhRYL1/CdnXGBqSWOUE8uaY5gthzStdQdbPVFxsKCNwsYcfRc11RXjLVvGF5bQ==",
+    "Microsoft.DiaSymReader.Native/1.4.1": {
+      "sha512": "oi9LCkKzSm7WgI0LsODDQUQdzldNdv9BU/QDoW9QMu+uN4baJXANkTWrjc2+aTqeftyhPXF1fn/m9jPo7mJ6FA==",
       "type": "package",
-      "path": "microsoft.diasymreader.native/1.4.0",
+      "path": "microsoft.diasymreader.native/1.4.1",
       "files": [
         "build/Microsoft.DiaSymReader.Native.props",
-        "microsoft.diasymreader.native.1.4.0.nupkg.sha512",
+        "microsoft.diasymreader.native.1.4.1.nupkg.sha512",
         "microsoft.diasymreader.native.nuspec",
         "runtimes/win-x64/native/Microsoft.DiaSymReader.Native.amd64.dll",
         "runtimes/win-x86/native/Microsoft.DiaSymReader.Native.x86.dll",
@@ -5235,15 +5235,15 @@
         "runtimes/win8-arm/native/Microsoft.DiaSymReader.Native.arm.dll"
       ]
     },
-    "Microsoft.NETCore.App/1.1.0": {
-      "sha512": "DFec+OUojDVocn1GxAL9uJg4qwsgkvKiQpv6BKd9ljGezvc9p6GpFv51IIakiujkVW/wBtQ0xlfjVSgS1UG/uw==",
+    "Microsoft.NETCore.App/1.1.1": {
+      "sha512": "VmbeuJr3rHBRssZp3tR48mzWPzt4syJNXRKq/hfAmUbdSu03cR1HrMcmDAC1L00bs7l/PkDxbo/+v3X65JT+MA==",
       "type": "package",
-      "path": "microsoft.netcore.app/1.1.0",
+      "path": "microsoft.netcore.app/1.1.1",
       "files": [
         "ThirdPartyNotices.txt",
         "dotnet_library_license.txt",
         "lib/netcoreapp1.0/_._",
-        "microsoft.netcore.app.1.1.0.nupkg.sha512",
+        "microsoft.netcore.app.1.1.1.nupkg.sha512",
         "microsoft.netcore.app.nuspec"
       ]
     },
@@ -5283,14 +5283,14 @@
         "runtime.json"
       ]
     },
-    "Microsoft.NETCore.Jit/1.1.0": {
-      "sha512": "Zsrh7C1ncfJe1tLGExgHrdal8I0U7qBHeLkpjbxd6M8uPtR8ck+R1Gynyjn01M3VO1Px416WvrJ4rxQFeR3jTQ==",
+    "Microsoft.NETCore.Jit/1.1.1": {
+      "sha512": "TiG1ZTlStqkcrZzSIkyhbAr8PvTKzJQMS2awfzfU3wQd4oIxZr2Ausrf8ksHOfQC2EKgZd66r9tHsqASDWwKsg==",
       "type": "package",
-      "path": "microsoft.netcore.jit/1.1.0",
+      "path": "microsoft.netcore.jit/1.1.1",
       "files": [
         "ThirdPartyNotices.txt",
         "dotnet_library_license.txt",
-        "microsoft.netcore.jit.1.1.0.nupkg.sha512",
+        "microsoft.netcore.jit.1.1.1.nupkg.sha512",
         "microsoft.netcore.jit.nuspec",
         "runtime.json"
       ]
@@ -5308,14 +5308,14 @@
         "runtime.json"
       ]
     },
-    "Microsoft.NETCore.Runtime.CoreCLR/1.1.0": {
-      "sha512": "dwvlgs9yX8Y1phaXqNJC8qOgEeZfsM8mVB4vprv7OOhttjXoiaiYQAEYa4D4fbiqTjx/gD6/fVPJ/aSmk5byhg==",
+    "Microsoft.NETCore.Runtime.CoreCLR/1.1.1": {
+      "sha512": "uCLPGXIFJ49eIhwmBpuVQWQKzddeNYxmJpa0jjM6O5mJCeCN7Anz4aIT2nOxSh0U/mti1SR7f4elLnsU2j/bfQ==",
       "type": "package",
-      "path": "microsoft.netcore.runtime.coreclr/1.1.0",
+      "path": "microsoft.netcore.runtime.coreclr/1.1.1",
       "files": [
         "ThirdPartyNotices.txt",
         "dotnet_library_license.txt",
-        "microsoft.netcore.runtime.coreclr.1.1.0.nupkg.sha512",
+        "microsoft.netcore.runtime.coreclr.1.1.1.nupkg.sha512",
         "microsoft.netcore.runtime.coreclr.nuspec",
         "runtime.json"
       ]
@@ -6262,28 +6262,28 @@
         "version.txt"
       ]
     },
-    "runtime.win7-x64.Microsoft.NETCore.Jit/1.1.0": {
-      "sha512": "fiI5jQaw2nXcOTOSqcyQdx7T9mPWK96UQAzbM98rTdkDRAb87i751MNxQzNLJpjovDJk89ZdbXgkAfj5HhJqCQ==",
+    "runtime.win7-x64.Microsoft.NETCore.Jit/1.1.1": {
+      "sha512": "HarGeWxsDnKjpZ0EgC1tHjoeAzPUinH74p5yvJKPzAfzAW5OQB6gW06ZxCBMLc0OqirJCSxFM98vDsNHneQklQ==",
       "type": "package",
-      "path": "runtime.win7-x64.microsoft.netcore.jit/1.1.0",
+      "path": "runtime.win7-x64.microsoft.netcore.jit/1.1.1",
       "files": [
         "ThirdPartyNotices.txt",
         "dotnet_library_license.txt",
-        "runtime.win7-x64.microsoft.netcore.jit.1.1.0.nupkg.sha512",
+        "runtime.win7-x64.microsoft.netcore.jit.1.1.1.nupkg.sha512",
         "runtime.win7-x64.microsoft.netcore.jit.nuspec",
         "runtimes/win7-x64-aot/native/_._",
         "runtimes/win7-x64/native/clrjit.dll"
       ]
     },
-    "runtime.win7-x64.Microsoft.NETCore.Runtime.CoreCLR/1.1.0": {
-      "sha512": "cX4z/6LT80RMiJuBXBiLNysRxbemE8fdHozC65kG8XK8gs9AYMhPh+U7IgdY45tKnuUxmPM1TCLQEAtndhzn7w==",
+    "runtime.win7-x64.Microsoft.NETCore.Runtime.CoreCLR/1.1.1": {
+      "sha512": "YHztWvHeaSHqhScOKaascWXlvxCXvk7/VLUhAcDY3EuKkAoWiEr1kyeEYqR6r9Mo7ePzkl74RDqCsVfD/YDQTg==",
       "type": "package",
-      "path": "runtime.win7-x64.microsoft.netcore.runtime.coreclr/1.1.0",
+      "path": "runtime.win7-x64.microsoft.netcore.runtime.coreclr/1.1.1",
       "files": [
         "ThirdPartyNotices.txt",
         "dotnet_library_license.txt",
         "ref/netstandard1.0/_._",
-        "runtime.win7-x64.microsoft.netcore.runtime.coreclr.1.1.0.nupkg.sha512",
+        "runtime.win7-x64.microsoft.netcore.runtime.coreclr.1.1.1.nupkg.sha512",
         "runtime.win7-x64.microsoft.netcore.runtime.coreclr.nuspec",
         "runtimes/win7-x64-aot/lib/netstandard1.0/_._",
         "runtimes/win7-x64-aot/native/_._",
@@ -10740,18 +10740,19 @@
     ".NETCoreApp,Version=v1.1": [
       "Discord.Net.Commands >= 1.0.0-rc-00593",
       "Discord.Net.WebSocket >= 1.0.0-rc-00593",
-      "Microsoft.NETCore.App >= 1.1.0"
+      "Microsoft.NETCore.App >= 1.1.1"
     ]
   },
   "packageFolders": {
     "C:\\Users\\Kr4ken\\.nuget\\packages\\": {}
   },
   "project": {
+    "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Kr4ken\\documents\\visual studio 2017\\Projects\\C#\\DogMeat 2.0\\Dogmeat 2.0.csproj",
+      "projectUniqueName": "C:\\Users\\Kr4ken\\Documents\\Visual Studio 2017\\Projects\\C#\\Dogmeat 2.0\\Dogmeat 2.0.csproj",
       "projectName": "Dogmeat 2.0",
-      "projectPath": "C:\\Users\\Kr4ken\\documents\\visual studio 2017\\Projects\\C#\\DogMeat 2.0\\Dogmeat 2.0.csproj",
-      "outputPath": "C:\\Users\\Kr4ken\\documents\\visual studio 2017\\Projects\\C#\\DogMeat 2.0\\obj\\",
+      "projectPath": "C:\\Users\\Kr4ken\\Documents\\Visual Studio 2017\\Projects\\C#\\Dogmeat 2.0\\Dogmeat 2.0.csproj",
+      "outputPath": "C:\\Users\\Kr4ken\\Documents\\Visual Studio 2017\\Projects\\C#\\Dogmeat 2.0\\obj\\",
       "projectStyle": "PackageReference",
       "originalTargetFrameworks": [
         "netcoreapp1.1"
@@ -10775,7 +10776,8 @@
           },
           "Microsoft.NETCore.App": {
             "target": "Package",
-            "version": "1.1.0"
+            "version": "1.1.1",
+            "autoReferenced": true
           }
         }
       }
