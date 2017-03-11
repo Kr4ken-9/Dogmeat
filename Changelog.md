@@ -3,6 +3,13 @@ Release notes for different versions of Dogmeat
 
 ---
 
+**2.1.6**
+
+3/10/17
+- Softban
+
+---
+
 **2.1.5**
 
 2/15/17
