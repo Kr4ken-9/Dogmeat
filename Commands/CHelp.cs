@@ -13,6 +13,7 @@ namespace DogMeat.Commands
             var DMChannel = await Context.User.CreateDMChannelAsync();
             await DMChannel.SendMessageAsync("As of " + System.Reflection.Assembly.GetEntryAssembly().GetName().Version + " my commands include: " +
                 "```~Ban - name/id\r\n" +
+                "~Softban - name/id\r\n" +
                 "~Kick - name/id\r\n" +
                 "~Info - No input\r\n" +
                 "~Help - No input\r\n" +
