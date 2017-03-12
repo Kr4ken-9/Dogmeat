@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -164,8 +165,27 @@ namespace DogMeat
             while (true)
             {
                 string Input = Console.ReadLine();
-                switch (Input.ToUpperInvariant())
+                String[] Inputs = Input.Split('"')
+                     .Select((element, index) => index % 2 == 0  // If even index
+                                           ? element.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)  // Split the item
+                                           : new string[] { element })  // Keep the entire item
+                     .SelectMany(element => element).ToArray();
+
+                switch (Inputs[0].ToUpperInvariant())
                 {
+                    case "ANNOUNCE":
+                        ulong.TryParse(Inputs[1], out ulong Id);
+                        String Output = Inputs[2];
+
+                        foreach (SocketGuild Guild in Client.Guilds)
+                        {
+                            foreach (SocketGuildChannel Channel in Guild.Channels)
+                            {
+                                if (Channel is SocketTextChannel && (Inputs[1] == "all" || Channel.Id == Id))
+                                    ((SocketTextChannel)Channel).SendMessageAsync(Output);
+                            }
+                        }
+                        break;
                     case "SHUTDOWN":
                         Shutdown(Client);
                         break;

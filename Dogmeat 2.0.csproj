@@ -5,15 +5,16 @@
     <OutputTypeEx>exe</OutputTypeEx>
     <RuntimeIdentifier>win81-x64</RuntimeIdentifier>
     <WarningLevel>0</WarningLevel>
-    <AssemblyVersion>2.1.6.0</AssemblyVersion>
-    <FileVersion>2.1.6.0</FileVersion>
+    <AssemblyVersion>2.1.7.0</AssemblyVersion>
+    <FileVersion>2.1.7.0</FileVersion>
     <PackageReleaseNotes>
     </PackageReleaseNotes>
     <Company>Kr4ken</Company>
     <RootNamespace>DogMeat</RootNamespace>
-    <Description>2.1.6 Release Notes:
-3/10/17
-- Softban</Description>
+    <Description>2.1.7 Release Notes:
+3/11/17
+- Announcements
+- More offensive insults</Description>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Discord.Net.Commands" Version="1.0.0-rc-00593" />
