@@ -3,6 +3,14 @@ Release notes for different versions of Dogmeat
 
 ---
 
+**2.1.7**
+
+3/11/17
+- Announcements
+- More insults
+
+---
+
 **2.1.6**
 
 3/10/17
