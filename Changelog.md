@@ -1,4 +1,4 @@
-#Changelog
+# Changelog
 Release notes for different versions of Dogmeat
 
 ---
