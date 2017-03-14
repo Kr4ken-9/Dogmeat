@@ -15,7 +15,7 @@ namespace DogMeat.Commands
         {
             if (Utilities.GetMasterRole((SocketGuild)Context.Guild) == null)
                 await ReplyAsync("I have no master on this server.");
-            else if (!((SocketGuildUser)Context.User).RoleIds.Contains(Utilities.GetMasterRole((SocketGuild)Context.Guild).Id))
+            else if (!((SocketGuildUser)Context.User).Roles.Contains(Utilities.GetMasterRole((SocketGuild)Context.Guild)))
                 await ReplyAsync("You must be my master to execute this command.");
             else if (Context.Message.MentionedUserIds.Count != 0 && Context.Guild.GetUserAsync(Context.Message.MentionedUserIds.FirstOrDefault()) != null)
             {

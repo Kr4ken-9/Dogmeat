@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using Discord;
 using Discord.WebSocket;
 using Discord.Commands;
@@ -11,7 +12,7 @@ namespace DogMeat
     {
         #region Variables
 
-        private static DiscordSocketClient Client;
+        public static DiscordSocketClient Client;
 
         private CommandHandler Handler;
 
@@ -31,29 +32,18 @@ namespace DogMeat
 
             Client.MessageReceived += async (msg) =>
             {
-                if (msg.Channel.Id == 242948289404600321 && msg.Content.ToUpper() != "MANPAD SOUNDS LIKE A FEMININE CLEANING PRODUCT")
-                    await WrongChannelAsync(msg);
-                else if (msg.Channel.Id == 242948289404600321 && msg.Content.ToUpper() == "MANPAD SOUNDS LIKE A FEMININE CLEANING PRODUCT")
-                    await AccessAsync(msg);
+                if (msg.Channel.Id == 242948289404600321 && msg.Content.ToUpperInvariant() != "MANPAD SOUNDS LIKE A FEMININE CLEANING PRODUCT")
+                    await Utilities.WrongChannelAsync(msg);
+                else if (msg.Channel.Id == 242948289404600321 && msg.Content.ToUpperInvariant() == "MANPAD SOUNDS LIKE A FEMININE CLEANING PRODUCT")
+                    await Utilities.AccessAsync(msg, ManPAD);
                 else if (msg.Content.ToUpper().Contains("DOGMEAT") && !msg.Author.IsBot)
-                    await MentionedAsync(msg);
+                    await Utilities.MentionedAsync(msg);
             };
 
             await Client.LoginAsync(TokenType.Bot, "");
-            await Client.ConnectAsync();
+            await Client.StartAsync();
 
-            #region Commands
-            DependencyMap Map = new DependencyMap();
-            Map.Add(Client);
-
-            Handler = new CommandHandler();
-            await Handler.Initialize(Map);
-            #endregion Commands
-
-            Thread Connection = new Thread(() => Utilities.MaintainConnection(Client));
-            Connection.Start();
-
-            Utilities.AwaitInput(Client);
+            await OnStart();
 
             ManPAD = Client.GetGuild(242946566296436739);
             Log = Client.GetGuild(272850920059174914);
@@ -61,25 +51,38 @@ namespace DogMeat
             await Task.Delay(-1);
         }
 
-        public async Task AccessAsync(SocketMessage e)
+        private async Task OnStart()
         {
-            await e.DeleteAsync();
-            await (e.Author as SocketGuildUser).AddRolesAsync(ManPAD.GetRole(272789680821370881));
-            Utilities.Log("Underwent Initiation", ((SocketGuildChannel)e.Channel).Guild, e.Author);
-        }
+            Utilities.Client = Client;
 
-        public async Task WrongChannelAsync(SocketMessage e)
-        {
-            await e.DeleteAsync();
-            Discord.Rest.RestDMChannel channel = await e.Author.CreateDMChannelAsync();
-            await channel.SendMessageAsync("You are not permitted to chat in that channel.");
-            Utilities.Log("Attempted to chat in a restricted channel.", ((SocketGuildChannel)e.Channel).Guild, e.Author);
-        }
+            #region Commands
 
-        public async Task MentionedAsync(SocketMessage e)
-        {
-            await e.Channel.SendMessageAsync(await Utilities.ResponsePickerAsync(e.Content.ToUpper()));
-            Utilities.Log("Mentioned me.", ((SocketGuildChannel)e.Channel).Guild, e.Author);
+            DependencyMap Map = new DependencyMap();
+            Map.Add(Client);
+
+            Handler = new CommandHandler();
+
+            await Handler.Initialize(Map);
+
+            #endregion Commands
+
+            #region Initiation
+
+            Initiation.CheckServerList();
+
+            if (Initiation.GetServerList() != null)
+                Initiation.Servers = Initiation.GetServerList();
+            else
+                Initiation.Servers = new List<Server>();
+
+            Client.MessageReceived += Initiation.HandleInitiationAsync;
+
+            #endregion Initiation
+
+            Thread Connection = new Thread(() => Utilities.MaintainConnection());
+            Connection.Start();
+
+            Utilities.AwaitInput();
         }
     }
 }

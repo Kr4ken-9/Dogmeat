@@ -15,14 +15,14 @@ namespace DogMeat.Commands
         {
             if (Utilities.GetMasterRole((SocketGuild)Context.Guild) == null)
                 await ReplyAsync("I have no master on this server.");
-            else if (!((SocketGuildUser)Context.User).RoleIds.Contains(Utilities.GetMasterRole((SocketGuild)Context.Guild).Id))
+            else if (!((SocketGuildUser)Context.User).Roles.Contains(Utilities.GetMasterRole((SocketGuild)Context.Guild)))
                 await ReplyAsync("You must be my master to execute this command.");
             else if (Utilities.GetMutedRole((SocketGuild)Context.Guild) == null)
                 await ReplyAsync("I need a muted role to punish players with!");
             else if (Context.Message.MentionedUserIds.Count != 0 && Context.Guild.GetUserAsync(Context.Message.MentionedUserIds.FirstOrDefault()) != null)
             {
                 IGuildUser target = await Context.Guild.GetUserAsync(Context.Message.MentionedUserIds.FirstOrDefault());
-                SocketRole muted = Utilities.GetMutedRole((SocketGuild)Context.Guild);
+                IRole muted = Utilities.GetMutedRole((SocketGuild)Context.Guild);
                 if (target.RoleIds.Contains(muted.Id))
                 {
                     await target.RemoveRolesAsync(muted);
@@ -37,7 +37,7 @@ namespace DogMeat.Commands
             else if (await Utilities.GetUser(Context.Guild, name) != null)
             {
                 IGuildUser target = await Utilities.GetUser(Context.Guild, name);
-                SocketRole muted = Utilities.GetMutedRole((SocketGuild)Context.Guild);
+                IRole muted = Utilities.GetMutedRole((SocketGuild)Context.Guild);
                 if (target.RoleIds.Contains(muted.Id))
                 {
                     await target.RemoveRolesAsync(muted);

@@ -14,25 +14,31 @@ namespace DogMeat
     {
         #region Variables
 
+        public static DiscordSocketClient Client;
+
         private static bool ContinueShutdown;
 
-        public static SocketRole GetMasterRole(SocketGuild Guild)
+        public static IRole GetMasterRole(SocketGuild Guild)
         {
             foreach (SocketRole Role in Guild.Roles)
-            {
                 if (Role.Name == "Master")
                     return Role;
-            }
             return null;
         }
 
-        public static SocketRole GetMutedRole(SocketGuild Guild)
+        public static IRole GetMutedRole(SocketGuild Guild)
         {
             foreach (SocketRole Role in Guild.Roles)
-            {
                 if (Role.Name == "Muted")
                     return Role;
-            }
+            return null;
+        }
+
+        public static IRole GetRole(SocketGuild Guild, ulong ID)
+        {
+            foreach (SocketRole Role in Guild.Roles)
+                if (Role.Id == ID)
+                    return Role;
             return null;
         }
 
@@ -137,7 +143,32 @@ namespace DogMeat
 
         #endregion Variables
 
-        public static void MaintainConnection(DiscordSocketClient Client)
+        #region Functions
+
+        public static async Task AccessAsync(SocketMessage e, SocketGuild ManPAD)
+        {
+            await e.DeleteAsync();
+            await (e.Author as SocketGuildUser).AddRolesAsync(ManPAD.GetRole(272789680821370881));
+            Utilities.Log("Underwent Initiation", ((SocketGuildChannel)e.Channel).Guild, e.Author);
+        }
+
+        public static async Task WrongChannelAsync(SocketMessage e)
+        {
+            await e.DeleteAsync();
+            Discord.Rest.RestDMChannel channel = await e.Author.CreateDMChannelAsync();
+            await channel.SendMessageAsync("You are not permitted to chat in that channel.");
+            Utilities.Log("Attempted to chat in a restricted channel.", ((SocketGuildChannel)e.Channel).Guild, e.Author);
+        }
+
+        public static async Task MentionedAsync(SocketMessage e)
+        {
+            await e.Channel.SendMessageAsync(await Utilities.ResponsePickerAsync(e.Content.ToUpper()));
+            Utilities.Log("Mentioned me.", ((SocketGuildChannel)e.Channel).Guild, e.Author);
+        }
+
+        #endregion Functions
+
+        public static void MaintainConnection()
         {
             while (Program.KeepAlive)
             {
@@ -145,7 +176,7 @@ namespace DogMeat
                 if (Client.ConnectionState == ConnectionState.Disconnected)
                 {
                     Client.LoginAsync(TokenType.Bot, "");
-                    Client.ConnectAsync();
+                    Client.StartAsync();
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine(DateTime.Now + ": Dogmeat has disconnected and automagically reconnected.");
                     Console.ForegroundColor = ConsoleColor.Gray;
@@ -160,15 +191,17 @@ namespace DogMeat
             }
         }
 
-        public static void AwaitInput(DiscordSocketClient Client)
+        public static void AwaitInput()
         {
             while (true)
             {
                 string Input = Console.ReadLine();
+                if (Input == null)
+                    continue;
                 String[] Inputs = Input.Split('"')
-                     .Select((element, index) => index % 2 == 0  // If even index
-                                           ? element.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)  // Split the item
-                                           : new string[] { element })  // Keep the entire item
+                     .Select((element, index) => index % 2 == 0  
+                                           ? element.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)  
+                                           : new string[] { element })  
                      .SelectMany(element => element).ToArray();
 
                 switch (Inputs[0].ToUpperInvariant())
@@ -187,16 +220,16 @@ namespace DogMeat
                         }
                         break;
                     case "SHUTDOWN":
-                        Shutdown(Client);
+                        Shutdown();
                         break;
                     case "QUIT":
-                        Shutdown(Client);
+                        Shutdown();
                         break;
                     case "EXIT":
-                        Shutdown(Client);
+                        Shutdown();
                         break;
                     case "DISCONNECT":
-                        Disconnect(Client);
+                        Disconnect();
                         break;
                     case "RECONNECT":
                         Program.KeepAlive = true;
@@ -213,11 +246,10 @@ namespace DogMeat
             }
         }
 
-        private static void Shutdown(DiscordSocketClient Client)
+        private static void Shutdown()
         {
             Program.KeepAlive = false;
             ContinueShutdown = true;
-            Client.DisconnectAsync();
             Log("Client is shutting down in five seconds.", ConsoleColor.Red);
             new Thread(() =>
             {
@@ -237,14 +269,16 @@ namespace DogMeat
                 Log("1", ConsoleColor.Red);
                 Thread.Sleep(1000);
                 if (!ContinueShutdown) return;
+                Disconnect();
+                Initiation.SaveServerList();
                 Environment.Exit(0);
             }).Start();
         }
 
-        private static void Disconnect(DiscordSocketClient Client)
+        private static void Disconnect()
         {
             Program.KeepAlive = false;
-            Client.DisconnectAsync();
+            Client.StopAsync();
             Log("Dogmeat disconnected.", ConsoleColor.Red);
         }
 
