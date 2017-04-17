@@ -3,6 +3,14 @@ Release notes for different versions of Dogmeat
 
 ---
 
+**2.1.9**
+
+4/17/17
+- 8Balls
+- Answers
+
+---
+
 **2.1.8**
 
 4/17/17
