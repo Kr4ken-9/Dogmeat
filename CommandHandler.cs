@@ -19,7 +19,6 @@ namespace DogMeat
         {
             Client = map.Get<DiscordSocketClient>();
             Commands = new CommandService();
-            map.Add(Commands);
             Map = map;
 
             await Commands.AddModulesAsync(System.Reflection.Assembly.GetEntryAssembly());
