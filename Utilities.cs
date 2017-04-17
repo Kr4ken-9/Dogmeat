@@ -80,7 +80,7 @@ namespace DogMeat
             else if (Content.Contains("?"))
             {
                 String[] Answers = await DogmeatAnswersAsync();
-                return Answers[new Random().Next(0, Answers.Length + 1)];
+                return Answers[new Random().Next(0, Answers.Length)];
             }
 
             #region Mexican

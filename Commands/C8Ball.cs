@@ -10,7 +10,7 @@ namespace DogMeat.Commands
         public async Task EightBallAsync()
         {
             String[] Answers = await Utilities.DogmeatAnswersAsync();
-            await ReplyAsync(Answers[new Random().Next(0, Answers.Length + 1)]);
+            await ReplyAsync(Answers[new Random().Next(0, Answers.Length)]);
         }
     }
 }
