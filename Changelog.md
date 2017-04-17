@@ -3,6 +3,16 @@ Release notes for different versions of Dogmeat
 
 ---
 
+**2.1.8**
+
+2.1.8 Release Notes:
+4/17/17
+- Memes
+- Broken commands system
+- Broken initiation system
+
+---
+
 **2.1.7**
 
 3/11/17
