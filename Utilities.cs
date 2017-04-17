@@ -14,8 +14,6 @@ namespace DogMeat
     {
         #region Variables
 
-        public static DiscordSocketClient Client;
-
         private static bool ContinueShutdown;
 
         public static IRole GetMasterRole(SocketGuild Guild)
@@ -46,6 +44,15 @@ namespace DogMeat
         {
             HttpClient Client = new HttpClient();
             String url = "http://198.245.61.226/kr4ken/dogmeat_replies.txt";
+            HttpResponseMessage Response = await Client.GetAsync(url);
+            string Content = await Response.Content.ReadAsStringAsync();
+            return Content.Split(new String[] { "\r\n", "\n" }, StringSplitOptions.None);
+        }
+
+        public static async Task<String[]> DogmeatMemesAsync()
+        {
+            HttpClient Client = new HttpClient();
+            String url = "http://198.245.61.226/kr4ken/dogmeat_memes.txt";
             HttpResponseMessage Response = await Client.GetAsync(url);
             string Content = await Response.Content.ReadAsStringAsync();
             return Content.Split(new String[] { "\r\n", "\n" }, StringSplitOptions.None);
@@ -173,10 +180,10 @@ namespace DogMeat
             while (Program.KeepAlive)
             {
                 Thread.Sleep(1000);
-                if (Client.ConnectionState == ConnectionState.Disconnected)
+                if (Program.Client.ConnectionState == ConnectionState.Disconnected)
                 {
-                    Client.LoginAsync(TokenType.Bot, "");
-                    Client.StartAsync();
+                    Program.Client.LoginAsync(TokenType.Bot, "");
+                    Program.Client.StartAsync();
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine(DateTime.Now + ": Dogmeat has disconnected and automagically reconnected.");
                     Console.ForegroundColor = ConsoleColor.Gray;
@@ -193,7 +200,62 @@ namespace DogMeat
 
         public static void AwaitInput()
         {
-            while (true)
+            Program.Client.MessageReceived += async (msg) =>
+            {
+                if (msg.Channel.Id == Program.Commands.Id)
+                {
+                    Log("Command received.");
+                    string Input = msg.Content;
+                    if (Input == null)
+                        return;
+                    String[] Inputs = Input.Split('"')
+                         .Select((element, index) => index % 2 == 0
+                                               ? element.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
+                                               : new string[] { element })
+                         .SelectMany(element => element).ToArray();
+
+                    switch (Inputs[0].ToUpperInvariant())
+                    {
+                        case "ANNOUNCE":
+                            ulong.TryParse(Inputs[1], out ulong Id);
+                            String Output = Inputs[2];
+
+                            foreach (SocketGuild Guild in Program.Client.Guilds)
+                            {
+                                foreach (SocketGuildChannel Channel in Guild.Channels)
+                                {
+                                    if (Channel is SocketTextChannel && (Inputs[1] == "all" || Channel.Id == Id))
+                                        ((SocketTextChannel)Channel).SendMessageAsync(Output);
+                                }
+                            }
+                            break;
+                        case "SHUTDOWN":
+                            Shutdown();
+                            break;
+                        case "QUIT":
+                            Shutdown();
+                            break;
+                        case "EXIT":
+                            Shutdown();
+                            break;
+                        case "DISCONNECT":
+                            Disconnect();
+                            break;
+                        case "RECONNECT":
+                            Program.KeepAlive = true;
+                            Log("Dogmeat was revived.", ConsoleColor.Green);
+                            break;
+                        case "CANCEL":
+                            Log("Shutdown canceled", ConsoleColor.Green);
+                            ContinueShutdown = false;
+                            break;
+                        default:
+                            Log("That is not a command.", ConsoleColor.Red);
+                            break;
+                    }
+                }
+            };
+            /*while (true)
             {
                 string Input = Console.ReadLine();
                 if (Input == null)
@@ -210,7 +272,7 @@ namespace DogMeat
                         ulong.TryParse(Inputs[1], out ulong Id);
                         String Output = Inputs[2];
 
-                        foreach (SocketGuild Guild in Client.Guilds)
+                        foreach (SocketGuild Guild in Program.Client.Guilds)
                         {
                             foreach (SocketGuildChannel Channel in Guild.Channels)
                             {
@@ -243,7 +305,7 @@ namespace DogMeat
                         Log("That is not a command.", ConsoleColor.Red);
                         break;
                 }
-            }
+            }*/
         }
 
         private static void Shutdown()
@@ -270,7 +332,7 @@ namespace DogMeat
                 Thread.Sleep(1000);
                 if (!ContinueShutdown) return;
                 Disconnect();
-                Initiation.SaveServerList();
+                //Initiation.SaveServerList(); Commented until working
                 Environment.Exit(0);
             }).Start();
         }
@@ -278,7 +340,7 @@ namespace DogMeat
         private static void Disconnect()
         {
             Program.KeepAlive = false;
-            Client.StopAsync();
+            Program.Client.StopAsync();
             Log("Dogmeat disconnected.", ConsoleColor.Red);
         }
 

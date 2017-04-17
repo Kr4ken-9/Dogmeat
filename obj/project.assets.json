@@ -6718,7 +6718,7 @@
       ]
     },
     "System.Collections.NonGeneric/4.0.1": {
-      "sha512": "4SI9nasW8Mf4b1pIY6ptRKJDuU+HWvCwDu7p28cyGEwChvCPme0YnCqZw2HeVJhcy0Ax378j54FxCc2QUvV77Q==",
+      "sha512": "hMxFT2RhhlffyCdKLDXjx8WEC5JfCvNozAZxCablAuFRH74SCV4AgzE8yJCh/73bFnEoZgJ9MJmkjQ0dJmnKqA==",
       "type": "package",
       "path": "system.collections.nongeneric/4.0.1",
       "files": [
@@ -6755,7 +6755,7 @@
       ]
     },
     "System.Collections.Specialized/4.0.1": {
-      "sha512": "cTXJySgQ5EY67dXK0AhkLMjiYqb9DAWFlRbw4U0GGS6Z6OiAX0eEAzgq88qdAZZX0YTHTaFG/OUpVAg46di1ug==",
+      "sha512": "/HKQyVP0yH1I0YtK7KJL/28snxHNH/bi+0lgk/+MbURF6ULhAE31MDI+NZDerNWu264YbxklXCCygISgm+HMug==",
       "type": "package",
       "path": "system.collections.specialized/4.0.1",
       "files": [
@@ -6926,7 +6926,7 @@
       ]
     },
     "System.ComponentModel.Primitives/4.1.0": {
-      "sha512": "hTU/yfenXysljOw/xZhUVJDSVVet0Nz6mXch/HjZcMGXhkTU3N9f+ZwvG/aFJYWgeyOApvS4BIrDnIk76OvVWQ==",
+      "sha512": "sc/7eVCdxPrp3ljpgTKVaQGUXiW05phNWvtv/m2kocXqrUQvTVWKou1Edas2aDjTThLPZOxPYIGNb/HN0QjURg==",
       "type": "package",
       "path": "system.componentmodel.primitives/4.1.0",
       "files": [
@@ -6963,7 +6963,7 @@
       ]
     },
     "System.ComponentModel.TypeConverter/4.1.0": {
-      "sha512": "EMLCMUtZAdP5flLIB3Jzz5gtBR9tm58lxEolO0Qn3ePzlf3C8bRE/N1Oa53mkMWmExpauyJu7n0pqNdP+ohCkQ==",
+      "sha512": "MnDAlaeJZy9pdB5ZdOlwdxfpI+LJQ6e0hmH7d2+y2LkiD8DRJynyDYl4Xxf3fWFm7SbEwBZh4elcfzONQLOoQw==",
       "type": "package",
       "path": "system.componentmodel.typeconverter/4.1.0",
       "files": [
@@ -11066,10 +11066,10 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Kr4ken\\Documents\\Visual Studio 2017\\Projects\\C#\\Dogmeat 2.0\\Dogmeat 2.0.csproj",
+      "projectUniqueName": "D:\\Repos\\Ex-Presidents\\Dogmeat\\Dogmeat 2.0.csproj",
       "projectName": "Dogmeat 2.0",
-      "projectPath": "C:\\Users\\Kr4ken\\Documents\\Visual Studio 2017\\Projects\\C#\\Dogmeat 2.0\\Dogmeat 2.0.csproj",
-      "outputPath": "C:\\Users\\Kr4ken\\Documents\\Visual Studio 2017\\Projects\\C#\\Dogmeat 2.0\\obj\\",
+      "projectPath": "D:\\Repos\\Ex-Presidents\\Dogmeat\\Dogmeat 2.0.csproj",
+      "outputPath": "D:\\Repos\\Ex-Presidents\\Dogmeat\\obj\\",
       "projectStyle": "PackageReference",
       "originalTargetFrameworks": [
         "netcoreapp1.1"

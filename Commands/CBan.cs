@@ -19,7 +19,7 @@ namespace DogMeat.Commands
                 await ReplyAsync("You must be my master to execute this command.");
             else if (Context.Message.MentionedUserIds.Count != 0 && Context.Guild.GetUserAsync(Context.Message.MentionedUserIds.FirstOrDefault()) != null)
             {
-                await Context.Guild.AddBanAsync(Context.Message.MentionedUserIds.FirstOrDefault(), 7); // according to the api, it should prune their past messages from the entire week
+                await Context.Guild.AddBanAsync(Context.Message.MentionedUserIds.FirstOrDefault(), 7);
                 await ReplyAsync(name + " is no more.");
             }
             else if (await Utilities.GetUser(Context.Guild, name) != null)

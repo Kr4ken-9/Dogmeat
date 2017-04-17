@@ -12,6 +12,10 @@ namespace DogMeat
     {
         #region Variables
 
+        public static SocketTextChannel Logging;
+
+        public static SocketTextChannel Commands;
+
         public static DiscordSocketClient Client;
 
         private CommandHandler Handler;
@@ -53,7 +57,8 @@ namespace DogMeat
 
         private async Task OnStart()
         {
-            Utilities.Client = Client;
+            Commands = (SocketTextChannel)Client.GetChannel(297587358063394816);
+            Logging = (SocketTextChannel)Client.GetChannel(297587378804097025);
 
             #region Commands
 
@@ -68,14 +73,14 @@ namespace DogMeat
 
             #region Initiation
 
-            Initiation.CheckServerList();
+            /*Initiation.CheckServerList(); Commented until working
 
             if (Initiation.GetServerList() != null)
                 Initiation.Servers = Initiation.GetServerList();
             else
                 Initiation.Servers = new List<Server>();
 
-            Client.MessageReceived += Initiation.HandleInitiationAsync;
+            Client.MessageReceived += Initiation.HandleInitiationAsync;*/
 
             #endregion Initiation
 
