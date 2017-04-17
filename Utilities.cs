@@ -58,14 +58,34 @@ namespace DogMeat
             return Content.Split(new String[] { "\r\n", "\n" }, StringSplitOptions.None);
         }
 
+        public static async Task<String[]> DogmeatAnswersAsync()
+        {
+            HttpClient Client = new HttpClient();
+            String url = "http://198.245.61.226/kr4ken/dogmeat_answers.txt";
+            HttpResponseMessage Response = await Client.GetAsync(url);
+            string Content = await Response.Content.ReadAsStringAsync();
+            return Content.Split(new String[] { "\r\n", "\n" }, StringSplitOptions.None);
+        }
+
         public static async Task<String> ResponsePickerAsync(String Content)
         {
             String[] Responses = await DogmeatResponsesAsync();
             Random r = new Random();
 
+            if (Content.Contains("MASTER") ||
+                Content.Contains("CREATOR") ||
+                Content.Contains("DEVELOPER"))
+                return "Kr4ken";
+
+            else if (Content.Contains("?"))
+            {
+                String[] Answers = await DogmeatAnswersAsync();
+                return Answers[new Random().Next(0, Answers.Length + 1)];
+            }
+
             #region Mexican
 
-            if (Content.Contains("JUAN") ||
+            else if (Content.Contains("JUAN") ||
                 Content.Contains("MEXICO") ||
                 Content.Contains("MEXICAN") ||
                 Content.Contains("EDUARDO") ||
