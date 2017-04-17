@@ -175,7 +175,7 @@ namespace DogMeat
         public static async Task AccessAsync(SocketMessage e, SocketGuild ManPAD)
         {
             await e.DeleteAsync();
-            await (e.Author as SocketGuildUser).AddRolesAsync(ManPAD.GetRole(272789680821370881));
+            await (e.Author as SocketGuildUser).AddRoleAsync(ManPAD.GetRole(272789680821370881));
             Utilities.Log("Underwent Initiation", ((SocketGuildChannel)e.Channel).Guild, e.Author);
         }
 

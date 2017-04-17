@@ -23,7 +23,7 @@ namespace DogMeat
 
         private static async Task Initiate(SocketMessage Context, Server Server)
         {
-            await ((IGuildUser)Context.Author).AddRolesAsync(Utilities.GetRole(((SocketGuildChannel)Context.Channel).Guild, Server.InitiationRole));
+            await ((IGuildUser)Context.Author).AddRoleAsync(Utilities.GetRole(((SocketGuildChannel)Context.Channel).Guild, Server.InitiationRole));
             await Context.DeleteAsync();
         }
 

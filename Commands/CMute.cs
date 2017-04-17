@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord.Commands;
@@ -25,12 +26,12 @@ namespace DogMeat.Commands
                 IRole muted = Utilities.GetMutedRole((SocketGuild)Context.Guild);
                 if (target.RoleIds.Contains(muted.Id))
                 {
-                    await target.RemoveRolesAsync(muted);
+                    await target.RemoveRoleAsync(muted);
                     await ReplyAsync(target.Username + " is unmuted.");
                 }
                 else
                 {
-                    await target.AddRolesAsync(muted);
+                    await target.AddRoleAsync(muted);
                     await ReplyAsync(target.Username + " is muted.");
                 }
             }
@@ -40,12 +41,12 @@ namespace DogMeat.Commands
                 IRole muted = Utilities.GetMutedRole((SocketGuild)Context.Guild);
                 if (target.RoleIds.Contains(muted.Id))
                 {
-                    await target.RemoveRolesAsync(muted);
+                    await target.RemoveRoleAsync(muted);
                     await ReplyAsync(target.Username + " is unmuted");
                 }
                 else
                 {
-                    await target.AddRolesAsync(muted);
+                    await target.AddRoleAsync(muted);
                     await ReplyAsync(target.Username + " is muted.");
                 }
             }
