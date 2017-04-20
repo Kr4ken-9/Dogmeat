@@ -12,19 +12,9 @@ namespace DogMeat
     {
         #region Variables
 
-        public static SocketTextChannel Logging;
-
-        public static SocketTextChannel Commands;
-
         public static DiscordSocketClient Client;
 
         private CommandHandler Handler;
-
-        private SocketGuild ManPAD;
-
-        private SocketGuild Log;
-
-        public static bool KeepAlive = true;
 
         #endregion Variables
 
@@ -39,7 +29,7 @@ namespace DogMeat
                 if (msg.Channel.Id == 242948289404600321 && msg.Content.ToUpperInvariant() != "MANPAD SOUNDS LIKE A FEMININE CLEANING PRODUCT")
                     await Utilities.WrongChannelAsync(msg);
                 else if (msg.Channel.Id == 242948289404600321 && msg.Content.ToUpperInvariant() == "MANPAD SOUNDS LIKE A FEMININE CLEANING PRODUCT")
-                    await Utilities.AccessAsync(msg, ManPAD);
+                    await Utilities.AccessAsync(msg, (SocketGuild)Vars.ManPAD);
                 else if (msg.Content.ToUpper().Contains("DOGMEAT") && !msg.Author.IsBot)
                     await Utilities.MentionedAsync(msg);
             };
@@ -47,18 +37,17 @@ namespace DogMeat
             await Client.LoginAsync(TokenType.Bot, "");
             await Client.StartAsync();
 
-            await OnStart();
-
-            ManPAD = Client.GetGuild(242946566296436739);
-            Log = Client.GetGuild(272850920059174914);
+            Client.Ready += OnStart;
 
             await Task.Delay(-1);
         }
 
         private async Task OnStart()
         {
-            Commands = (SocketTextChannel)Client.GetChannel(297587358063394816);
-            Logging = (SocketTextChannel)Client.GetChannel(297587378804097025);
+            Vars.ManPAD = Client.GetGuild(242946566296436739);
+            Vars.Main = Client.GetGuild(281249097770598402);
+            Vars.Commands = await Vars.Main.GetChannelAsync(297587358063394816);
+            Vars.Logging = await Vars.Main.GetChannelAsync(297587378804097025);
 
             #region Commands
 
