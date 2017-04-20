@@ -21,6 +21,12 @@ Right now, hoever, you can expect the following:
 
 ---
 
+**Please Note**
+
+The source is personalized. If you use him as a base for your own, you are encouraged to sort through the source and cleanse it of the many things you will not need.
+
+---
+
 **FAQ:**
 
 **Q**: Why are there tokens in the history?
