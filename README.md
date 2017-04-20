@@ -21,6 +21,12 @@ Right now, however, you can expect the following:
 
 ---
 
+**Please Note**
+
+The source is personalized. If you use him as a base for your own, you are encouraged to sort through the source and cleanse it of the many things you will not need.
+
+---
+
 **Blah blah blah (insert stuff here)?**
 
 [Read the FAQ](FAQ), if your question is still unanswered, email me a Kr4kenKT@gmail.com.
