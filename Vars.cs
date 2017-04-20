@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Discord;
+using Discord.WebSocket;
 
 namespace DogMeat
 {
@@ -14,6 +15,8 @@ namespace DogMeat
         public static IGuild ManPAD;
 
         public static IGuild Main;
+
+        public static DiscordSocketClient Client;
 
         public static bool KeepAlive = true;
     }

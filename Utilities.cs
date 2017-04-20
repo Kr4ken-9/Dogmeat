@@ -200,10 +200,10 @@ namespace DogMeat
             while (Vars.KeepAlive)
             {
                 Thread.Sleep(1000);
-                if (Program.Client.ConnectionState == ConnectionState.Disconnected)
+                if (Vars.Client.ConnectionState == ConnectionState.Disconnected)
                 {
-                    Program.Client.LoginAsync(TokenType.Bot, "");
-                    Program.Client.StartAsync();
+                    Vars.Client.LoginAsync(TokenType.Bot, "");
+                    Vars.Client.StartAsync();
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine(DateTime.Now + ": Dogmeat has disconnected and automagically reconnected.");
                     Console.ForegroundColor = ConsoleColor.Gray;
@@ -220,9 +220,9 @@ namespace DogMeat
 
         public static void AwaitInput()
         {
-            Program.Client.MessageReceived += async (msg) =>
+            Vars.Client.MessageReceived += async (msg) =>
             {
-                if (msg.Channel.Id != Vars.Commands.Id || msg.Content.Contains("~") || msg.Author.Id == Program.Client.CurrentUser.Id)
+                if (msg.Channel.Id != Vars.Commands.Id || msg.Content.Contains("~") || msg.Author.Id == Vars.Client.CurrentUser.Id)
                     return;
                 string Input = msg.Content;
                 if (Input == null)
@@ -241,7 +241,7 @@ namespace DogMeat
                         ulong.TryParse(Inputs[1], out ulong Id);
                         String Output = Inputs[2];
 
-                        foreach (SocketGuild Guild in Program.Client.Guilds)
+                        foreach (SocketGuild Guild in Vars.Client.Guilds)
                             foreach (SocketGuildChannel Channel in Guild.Channels)
                                 if (Channel is SocketTextChannel && (Inputs[1] == "all" || Channel.Id == Id))
                                     ((SocketTextChannel)Channel).SendMessageAsync(Output);
@@ -250,7 +250,7 @@ namespace DogMeat
                         ulong.TryParse(Inputs[1], out ulong ID);
                         String output = Inputs[2];
 
-                        foreach (SocketGuild Guild in Program.Client.Guilds)
+                        foreach (SocketGuild Guild in Vars.Client.Guilds)
                             foreach (SocketGuildChannel Channel in Guild.Channels)
                                 if (Channel is SocketTextChannel && Channel.Id == ID)
                                     ((SocketTextChannel)Channel).SendMessageAsync(output);
@@ -314,7 +314,7 @@ namespace DogMeat
         private static void Disconnect()
         {
             Vars.KeepAlive = false;
-            Program.Client.StopAsync();
+            Vars.Client.StopAsync();
             Log("Dogmeat disconnected.", ConsoleColor.Red);
         }
 

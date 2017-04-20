@@ -12,8 +12,6 @@ namespace DogMeat
     {
         #region Variables
 
-        public static DiscordSocketClient Client;
-
         private CommandHandler Handler;
 
         #endregion Variables
@@ -22,9 +20,9 @@ namespace DogMeat
 
         public async Task RunAsync()
         {
-            Client = new DiscordSocketClient();
+            Vars.Client = new DiscordSocketClient();
 
-            Client.MessageReceived += async (msg) =>
+            Vars.Client.MessageReceived += async (msg) =>
             {
                 if (msg.Channel.Id == 242948289404600321 && msg.Content.ToUpperInvariant() != "MANPAD SOUNDS LIKE A FEMININE CLEANING PRODUCT")
                     await Utilities.WrongChannelAsync(msg);
@@ -34,25 +32,25 @@ namespace DogMeat
                     await Utilities.MentionedAsync(msg);
             };
 
-            await Client.LoginAsync(TokenType.Bot, "");
-            await Client.StartAsync();
+            await Vars.Client.LoginAsync(TokenType.Bot, "");
+            await Vars.Client.StartAsync();
 
-            Client.Ready += OnStart;
+            Vars.Client.Ready += OnStart;
 
             await Task.Delay(-1);
         }
 
         private async Task OnStart()
         {
-            Vars.ManPAD = Client.GetGuild(242946566296436739);
-            Vars.Main = Client.GetGuild(281249097770598402);
+            Vars.ManPAD = Vars.Client.GetGuild(242946566296436739);
+            Vars.Main = Vars.Client.GetGuild(281249097770598402);
             Vars.Commands = await Vars.Main.GetChannelAsync(297587358063394816);
             Vars.Logging = await Vars.Main.GetChannelAsync(297587378804097025);
 
             #region Commands
 
             DependencyMap Map = new DependencyMap();
-            Map.Add(Client);
+            Map.Add(Vars.Client);
 
             Handler = new CommandHandler();
 
