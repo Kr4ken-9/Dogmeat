@@ -3,6 +3,16 @@ Release notes for different versions of Dogmeat
 
 ---
 
+**2.1.10**
+
+4/28/17
+- Working commands system
+- Better variable management
+- Purge command
+- Auto restarts
+
+---
+
 **2.1.9**
 
 4/17/17
