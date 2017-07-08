@@ -10,7 +10,7 @@ namespace DogMeat.Commands
         [Command("help"), Summary("Dogmeat is a free spirit, and only responds to exact circumstances.")]
         public async Task HelpAsync()
         {
-            var DMChannel = await Context.User.CreateDMChannelAsync();
+            var DMChannel = await Context.User.GetOrCreateDMChannelAsync();
             await DMChannel.SendMessageAsync("As of " + System.Reflection.Assembly.GetEntryAssembly().GetName().Version + " my commands include: " +
                 "```~Ban - name/id\r\n" +
                 "~Softban - name/id\r\n" +
@@ -19,7 +19,6 @@ namespace DogMeat.Commands
                 "~Help - No input\r\n" +
                 "~Lenny - No input\r\n" +
                 "~Mute - name/id\r\n" +
-                "~8Ball - No input\r\n" +
                 "~Meme - No input```\r\n" +
                 "To execute administrative commands, you must first be in a role named 'Master'.\r\n" +
                 "If I have no master, I will not execute administrative commands.\r\n" +

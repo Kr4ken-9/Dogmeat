@@ -11,32 +11,26 @@ namespace DogMeat
 {
     public class CommandHandler
     {
-        private CommandService Commands;
-        private DiscordSocketClient Client;
-        private IDependencyMap Map;
-
-        public async Task Initialize(IDependencyMap map)
+        public static async Task Initialize()
         {
-            Client = map.Get<DiscordSocketClient>();
-            Commands = new CommandService();
-            Map = map;
+            await Vars.CService.AddModulesAsync(System.Reflection.Assembly.GetEntryAssembly());
 
-            await Commands.AddModulesAsync(System.Reflection.Assembly.GetEntryAssembly());
-
-            Client.MessageReceived += HandleCommand;
+            Vars.Client.MessageReceived += HandleCommand;
         }
 
-        public async Task HandleCommand(SocketMessage CommandParameter)
+        public static async Task HandleCommand(SocketMessage CommandParameter)
         {
             SocketUserMessage Message = CommandParameter as SocketUserMessage;
 
+            if (Message == null) return;
+
             int argPos = 0;
 
-            if (!(Message.HasMentionPrefix(Client.CurrentUser, ref argPos) || Message.HasCharPrefix('~', ref argPos)) || Message.HasStringPrefix("~~", ref argPos)) return;
+            if (!(Message.HasMentionPrefix(Vars.Client.CurrentUser, ref argPos) || Message.HasCharPrefix('~', ref argPos)) || Message.HasStringPrefix("~~", ref argPos)) return;
 
-            CommandContext Context = new CommandContext(Client, Message);
+            CommandContext Context = new CommandContext(Vars.Client, Message);
 
-            IResult Result = await Commands.ExecuteAsync(Context, argPos, Map);
+            IResult Result = await Vars.CService.ExecuteAsync(Context, argPos);
 
             if (!Result.IsSuccess)
                 await Message.Channel.SendMessageAsync($"**Error:** {Result.ErrorReason}");

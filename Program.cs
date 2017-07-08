@@ -5,35 +5,23 @@ using System.Collections.Generic;
 using Discord;
 using Discord.WebSocket;
 using Discord.Commands;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace DogMeat
 {
     class Program
     {
-        #region Variables
-
-        private CommandHandler Handler;
-
-        #endregion Variables
-
         static void Main(string[] args) => new Program().RunAsync().GetAwaiter().GetResult();
 
         public async Task RunAsync()
         {
             Vars.Client = new DiscordSocketClient();
+            Vars.CService = new CommandService();
 
-            Vars.Client.MessageReceived += async (msg) =>
-            {
-                if (msg.Channel.Id == 242948289404600321 && msg.Content.ToUpperInvariant() != "MANPAD SOUNDS LIKE A FEMININE CLEANING PRODUCT")
-                    await Utilities.WrongChannelAsync(msg);
-                else if (msg.Channel.Id == 242948289404600321 && msg.Content.ToUpperInvariant() == "MANPAD SOUNDS LIKE A FEMININE CLEANING PRODUCT")
-                    await Utilities.AccessAsync(msg, (SocketGuild)Vars.ManPAD);
-                else if (msg.Content.ToUpper().Contains("DOGMEAT") && !msg.Author.IsBot)
-                    await Utilities.MentionedAsync(msg);
-            };
-
-            await Vars.Client.LoginAsync(TokenType.Bot, "");
+            await Vars.Client.LoginAsync(TokenType.Bot, Vars.Token);
             await Vars.Client.StartAsync();
+
+            Vars.ISProvider = new ServiceCollection().BuildServiceProvider();
 
             Vars.Client.Ready += OnStart;
 
@@ -42,37 +30,27 @@ namespace DogMeat
 
         private async Task OnStart()
         {
-            Vars.ManPAD = Vars.Client.GetGuild(242946566296436739);
+            Vars.PointBlank = Vars.Client.GetGuild(332435336921612299);
             Vars.Main = Vars.Client.GetGuild(281249097770598402);
             Vars.Commands = await Vars.Main.GetChannelAsync(297587358063394816);
             Vars.Logging = await Vars.Main.GetChannelAsync(297587378804097025);
 
-            #region Commands
+            CommandHandler.Initialize();
 
-            DependencyMap Map = new DependencyMap();
-            Map.Add(Vars.Client);
+            Vars.Client.MessageReceived += async (msg) =>
+            {
+                if (msg.Channel.Id == 333334079921455105)
+                {
+                    if (StringComparer.OrdinalIgnoreCase.Compare(msg.Content, "Klaatu barada nikto") == 0)
+                        await Utilities.AccessAsync(msg);
+                    else
+                        await Utilities.WrongChannelAsync(msg);
+                }
+                else if (StringComparer.OrdinalIgnoreCase.Compare(msg.Content, "Dogmeat") == 0 && !msg.Author.IsBot)
+                    await Utilities.MentionedAsync(msg);
+            };
 
-            Handler = new CommandHandler();
-
-            await Handler.Initialize(Map);
-
-            #endregion Commands
-
-            #region Initiation
-
-            /*Initiation.CheckServerList(); Commented until working
-
-            if (Initiation.GetServerList() != null)
-                Initiation.Servers = Initiation.GetServerList();
-            else
-                Initiation.Servers = new List<Server>();
-
-            Client.MessageReceived += Initiation.HandleInitiationAsync;*/
-
-            #endregion Initiation
-
-            Thread Connection = new Thread(() => Utilities.MaintainConnection());
-            Connection.Start();
+            new Thread(() => Utilities.MaintainConnection()).Start();
 
             Utilities.AwaitInput();
         }

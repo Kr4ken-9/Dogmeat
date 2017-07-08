@@ -5,24 +5,25 @@
     <OutputTypeEx>exe</OutputTypeEx>
     <RuntimeIdentifier>win81-x64</RuntimeIdentifier>
     <WarningLevel>0</WarningLevel>
-    <AssemblyVersion>2.1.9.0</AssemblyVersion>
-    <FileVersion>2.1.9.0</FileVersion>
+    <AssemblyVersion>2.1.11.0</AssemblyVersion>
+    <FileVersion>2.1.11.0</FileVersion>
     <PackageReleaseNotes>
     </PackageReleaseNotes>
     <Company>Kr4ken</Company>
     <RootNamespace>DogMeat</RootNamespace>
-    <Description>2.1.9 Release Notes:
-4/17/17
-- 8Balls
-- Answers</Description>
+    <Description>2.1.11 Release Notes:
+7/8/17
+- Overdue Library Updates
+- Removed 8Ball
+- Revamped command system</Description>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="License.md" />
     <None Remove="README.md" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Discord.Net.Commands" Version="1.0.0-rc2-00701" />
-    <PackageReference Include="Discord.Net.WebSocket" Version="1.0.0-rc2-00701" />
-    <PackageReference Include="Newtonsoft.Json" Version="10.0.2" />
+    <PackageReference Include="Discord.Net.Commands" Version="1.0.1" />
+    <PackageReference Include="Discord.Net.WebSocket" Version="1.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
   </ItemGroup>
 </Project>

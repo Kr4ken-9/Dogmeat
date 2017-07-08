@@ -75,7 +75,7 @@ namespace DogMeat
             if (Content.Contains("MASTER") ||
                 Content.Contains("CREATOR") ||
                 Content.Contains("DEVELOPER"))
-                return "Kr4ken";
+                return "*I am reluctantly groomed by that faggot Kr4ken*";
 
             else if (Content.Contains("?"))
             {
@@ -172,24 +172,24 @@ namespace DogMeat
 
         #region Functions
 
-        public static async Task AccessAsync(SocketMessage e, SocketGuild ManPAD)
+        public static async Task AccessAsync(SocketMessage e)
         {
-            await e.DeleteAsync();
-            await (e.Author as SocketGuildUser).AddRoleAsync(ManPAD.GetRole(272789680821370881));
+            (e.Author as SocketGuildUser).AddRoleAsync(Vars.PointBlank.GetRole(333334103858348033));
+            e.DeleteAsync();
             Utilities.Log("Underwent Initiation", ((SocketGuildChannel)e.Channel).Guild, e.Author);
         }
 
         public static async Task WrongChannelAsync(SocketMessage e)
         {
-            await e.DeleteAsync();
-            Discord.Rest.RestDMChannel channel = await e.Author.CreateDMChannelAsync();
-            await channel.SendMessageAsync("You are not permitted to chat in that channel.");
+            var channel = await e.Author.GetOrCreateDMChannelAsync();
+            channel.SendMessageAsync("You are not permitted to chat in that channel.");
+            e.DeleteAsync();
             Utilities.Log("Attempted to chat in a restricted channel.", ((SocketGuildChannel)e.Channel).Guild, e.Author);
         }
 
         public static async Task MentionedAsync(SocketMessage e)
         {
-            await e.Channel.SendMessageAsync(await Utilities.ResponsePickerAsync(e.Content.ToUpper()));
+            e.Channel.SendMessageAsync(await Utilities.ResponsePickerAsync(e.Content.ToUpper()));
             Utilities.Log("Mentioned me.", ((SocketGuildChannel)e.Channel).Guild, e.Author);
         }
 
@@ -202,7 +202,7 @@ namespace DogMeat
                 Thread.Sleep(1000);
                 if (Vars.Client.ConnectionState == ConnectionState.Disconnected)
                 {
-                    Vars.Client.LoginAsync(TokenType.Bot, "");
+                    Vars.Client.LoginAsync(TokenType.Bot, Vars.Token);
                     Vars.Client.StartAsync();
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine(DateTime.Now + ": Dogmeat has disconnected and automagically reconnected.");
@@ -238,14 +238,6 @@ namespace DogMeat
                 switch (Inputs[0].ToUpperInvariant())
                 {
                     case "ANNOUNCE":
-                        ulong.TryParse(Inputs[1], out ulong Id);
-                        String Output = Inputs[2];
-
-                        foreach (SocketGuild Guild in Vars.Client.Guilds)
-                            foreach (SocketGuildChannel Channel in Guild.Channels)
-                                if (Channel is SocketTextChannel && (Inputs[1] == "all" || Channel.Id == Id))
-                                    ((SocketTextChannel)Channel).SendMessageAsync(Output);
-                        break;
                     case "SAY":
                         ulong.TryParse(Inputs[1], out ulong ID);
                         String output = Inputs[2];
@@ -256,11 +248,7 @@ namespace DogMeat
                                     ((SocketTextChannel)Channel).SendMessageAsync(output);
                         break;
                     case "SHUTDOWN":
-                        Shutdown();
-                        break;
                     case "QUIT":
-                        Shutdown();
-                        break;
                     case "EXIT":
                         Shutdown();
                         break;
@@ -306,7 +294,6 @@ namespace DogMeat
                 Thread.Sleep(1000);
                 if (!ContinueShutdown) return;
                 Disconnect();
-                //Initiation.SaveServerList(); Commented until working
                 Environment.Exit(0);
             }).Start();
         }
