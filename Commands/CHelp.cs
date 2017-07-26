@@ -1,7 +1,5 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Discord.Commands;
-using Discord.WebSocket;
 
 namespace DogMeat.Commands
 {
@@ -22,7 +20,7 @@ namespace DogMeat.Commands
                 "~Meme - No input```\r\n" +
                 "To execute administrative commands, you must first be in a role named 'Master'.\r\n" +
                 "If I have no master, I will not execute administrative commands.\r\n" +
-                "To execute the muted role, a role named 'Muted' must be available. This role must not have permission to type. (In the future I may automate this process).");
+                "To execute the mute command, a role named 'Muted' must be available. This role must not have permission to type. (In the future I may automate this process).");
         }
     }
 }

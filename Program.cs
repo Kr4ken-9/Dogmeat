@@ -1,7 +1,6 @@
-﻿using System;
+﻿using System.Resources;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using Discord;
 using Discord.WebSocket;
 using Discord.Commands;
@@ -35,24 +34,22 @@ namespace DogMeat
             Vars.Commands = await Vars.Main.GetChannelAsync(297587358063394816);
             Vars.Logging = await Vars.Main.GetChannelAsync(297587378804097025);
 
-            CommandHandler.Initialize();
+            MessageHandler.InitializeCommandHandler();
 
-            Vars.Client.MessageReceived += async (msg) =>
-            {
-                if (msg.Channel.Id == 333334079921455105)
-                {
-                    if (StringComparer.OrdinalIgnoreCase.Compare(msg.Content, "Klaatu barada nikto") == 0)
-                        await Utilities.AccessAsync(msg);
-                    else
-                        await Utilities.WrongChannelAsync(msg);
-                }
-                else if (StringComparer.OrdinalIgnoreCase.Compare(msg.Content, "Dogmeat") == 0 && !msg.Author.IsBot)
-                    await Utilities.MentionedAsync(msg);
-            };
+            MessageHandler.InitializeGeneralHandler();
 
-            new Thread(() => Utilities.MaintainConnection()).Start();
+            MessageHandler.InitializeOwnerCommandsHandler();
+            
+            #region Continous Tasks
+            
+            CancellationTokenSource Token = new CancellationTokenSource();
+            
+            new Task(() => Utilities.MaintainConnection(), Token.Token, TaskCreationOptions.LongRunning).Start();
 
-            Utilities.AwaitInput();
+            new Task(() => Utilities.UpdateVars(), Token.Token, TaskCreationOptions.LongRunning).Start();
+            
+            #endregion
         }
+
     }
 }

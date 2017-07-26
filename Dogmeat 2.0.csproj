@@ -5,17 +5,17 @@
     <OutputTypeEx>exe</OutputTypeEx>
     <RuntimeIdentifier>win81-x64</RuntimeIdentifier>
     <WarningLevel>0</WarningLevel>
-    <AssemblyVersion>2.1.11.0</AssemblyVersion>
-    <FileVersion>2.1.11.0</FileVersion>
+    <AssemblyVersion>2.1.12.0</AssemblyVersion>
+    <FileVersion>2.1.12.0</FileVersion>
     <PackageReleaseNotes>
     </PackageReleaseNotes>
     <Company>Kr4ken</Company>
     <RootNamespace>DogMeat</RootNamespace>
-    <Description>2.1.11 Release Notes:
-7/8/17
-- Overdue Library Updates
-- Removed 8Ball
-- Revamped command system</Description>
+    <Description>2.1.12 Release Notes:
+7/21/17
+- .NET Core 2
+- Organization
+- Broken announcements</Description>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="License.md" />
@@ -24,6 +24,7 @@
   <ItemGroup>
     <PackageReference Include="Discord.Net.Commands" Version="1.0.1" />
     <PackageReference Include="Discord.Net.WebSocket" Version="1.0.1" />
+    <PackageReference Include="Microsoft.NETCore.App" Version="2.0.0-preview2-25407-01" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
   </ItemGroup>
 </Project>

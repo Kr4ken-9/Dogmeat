@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Net.Http;
-using System.Text;
 using Discord;
 using Discord.WebSocket;
 
@@ -14,30 +13,34 @@ namespace DogMeat
     {
         #region Variables
 
-        private static bool ContinueShutdown;
+        public static bool ContinueShutdown;
 
         public static IRole GetMasterRole(SocketGuild Guild)
         {
-            foreach (SocketRole Role in Guild.Roles)
-                if (Role.Name == "Master")
-                    return Role;
-            return null;
+            SocketRole Role = Guild.Roles.FirstOrDefault(role => role.Name == "Master");
+            
+            return Role ?? null;
         }
 
         public static IRole GetMutedRole(SocketGuild Guild)
         {
-            foreach (SocketRole Role in Guild.Roles)
-                if (Role.Name == "Muted")
-                    return Role;
-            return null;
+            SocketRole Role = Guild.Roles.FirstOrDefault(role => role.Name == "Muted");
+
+            return Role ?? null;
         }
 
         public static IRole GetRole(SocketGuild Guild, ulong ID)
         {
-            foreach (SocketRole Role in Guild.Roles)
-                if (Role.Id == ID)
-                    return Role;
-            return null;
+            SocketRole Role = Guild.Roles.FirstOrDefault(role => role.Id == ID);
+
+            return Role ?? null;
+        }
+
+        public static IRole GetRole(SocketGuild Guild, String Name)
+        {
+            SocketRole Role = Guild.Roles.FirstOrDefault(role => role.Name == Name);
+
+            return Role ?? null;
         }
 
         private static async Task<String[]> DogmeatResponsesAsync()
@@ -69,7 +72,7 @@ namespace DogMeat
 
         public static async Task<String> ResponsePickerAsync(String Content)
         {
-            String[] Responses = await DogmeatResponsesAsync();
+            String[] Responses = Vars.Responses;
             Random r = new Random();
 
             if (Content.Contains("MASTER") ||
@@ -79,7 +82,7 @@ namespace DogMeat
 
             else if (Content.Contains("?"))
             {
-                String[] Answers = await DogmeatAnswersAsync();
+                String[] Answers = Vars.Answers;
                 return Answers[new Random().Next(0, Answers.Length)];
             }
 
@@ -170,141 +173,6 @@ namespace DogMeat
 
         #endregion Variables
 
-        #region Functions
-
-        public static async Task AccessAsync(SocketMessage e)
-        {
-            (e.Author as SocketGuildUser).AddRoleAsync(Vars.PointBlank.GetRole(333334103858348033));
-            e.DeleteAsync();
-            Utilities.Log("Underwent Initiation", ((SocketGuildChannel)e.Channel).Guild, e.Author);
-        }
-
-        public static async Task WrongChannelAsync(SocketMessage e)
-        {
-            var channel = await e.Author.GetOrCreateDMChannelAsync();
-            channel.SendMessageAsync("You are not permitted to chat in that channel.");
-            e.DeleteAsync();
-            Utilities.Log("Attempted to chat in a restricted channel.", ((SocketGuildChannel)e.Channel).Guild, e.Author);
-        }
-
-        public static async Task MentionedAsync(SocketMessage e)
-        {
-            e.Channel.SendMessageAsync(await Utilities.ResponsePickerAsync(e.Content.ToUpper()));
-            Utilities.Log("Mentioned me.", ((SocketGuildChannel)e.Channel).Guild, e.Author);
-        }
-
-        #endregion Functions
-
-        public static void MaintainConnection()
-        {
-            while (Vars.KeepAlive)
-            {
-                Thread.Sleep(1000);
-                if (Vars.Client.ConnectionState == ConnectionState.Disconnected)
-                {
-                    Vars.Client.LoginAsync(TokenType.Bot, Vars.Token);
-                    Vars.Client.StartAsync();
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine(DateTime.Now + ": Dogmeat has disconnected and automagically reconnected.");
-                    Console.ForegroundColor = ConsoleColor.Gray;
-                }
-                else
-                {
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine(DateTime.Now + ": Client still connected.");
-                    Console.ForegroundColor = ConsoleColor.Gray;
-                }
-                Thread.Sleep(3599000);
-            }
-        }
-
-        public static void AwaitInput()
-        {
-            Vars.Client.MessageReceived += async (msg) =>
-            {
-                if (msg.Channel.Id != Vars.Commands.Id || msg.Content.Contains("~") || msg.Author.Id == Vars.Client.CurrentUser.Id)
-                    return;
-                string Input = msg.Content;
-                if (Input == null)
-                    return;
-                String[] Inputs = Input.Split('"')
-                     .Select((element, index) => index % 2 == 0
-                                           ? element.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
-                                           : new string[] { element })
-                     .SelectMany(element => element).ToArray();
-
-                Log("Issued command " + Inputs[0], Vars.Main as SocketGuild, msg.Author);
-
-                switch (Inputs[0].ToUpperInvariant())
-                {
-                    case "ANNOUNCE":
-                    case "SAY":
-                        ulong.TryParse(Inputs[1], out ulong ID);
-                        String output = Inputs[2];
-
-                        foreach (SocketGuild Guild in Vars.Client.Guilds)
-                            foreach (SocketGuildChannel Channel in Guild.Channels)
-                                if (Channel is SocketTextChannel && Channel.Id == ID)
-                                    ((SocketTextChannel)Channel).SendMessageAsync(output);
-                        break;
-                    case "SHUTDOWN":
-                    case "QUIT":
-                    case "EXIT":
-                        Shutdown();
-                        break;
-                    case "DISCONNECT":
-                        Disconnect();
-                        break;
-                    case "RECONNECT":
-                        Vars.KeepAlive = true;
-                        Log("Dogmeat was revived.", ConsoleColor.Green);
-                        break;
-                    case "CANCEL":
-                        Log("Shutdown canceled", ConsoleColor.Green);
-                        ContinueShutdown = false;
-                        break;
-                    default:
-                        Log("That is not a command.", ConsoleColor.Red);
-                        break;
-                }
-            };
-        }
-
-        private static void Shutdown()
-        {
-            Vars.KeepAlive = false;
-            ContinueShutdown = true;
-            Log("Client is shutting down in five seconds.", ConsoleColor.Red);
-            new Thread(() =>
-            {
-                if (!ContinueShutdown) return;
-                Log("5", ConsoleColor.Red);
-                Thread.Sleep(1000);
-                if (!ContinueShutdown) return;
-                Log("4", ConsoleColor.Red);
-                Thread.Sleep(1000);
-                if (!ContinueShutdown) return;
-                Log("3", ConsoleColor.Red);
-                Thread.Sleep(1000);
-                if (!ContinueShutdown) return;
-                Log("2", ConsoleColor.Red);
-                Thread.Sleep(1000);
-                if (!ContinueShutdown) return;
-                Log("1", ConsoleColor.Red);
-                Thread.Sleep(1000);
-                if (!ContinueShutdown) return;
-                Disconnect();
-                Environment.Exit(0);
-            }).Start();
-        }
-
-        private static void Disconnect()
-        {
-            Vars.KeepAlive = false;
-            Vars.Client.StopAsync();
-            Log("Dogmeat disconnected.", ConsoleColor.Red);
-        }
-
         #region Logging
 
         public static void Log(String Message)
@@ -371,5 +239,81 @@ namespace DogMeat
         }
 
         #endregion Users
+        
+        #region Connection
+
+        public static async Task MaintainConnection()
+        {
+            while (Vars.KeepAlive)
+            {
+                if (Vars.Client.ConnectionState == ConnectionState.Disconnected)
+                {
+                    Vars.Client.LoginAsync(TokenType.Bot, Vars.Token);
+                    Vars.Client.StartAsync();
+
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine(DateTime.Now + ": Dogmeat has disconnected and automagically reconnected.");
+                    Console.ForegroundColor = ConsoleColor.Gray;
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine(DateTime.Now + ": Client still connected.");
+                    Console.ForegroundColor = ConsoleColor.Gray;
+                }
+                Thread.Sleep(3600000);
+            }
+            Task.Delay(-1);
+        }
+
+        public static void Shutdown()
+        {
+            Vars.KeepAlive = false;
+            ContinueShutdown = true;
+            Log("Client is shutting down in five seconds.", ConsoleColor.Red);
+            new Thread(() =>
+            {
+                if (!ContinueShutdown) return;
+                Log("5", ConsoleColor.Red);
+                Thread.Sleep(1000);
+                if (!ContinueShutdown) return;
+                Log("4", ConsoleColor.Red);
+                Thread.Sleep(1000);
+                if (!ContinueShutdown) return;
+                Log("3", ConsoleColor.Red);
+                Thread.Sleep(1000);
+                if (!ContinueShutdown) return;
+                Log("2", ConsoleColor.Red);
+                Thread.Sleep(1000);
+                if (!ContinueShutdown) return;
+                Log("1", ConsoleColor.Red);
+                Thread.Sleep(1000);
+                if (!ContinueShutdown) return;
+                Disconnect();
+                Environment.Exit(0);
+            }).Start();
+        }
+
+        public static void Disconnect()
+        {
+            Vars.KeepAlive = false;
+            Vars.Client.StopAsync();
+            Log("Dogmeat disconnected.", ConsoleColor.Red);
+        }
+        
+        #endregion
+
+        public static async Task UpdateVars()
+        {
+            while (Vars.KeepAlive)
+            {
+                Vars.Answers = DogmeatAnswersAsync().Result;
+                Vars.Memes = DogmeatMemesAsync().Result;
+                Vars.Responses = DogmeatResponsesAsync().Result;
+                Log("Variables Updated");
+                Thread.Sleep(600000);
+            }
+            Task.Delay(-1);
+        }
     }
 }

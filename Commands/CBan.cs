@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Discord.Commands;
 using Discord.WebSocket;
-using DogMeat;
 
 namespace DogMeat.Commands
 {

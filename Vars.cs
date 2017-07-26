@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Discord;
 using Discord.WebSocket;
 using Discord.Commands;
@@ -23,10 +21,14 @@ namespace DogMeat
 
         public static bool KeepAlive = true;
 
-        public static CommandHandler CHandler;
-
         public static CommandService CService;
 
         public static IServiceProvider ISProvider;
+
+        public static String[] Responses;
+
+        public static String[] Memes;
+
+        public static String[] Answers;
     }
 }
