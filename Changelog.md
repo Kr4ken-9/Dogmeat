@@ -3,6 +3,17 @@ Release notes for different versions of Dogmeat
 
 ---
 
+**2.1.12**
+
+7/21/17
+- .NET Core 2
+- Organization
+- Broken announcements
+
+(2.1.11 was just some unfinished changes)
+
+---
+
 **2.1.10**
 
 4/28/17
