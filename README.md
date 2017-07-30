@@ -41,4 +41,4 @@ The source is personalized. If you use him as a base for your own, you are encou
 
 **Credits**
 
-Thank you [https://github.com/Bond-009/](Bond-009) for your example integration of [https://github.com/babelshift/SteamWebAPI2](SteamWebAPI2) which can be found [https://github.com/Bond-009/iTool.DiscordBot](here).
+Thank you [Bond-009](https://github.com/Bond-009/) for your example integration of [SteamWebAPI2](https://github.com/babelshift/SteamWebAPI2) which can be found [here](https://github.com/Bond-009/iTool.DiscordBot).
