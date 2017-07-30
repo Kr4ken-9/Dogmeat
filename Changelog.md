@@ -3,6 +3,16 @@ Release notes for different versions of Dogmeat
 
 ---
 
+**2.2.0.0**
+
+7/30/17
+- .NET Core 1.1
+- Readability, Safer Httpclients
+- Steam functionality (More to come)
+- Ease of use
+
+---
+
 **2.1.12**
 
 7/21/17
