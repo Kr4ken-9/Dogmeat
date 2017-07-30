@@ -15,58 +15,47 @@ namespace DogMeat
 
         public static bool ContinueShutdown;
 
-        public static IRole GetMasterRole(SocketGuild Guild)
-        {
-            SocketRole Role = Guild.Roles.FirstOrDefault(role => role.Name == "Master");
-            
-            return Role ?? null;
-        }
+        public static IRole GetMasterRole(SocketGuild Guild) => Guild.Roles.FirstOrDefault(role => role.Name == "Master");
 
-        public static IRole GetMutedRole(SocketGuild Guild)
-        {
-            SocketRole Role = Guild.Roles.FirstOrDefault(role => role.Name == "Muted");
+        public static IRole GetMutedRole(SocketGuild Guild) => Guild.Roles.FirstOrDefault(role => role.Name == "Muted");
 
-            return Role ?? null;
-        }
+        public static IRole GetRole(SocketGuild Guild, ulong ID) => Guild.Roles.FirstOrDefault(role => role.Id == ID);
 
-        public static IRole GetRole(SocketGuild Guild, ulong ID)
-        {
-            SocketRole Role = Guild.Roles.FirstOrDefault(role => role.Id == ID);
-
-            return Role ?? null;
-        }
-
-        public static IRole GetRole(SocketGuild Guild, String Name)
-        {
-            SocketRole Role = Guild.Roles.FirstOrDefault(role => role.Name == Name);
-
-            return Role ?? null;
-        }
+        public static IRole GetRole(SocketGuild Guild, String Name) => Guild.Roles.FirstOrDefault(role => role.Name == Name);
 
         private static async Task<String[]> DogmeatResponsesAsync()
         {
-            HttpClient Client = new HttpClient();
-            String url = "http://198.245.61.226/kr4ken/dogmeat_replies.txt";
-            HttpResponseMessage Response = await Client.GetAsync(url);
-            string Content = await Response.Content.ReadAsStringAsync();
+            string Content = "";
+            using (HttpClient Client = new HttpClient())
+            {
+                HttpResponseMessage Response = await Client.GetAsync("http://198.245.61.226/kr4ken/dogmeat_replies.txt");
+                Content = await Response.Content.ReadAsStringAsync();
+            }
+            
             return Content.Split(new String[] { "\r\n", "\n" }, StringSplitOptions.None);
         }
 
         public static async Task<String[]> DogmeatMemesAsync()
         {
-            HttpClient Client = new HttpClient();
-            String url = "http://198.245.61.226/kr4ken/dogmeat_memes.txt";
-            HttpResponseMessage Response = await Client.GetAsync(url);
-            string Content = await Response.Content.ReadAsStringAsync();
+            string Content = "";
+            using (HttpClient Client = new HttpClient())
+            {
+                HttpResponseMessage Response = await Client.GetAsync("http://198.245.61.226/kr4ken/dogmeat_memes.txt");
+                Content = await Response.Content.ReadAsStringAsync();
+            }
+            
             return Content.Split(new String[] { "\r\n", "\n" }, StringSplitOptions.None);
         }
 
         public static async Task<String[]> DogmeatAnswersAsync()
         {
-            HttpClient Client = new HttpClient();
-            String url = "http://198.245.61.226/kr4ken/dogmeat_answers.txt";
-            HttpResponseMessage Response = await Client.GetAsync(url);
-            string Content = await Response.Content.ReadAsStringAsync();
+            string Content = "";
+            using (HttpClient Client = new HttpClient())
+            {
+                HttpResponseMessage Response = await Client.GetAsync("http://198.245.61.226/kr4ken/dogmeat_answers.txt");
+                Content = await Response.Content.ReadAsStringAsync();
+            }
+            
             return Content.Split(new String[] { "\r\n", "\n" }, StringSplitOptions.None);
         }
 
@@ -175,10 +164,7 @@ namespace DogMeat
 
         #region Logging
 
-        public static void Log(String Message)
-        {
-            Log(Message, ConsoleColor.Gray);
-        }
+        public static void Log(String Message) => Log(Message, ConsoleColor.Gray);
 
         public static void Log(String Message, ConsoleColor Color)
         {
@@ -188,10 +174,7 @@ namespace DogMeat
             ((SocketTextChannel)Vars.Logging).SendMessageAsync(DateTime.Now + ": " + Message);
         }
 
-        public static void Log(String Message, SocketGuild Guild, SocketUser User)
-        {
-            Log(Message, ConsoleColor.Gray, Guild, User);
-        }
+        public static void Log(String Message, SocketGuild Guild, SocketUser User) => Log(Message, ConsoleColor.Gray, Guild, User);
 
         public static void Log(String Message, ConsoleColor Color, SocketGuild Guild, SocketUser User)
         {
@@ -205,38 +188,19 @@ namespace DogMeat
 
         #region Users
 
-        private static async Task<IGuildUser> GetUserByName(IGuild Guild, String Name)
-        {
-            IReadOnlyCollection<IGuildUser> users = await Guild.GetUsersAsync();
-            foreach (IGuildUser user in users)
-            {
-                if (user.Username.Contains(Name))
-                    return user;
-                else if (user.Nickname != null && user.Nickname.Contains(Name))
-                    return user;
-            }
-            return null;
-        }
+        private static async Task<IGuildUser> GetUserByName(IGuild Guild, String Name) =>
+            (await Guild.GetUsersAsync()).FirstOrDefault(user => user.Nickname.Contains(Name) || user.Username.Contains(Name));
 
         private static async Task<IGuildUser> GetUserByID(IGuild Guild, String ID)
         {
-            if (ulong.TryParse(ID, out ulong result))
-                if (await Guild.GetUserAsync(result) != null)
-                    return await Guild.GetUserAsync(result);
-            return null;
+            if (!ulong.TryParse(ID, out ulong Id))
+                return null;
+
+            return await Guild.GetUserAsync(Id);
         }
 
-        public static async Task<IGuildUser> GetUser(IGuild Guild, String Input)
-        {
-            IGuildUser nameResult = await GetUserByName(Guild, Input);
-            IGuildUser IDResult = await GetUserByID(Guild, Input);
-            if (nameResult != null)
-                return nameResult;
-            else if (IDResult != null)
-                return IDResult;
-            else
-                return null;
-        }
+        public static async Task<IGuildUser> GetUser(IGuild Guild, String Input) =>
+            await GetUserByName(Guild, Input) ?? await GetUserByName(Guild, Input);
 
         #endregion Users
         

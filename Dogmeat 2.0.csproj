@@ -5,17 +5,18 @@
     <OutputTypeEx>exe</OutputTypeEx>
     <RuntimeIdentifier>win81-x64</RuntimeIdentifier>
     <WarningLevel>0</WarningLevel>
-    <AssemblyVersion>2.1.12.0</AssemblyVersion>
-    <FileVersion>2.1.12.0</FileVersion>
+    <AssemblyVersion>2.2.0.0</AssemblyVersion>
+    <FileVersion>2.2.0.0</FileVersion>
     <PackageReleaseNotes>
     </PackageReleaseNotes>
     <Company>Kr4ken</Company>
     <RootNamespace>DogMeat</RootNamespace>
-    <Description>2.1.12 Release Notes:
-7/21/17
-- .NET Core 2
-- Organization
-- Broken announcements</Description>
+    <Description>2.2 Release Notes:
+7/30/17
+- .NET Core 1.1
+- Readability, Safer Httpclients
+- Steam functionality (More to come)
+- Ease of use</Description>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="License.md" />
@@ -24,7 +25,7 @@
   <ItemGroup>
     <PackageReference Include="Discord.Net.Commands" Version="1.0.1" />
     <PackageReference Include="Discord.Net.WebSocket" Version="1.0.1" />
-    <PackageReference Include="Microsoft.NETCore.App" Version="2.0.0-preview2-25407-01" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
+    <PackageReference Include="SteamWebAPI2" Version="4.0.1" />
   </ItemGroup>
 </Project>

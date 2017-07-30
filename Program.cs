@@ -1,10 +1,11 @@
-﻿using System.Resources;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
 using Discord.Commands;
 using Microsoft.Extensions.DependencyInjection;
+using SteamWebAPI2.Interfaces;
 
 namespace DogMeat
 {
@@ -16,6 +17,15 @@ namespace DogMeat
         {
             Vars.Client = new DiscordSocketClient();
             Vars.CService = new CommandService();
+
+            if (String.IsNullOrEmpty(Vars.Token))
+            {
+                Console.WriteLine("Please enter Bot token: ");
+                Vars.Token = Console.ReadLine();
+            }
+            
+            if(String.IsNullOrEmpty(Vars.SteamAPIKey))
+                Console.WriteLine("Steam related features will not be functional without an API key.");
 
             await Vars.Client.LoginAsync(TokenType.Bot, Vars.Token);
             await Vars.Client.StartAsync();
@@ -33,6 +43,7 @@ namespace DogMeat
             Vars.Main = Vars.Client.GetGuild(281249097770598402);
             Vars.Commands = await Vars.Main.GetChannelAsync(297587358063394816);
             Vars.Logging = await Vars.Main.GetChannelAsync(297587378804097025);
+            Vars.SteamInterface = new SteamUser(Vars.SteamAPIKey);
 
             MessageHandler.InitializeCommandHandler();
 

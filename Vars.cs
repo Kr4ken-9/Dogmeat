@@ -2,12 +2,17 @@
 using Discord;
 using Discord.WebSocket;
 using Discord.Commands;
+using SteamWebAPI2.Interfaces;
 
 namespace DogMeat
 {
     public class Vars
     {
         public static string Token = "";
+
+        public static string SteamAPIKey = "";
+
+        public static SteamUser SteamInterface;
 
         public static IChannel Logging;
 
