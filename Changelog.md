@@ -3,6 +3,14 @@ Release notes for different versions of Dogmeat
 
 ---
 
+**2.2.1.0**
+
+7/31/17
+- Fixed vulnerability
+- Minor improvements
+
+---
+
 **2.2.0.0**
 
 7/30/17
