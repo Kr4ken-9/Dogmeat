@@ -24,6 +24,7 @@ Right now, however, you can expect the following:
 **Commands Guide**
 
 General Commands
+
 |  Command      | Parameter      | Description                                            |
 |:-------------:|:--------------:|:------------------------------------------------------:|
 | Help          | None           | Provides basic usage information                       |
@@ -35,6 +36,7 @@ General Commands
 ---
 
 Administrative Commands
+
 |  Command      | Parameter      | Description                                                 |
 |:-------------:|:--------------:|:-----------------------------------------------------------:|
 | Ban           | User           | Bans given user                                             |
