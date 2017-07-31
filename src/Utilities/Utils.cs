@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Linq;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Net.Http;
 using Discord;
 using Discord.WebSocket;
 
-namespace DogMeat
+namespace Dogmeat.Utilities
 {
-    public class Utilities
+    public class Utils
     {
         #region Variables
 
@@ -28,7 +27,7 @@ namespace DogMeat
             string Content = "";
             using (HttpClient Client = new HttpClient())
             {
-                HttpResponseMessage Response = await Client.GetAsync("http://198.245.61.226/kr4ken/dogmeat_replies.txt");
+                HttpResponseMessage Response = await Client.GetAsync("http://198.245.61.226/kr4ken/dogmeat/replies.txt");
                 Content = await Response.Content.ReadAsStringAsync();
             }
             
@@ -40,7 +39,7 @@ namespace DogMeat
             string Content = "";
             using (HttpClient Client = new HttpClient())
             {
-                HttpResponseMessage Response = await Client.GetAsync("http://198.245.61.226/kr4ken/dogmeat_memes.txt");
+                HttpResponseMessage Response = await Client.GetAsync("http://198.245.61.226/kr4ken/dogmeat/memes.txt");
                 Content = await Response.Content.ReadAsStringAsync();
             }
             
@@ -52,7 +51,7 @@ namespace DogMeat
             string Content = "";
             using (HttpClient Client = new HttpClient())
             {
-                HttpResponseMessage Response = await Client.GetAsync("http://198.245.61.226/kr4ken/dogmeat_answers.txt");
+                HttpResponseMessage Response = await Client.GetAsync("http://198.245.61.226/kr4ken/dogmeat/answers.txt");
                 Content = await Response.Content.ReadAsStringAsync();
             }
             
@@ -162,31 +161,17 @@ namespace DogMeat
 
         #endregion Variables
 
-        #region Logging
-
-        public static void Log(String Message) => Log(Message, ConsoleColor.Gray);
-
-        public static void Log(String Message, ConsoleColor Color)
-        {
-            Console.ForegroundColor = Color;
-            Console.WriteLine(DateTime.Now + ": " + Message);
-            Console.ResetColor();
-            ((SocketTextChannel)Vars.Logging).SendMessageAsync(DateTime.Now + ": " + Message);
-        }
-
-        public static void Log(String Message, SocketGuild Guild, SocketUser User) => Log(Message, ConsoleColor.Gray, Guild, User);
-
-        public static void Log(String Message, ConsoleColor Color, SocketGuild Guild, SocketUser User)
-        {
-            Console.ForegroundColor = Color;
-            Console.WriteLine(DateTime.Now + ": [" + Guild.Name + "] " + User.Username + " " + Message);
-            Console.ResetColor();
-            ((SocketTextChannel)Vars.Logging).SendMessageAsync(DateTime.Now + ": [" + Guild.Name + "] " + User.Username + " " + Message);
-        }
-
-        #endregion Logging
-
         #region Users
+
+        public static async Task<int> GetAllUsers()
+        {
+            int Users = 0;
+
+            foreach (SocketGuild Guild in Vars.Client.Guilds)
+                Users += Guild.Users.Count;
+
+            return Users;
+        }
 
         private static async Task<IGuildUser> GetUserByName(IGuild Guild, String Name) =>
             (await Guild.GetUsersAsync()).FirstOrDefault(user => user.Nickname.Contains(Name) || user.Username.Contains(Name));
@@ -234,27 +219,29 @@ namespace DogMeat
         {
             Vars.KeepAlive = false;
             ContinueShutdown = true;
-            Log("Client is shutting down in five seconds.", ConsoleColor.Red);
+            Logger.Log("Client is shutting down in five seconds.", ConsoleColor.Red);
             new Thread(() =>
             {
-                if (!ContinueShutdown) return;
-                Log("5", ConsoleColor.Red);
-                Thread.Sleep(1000);
-                if (!ContinueShutdown) return;
-                Log("4", ConsoleColor.Red);
-                Thread.Sleep(1000);
-                if (!ContinueShutdown) return;
-                Log("3", ConsoleColor.Red);
-                Thread.Sleep(1000);
-                if (!ContinueShutdown) return;
-                Log("2", ConsoleColor.Red);
-                Thread.Sleep(1000);
-                if (!ContinueShutdown) return;
-                Log("1", ConsoleColor.Red);
-                Thread.Sleep(1000);
-                if (!ContinueShutdown) return;
-                Disconnect();
-                Environment.Exit(0);
+                while (!ContinueShutdown)
+                {
+                    Logger.Log("5", ConsoleColor.Red);
+                    Thread.Sleep(1000);
+
+                    Logger.Log("4", ConsoleColor.Red);
+                    Thread.Sleep(1000);
+
+                    Logger.Log("3", ConsoleColor.Red);
+                    Thread.Sleep(1000);
+
+                    Logger.Log("2", ConsoleColor.Red);
+                    Thread.Sleep(1000);
+
+                    Logger.Log("1", ConsoleColor.Red);
+                    Thread.Sleep(1000);
+
+                    Disconnect();
+                    Environment.Exit(0);
+                }
             }).Start();
         }
 
@@ -262,7 +249,7 @@ namespace DogMeat
         {
             Vars.KeepAlive = false;
             Vars.Client.StopAsync();
-            Log("Dogmeat disconnected.", ConsoleColor.Red);
+            Logger.Log("Dogmeat disconnected.", ConsoleColor.Red);
         }
         
         #endregion
@@ -274,10 +261,25 @@ namespace DogMeat
                 Vars.Answers = DogmeatAnswersAsync().Result;
                 Vars.Memes = DogmeatMemesAsync().Result;
                 Vars.Responses = DogmeatResponsesAsync().Result;
-                Log("Variables Updated");
+                
+                using (HttpClient Client = new HttpClient())
+                {
+                    HttpResponseMessage Response = await Client.GetAsync("http://198.245.61.226/kr4ken/dogmeat/latestcommit.txt");
+                    Vars.LatestCommit = await Response.Content.ReadAsStringAsync();
+                }
+                
+                Logger.Log("Variables Updated");
                 Thread.Sleep(600000);
             }
             Task.Delay(-1);
+        }
+
+        public static async Task CreateMutedRole(SocketGuild Guild)
+        {
+            await Guild.CreateRoleAsync("Muted", null, Color.Red);
+            
+            foreach (SocketTextChannel Channel in Guild.TextChannels)
+                Channel.AddPermissionOverwriteAsync(GetMutedRole(Guild), Vars.MutedPermissions);
         }
     }
 }

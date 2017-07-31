@@ -4,8 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Discord.WebSocket;
 using Discord.Commands;
+using Dogmeat.Utilities;
 
-namespace DogMeat   
+namespace Dogmeat   
 {
     public class MessageHandler
     {
@@ -37,7 +38,7 @@ namespace DogMeat
                 case "ANNOUNCE":
                 case "SAY":
                     if (!ulong.TryParse(Inputs[1], out ulong ID))
-                        Utilities.Log("That is not a valid ID.");
+                        Logger.Log("That is not a valid ID.");
 
                     String output = Inputs[2];
 
@@ -53,24 +54,24 @@ namespace DogMeat
                 case "SHUTDOWN":
                 case "QUIT":
                 case "EXIT":
-                    Utilities.Shutdown();
+                    Utils.Shutdown();
                     break;
                 case "DISCONNECT":
-                    Utilities.Disconnect();
+                    Utils.Disconnect();
                     break;
                 case "RECONNECT":
                     Vars.KeepAlive = true;
-                    Utilities.Log("Dogmeat was revived.", ConsoleColor.Green);
+                    Logger.Log("Dogmeat was revived.", ConsoleColor.Green);
                     break;
                 case "CANCEL":
-                    Utilities.Log("Shutdown canceled", ConsoleColor.Green);
-                    Utilities.ContinueShutdown = false;
+                    Logger.Log("Shutdown canceled", ConsoleColor.Green);
+                    Utils.ContinueShutdown = false;
                     break;
                 default:
-                    Utilities.Log(Inputs[0] + " is not a command.", ConsoleColor.Red);
+                    Logger.Log(Inputs[0] + " is not a command.", ConsoleColor.Red);
                     break;
             }
-            Utilities.Log("Issued command " + Inputs[0], Vars.Main as SocketGuild, msg.Author);
+            Logger.Log("Issued command " + Inputs[0], Vars.Main as SocketGuild, msg.Author);
         }
 
         #endregion
@@ -99,7 +100,7 @@ namespace DogMeat
         {
             (e.Author as SocketGuildUser).AddRoleAsync(Vars.PointBlank.GetRole(333334103858348033));
             e.DeleteAsync();
-            Utilities.Log("Underwent Initiation", ((SocketGuildChannel)e.Channel).Guild, e.Author);
+            Logger.Log("Underwent Initiation", ((SocketGuildChannel)e.Channel).Guild, e.Author);
         }
 
         public static async Task WrongChannelAsync(SocketMessage e)
@@ -107,19 +108,19 @@ namespace DogMeat
             var channel = await e.Author.GetOrCreateDMChannelAsync();
             channel.SendMessageAsync("You are not permitted to chat in that channel.");
             e.DeleteAsync();
-            Utilities.Log("Attempted to chat in a restricted channel.", ((SocketGuildChannel)e.Channel).Guild, e.Author);
+            Logger.Log("Attempted to chat in a restricted channel.", ((SocketGuildChannel)e.Channel).Guild, e.Author);
         }
 
         public static async Task MentionedAsync(SocketMessage e)
         {
-            e.Channel.SendMessageAsync(await Utilities.ResponsePickerAsync(e.Content.ToUpper()));
-            Utilities.Log("Mentioned me.", ((SocketGuildChannel)e.Channel).Guild, e.Author);
+            e.Channel.SendMessageAsync(await Utils.ResponsePickerAsync(e.Content.ToUpper()));
+            Logger.Log("Mentioned me.", ((SocketGuildChannel)e.Channel).Guild, e.Author);
         }
 
         public static async Task DefConAsync(SocketMessage e)
         {
             e.Channel.SendMessageAsync("DefCon42 is a sexy beast. Also, fuck off.");
-            Utilities.Log("Reversed my name.", ((SocketGuildChannel)e.Channel).Guild, e.Author);
+            Logger.Log("Reversed my name.", ((SocketGuildChannel)e.Channel).Guild, e.Author);
         }
         
         #endregion
@@ -150,7 +151,7 @@ namespace DogMeat
             if (!Result.IsSuccess)
                 await Message.Channel.SendMessageAsync($"**Error:** {Result.ErrorReason}");
             else
-                Utilities.Log("Executed a command.", (Message.Channel as SocketGuildChannel).Guild, Message.Author);
+                Logger.Log("Executed a command.", (Message.Channel as SocketGuildChannel).Guild, Message.Author);
         }
         
         #endregion

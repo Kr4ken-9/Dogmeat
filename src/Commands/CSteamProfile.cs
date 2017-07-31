@@ -5,14 +5,14 @@ using Discord;
 using Discord.Commands;
 using Steam.Models.SteamCommunity;
 
-namespace DogMeat.Commands
+namespace Dogmeat.Commands
 {
     public class CSteamProfile : ModuleBase
     {
         [Command("steamprofile"), Summary("Gets basic steam profile information based on input")]
         public async Task SteamProfile([Summary("Vanity URL or ID of steam profile")] string name = null)
         {
-            SteamCommunityProfileModel Profile = await SteamUtils.GetProfile(name);
+            SteamCommunityProfileModel Profile = await Utilities.Steam.GetProfile(name);
 
             if (Profile == null)
             {
@@ -26,12 +26,12 @@ namespace DogMeat.Commands
                 return;
             }
 
-            PlayerSummaryModel Player = await SteamUtils.GetPlayerSummary(Profile);
+            PlayerSummaryModel Player = await Utilities.Steam.GetPlayerSummary(Profile);
 
             ReplyAsync("", embed: new EmbedBuilder()
                 {
                     Title = $"Player summary for {Player.Nickname}",
-                    Color = new Color(0, 191, 255),
+                    Color = new Color(0, 112, 255),
                     ThumbnailUrl = Player.AvatarMediumUrl,
                     Url = Player.ProfileUrl
                 }

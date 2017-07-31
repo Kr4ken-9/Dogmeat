@@ -1,16 +1,17 @@
 ﻿using System;
+using System.Net.Http;
 using Discord;
 using Discord.WebSocket;
 using Discord.Commands;
 using SteamWebAPI2.Interfaces;
 
-namespace DogMeat
+namespace Dogmeat
 {
     public class Vars
     {
-        public static string Token = "";
+        public static String Token = "";
 
-        public static string SteamAPIKey = "";
+        public static String SteamAPIKey = "";
 
         public static SteamUser SteamInterface;
 
@@ -35,5 +36,10 @@ namespace DogMeat
         public static String[] Memes;
 
         public static String[] Answers;
+
+        public static OverwritePermissions MutedPermissions = new OverwritePermissions(PermValue.Inherit,
+            PermValue.Inherit, PermValue.Inherit, PermValue.Inherit, PermValue.Deny);
+
+        public static String LatestCommit;
     }
 }

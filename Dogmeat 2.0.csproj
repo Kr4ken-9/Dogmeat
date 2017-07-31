@@ -5,16 +5,17 @@
     <OutputTypeEx>exe</OutputTypeEx>
     <RuntimeIdentifier>win81-x64</RuntimeIdentifier>
     <WarningLevel>0</WarningLevel>
-    <AssemblyVersion>2.2.1.0</AssemblyVersion>
-    <FileVersion>2.2.1.0</FileVersion>
+    <AssemblyVersion>2.2.2.0</AssemblyVersion>
+    <FileVersion>2.2.2.0</FileVersion>
     <PackageReleaseNotes>
     </PackageReleaseNotes>
     <Company>Kr4ken</Company>
-    <RootNamespace>DogMeat</RootNamespace>
-    <Description>2.2.1.0 Release Notes:
+    <RootNamespace>Dogmeat</RootNamespace>
+    <Description>2.2.2.0 Release Notes:
 7/31/17
-- Fixed vulnerability
-- Minor improvements</Description>
+- Organization, Spelling Fix
+- More Embeds
+- Probably something else I forgot</Description>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="License.md" />

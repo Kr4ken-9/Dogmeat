@@ -2,15 +2,16 @@
 using Discord;
 using Discord.Commands;
 using Steam.Models.SteamCommunity;
+using Dogmeat.Utilities;
 
-namespace DogMeat.Commands
+namespace Dogmeat.Commands
 {
     public class CSteamBans : ModuleBase
     {
         [Command("steambans"), Summary("Probes a steam account for bans")]
         public async Task SteamProfile([Summary("Vanity URL or ID of steam profile")] string name = null)
         {
-            SteamCommunityProfileModel Profile = await SteamUtils.GetProfile(name);
+            SteamCommunityProfileModel Profile = await Utilities.Steam.GetProfile(name);
             
             if (Profile == null)
             {
@@ -24,9 +25,9 @@ namespace DogMeat.Commands
                 return;
             }
 
-            PlayerSummaryModel Player = await SteamUtils.GetPlayerSummary(Profile);
+            PlayerSummaryModel Player = await Utilities.Steam.GetPlayerSummary(Profile);
 
-            PlayerBansModel BansModel = await SteamUtils.GetPlayerBans(Profile);
+            PlayerBansModel BansModel = await Utilities.Steam.GetPlayerBans(Profile);
 
             uint BanCount = BansModel.NumberOfGameBans + BansModel.NumberOfVACBans;
             

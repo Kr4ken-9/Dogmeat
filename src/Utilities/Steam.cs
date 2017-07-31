@@ -3,9 +3,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Steam.Models.SteamCommunity;
 
-namespace DogMeat
+namespace Dogmeat.Utilities
 {
-    public class SteamUtils
+    public class Steam
     {
         #region Profiles
         

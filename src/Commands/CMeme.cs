@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Discord.Commands;
 
-namespace DogMeat.Commands
+namespace Dogmeat.Commands
 {
     public class CMeme : ModuleBase
     {

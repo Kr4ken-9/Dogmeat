@@ -4,10 +4,11 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
 using Discord.Commands;
+using Dogmeat.Utilities;
 using Microsoft.Extensions.DependencyInjection;
 using SteamWebAPI2.Interfaces;
 
-namespace DogMeat
+namespace Dogmeat
 {
     class Program
     {
@@ -23,9 +24,12 @@ namespace DogMeat
                 Console.WriteLine("Please enter Bot token: ");
                 Vars.Token = Console.ReadLine();
             }
-            
-            if(String.IsNullOrEmpty(Vars.SteamAPIKey))
-                Console.WriteLine("Steam related features will not be functional without an API key.");
+
+            if (String.IsNullOrEmpty(Vars.SteamAPIKey))
+            {
+                Console.WriteLine("Please enter Steam API token: ");
+                Vars.SteamAPIKey = Console.ReadLine();
+            }
 
             await Vars.Client.LoginAsync(TokenType.Bot, Vars.Token);
             await Vars.Client.StartAsync();
@@ -55,9 +59,9 @@ namespace DogMeat
             
             CancellationTokenSource Token = new CancellationTokenSource();
             
-            new Task(() => Utilities.MaintainConnection(), Token.Token, TaskCreationOptions.LongRunning).Start();
+            new Task(() => Utils.MaintainConnection(), Token.Token, TaskCreationOptions.LongRunning).Start();
 
-            new Task(() => Utilities.UpdateVars(), Token.Token, TaskCreationOptions.LongRunning).Start();
+            new Task(() => Utils.UpdateVars(), Token.Token, TaskCreationOptions.LongRunning).Start();
             
             #endregion
         }
