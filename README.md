@@ -36,3 +36,9 @@ The source is personalized. If you use him as a base for your own, you are encou
 **Q**: If the source is public, why is dogmeat private? When will dogmeat become public?
 
 **A**: Dogmeat is private because it's in an experimental phase on an unstable host. It will become public when we decide it meets our standards and we have the necessary funds to host the bot.
+
+---
+
+**Credits**
+
+Thank you [Bond-009](https://github.com/Bond-009/) for your example integration of [SteamWebAPI2](https://github.com/babelshift/SteamWebAPI2) which can be found [here](https://github.com/Bond-009/iTool.DiscordBot).
