@@ -18,6 +18,12 @@ namespace DogMeat.Commands
                 return;
             }
 
+            if (Profile.VisibilityState != 3)
+            {
+                ReplyAsync("Player's profile was not public.");
+                return;
+            }
+
             PlayerSummaryModel Player = await SteamUtils.GetPlayerSummary(Profile);
 
             PlayerBansModel BansModel = await SteamUtils.GetPlayerBans(Profile);
@@ -38,7 +44,9 @@ namespace DogMeat.Commands
                 {
                     F.IsInline = true;
                     F.Name = "Ban Conclusion";
-                    if (BanCount == 1)
+                    if (BanCount == 0)
+                        F.Value = "Anti-Cheater";
+                    else if (BanCount == 1)
                         F.Value = "Ashamed Cheater";
                     else if (BanCount <= 3)
                         F.Value = "Proud Cheater";

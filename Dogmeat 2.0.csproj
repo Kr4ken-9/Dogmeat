@@ -5,18 +5,16 @@
     <OutputTypeEx>exe</OutputTypeEx>
     <RuntimeIdentifier>win81-x64</RuntimeIdentifier>
     <WarningLevel>0</WarningLevel>
-    <AssemblyVersion>2.2.0.0</AssemblyVersion>
-    <FileVersion>2.2.0.0</FileVersion>
+    <AssemblyVersion>2.2.1.0</AssemblyVersion>
+    <FileVersion>2.2.1.0</FileVersion>
     <PackageReleaseNotes>
     </PackageReleaseNotes>
     <Company>Kr4ken</Company>
     <RootNamespace>DogMeat</RootNamespace>
-    <Description>2.2 Release Notes:
-7/30/17
-- .NET Core 1.1
-- Readability, Safer Httpclients
-- Steam functionality (More to come)
-- Ease of use</Description>
+    <Description>2.2.1.0 Release Notes:
+7/31/17
+- Fixed vulnerability
+- Minor improvements</Description>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="License.md" />

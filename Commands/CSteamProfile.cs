@@ -20,6 +20,12 @@ namespace DogMeat.Commands
                 return;
             }
 
+            if (Profile.VisibilityState != 3)
+            {
+                ReplyAsync("Player's profile was not public.");
+                return;
+            }
+
             PlayerSummaryModel Player = await SteamUtils.GetPlayerSummary(Profile);
 
             ReplyAsync("", embed: new EmbedBuilder()
