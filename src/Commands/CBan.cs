@@ -18,7 +18,8 @@ namespace Dogmeat.Commands
                 ReplyAsync("I have no master on this server.");
                 return;
             }
-            else if (!((SocketGuildUser) Context.User).Roles.Contains(Utils.GetMasterRole((SocketGuild) Context.Guild)))
+            
+            if (!((SocketGuildUser) Context.User).Roles.Contains(Utils.GetMasterRole((SocketGuild) Context.Guild)))
             {
                 ReplyAsync("You must be my master to execute this command.");
                 return;
@@ -29,7 +30,7 @@ namespace Dogmeat.Commands
             else
                 User.Guild.AddBanAsync(User, 7, Reason);
             
-            ReplyAsync($"{User.Nickname ?? User.Username} is no more.");
+            ReplyAsync($"{User.Username} is no more.");
         }
     }
 }

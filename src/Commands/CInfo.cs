@@ -14,7 +14,7 @@ namespace Dogmeat.Commands
             await ReplyAsync("", embed: new EmbedBuilder()
                     {
                         Title = "Dogmeat Summary",
-                        Color = new Color(0, 112, 255),
+                        Color = Colors.SexyBlue,
                         Url = "https://ex-presidents.github.io/Dogmeat",
                         ThumbnailUrl = "https://cdn.discordapp.com/app-icons/272798023816445955/fdef8956d05fdb4d04b0ccbb811c2fc5.jpg"
                     }

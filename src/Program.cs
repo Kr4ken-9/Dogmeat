@@ -64,6 +64,9 @@ namespace Dogmeat
             new Task(() => Utils.UpdateVars(), Token.Token, TaskCreationOptions.LongRunning).Start();
             
             #endregion
+
+            if (Vars.UnderMaintenance)
+                Vars.Client.SetGameAsync("Under Maintenace");
         }
 
     }

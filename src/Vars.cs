@@ -37,9 +37,14 @@ namespace Dogmeat
 
         public static String[] Answers;
 
-        public static OverwritePermissions MutedPermissions = new OverwritePermissions(PermValue.Inherit,
+        public static OverwritePermissions MutedChannelPermissions = new OverwritePermissions(PermValue.Inherit,
             PermValue.Inherit, PermValue.Inherit, PermValue.Inherit, PermValue.Deny);
 
+        public static GuildPermissions MutedPermissions =
+            new GuildPermissions(false, false, false, false, false, false, false, true, false);
+
         public static String LatestCommit;
+
+        public static bool UnderMaintenance;
     }
 }

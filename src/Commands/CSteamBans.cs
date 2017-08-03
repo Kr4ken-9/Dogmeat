@@ -34,7 +34,7 @@ namespace Dogmeat.Commands
             ReplyAsync("", embed: new EmbedBuilder()
                 {
                     Title = $"Ban summary for {Player.Nickname}",
-                    Color = new Color(255, 0, 0),
+                    Color = Colors.SexyBlue,
                     ThumbnailUrl = Player.AvatarMediumUrl,
                     Url = Player.ProfileUrl
                 }

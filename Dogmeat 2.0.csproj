@@ -3,7 +3,7 @@
     <OutputType>exe</OutputType>
     <TargetFramework>netcoreapp1.1</TargetFramework>
     <OutputTypeEx>exe</OutputTypeEx>
-    <RuntimeIdentifier>win81-x64</RuntimeIdentifier>
+    <RuntimeIdentifier>ubuntu.16.04-x64</RuntimeIdentifier>
     <WarningLevel>0</WarningLevel>
     <AssemblyVersion>2.2.2.0</AssemblyVersion>
     <FileVersion>2.2.2.0</FileVersion>

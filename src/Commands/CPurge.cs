@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
+using System.Threading;
 using Discord.Commands;
 using Discord;
 using Discord.WebSocket;
@@ -27,7 +29,13 @@ namespace Dogmeat.Commands
             if (User == null)
             {
                 Context.Channel.DeleteMessagesAsync(await Context.Channel.GetMessagesAsync(count).Flatten());
-                Context.Channel.SendMessageAsync($"Purged {count} messages.");
+
+                IEnumerable<IMessage> DeleteMe =
+                    new List<IMessage> {await Context.Channel.SendMessageAsync($"Purged {count} messages.")};
+
+                Thread.Sleep(5000);
+
+                Context.Channel.DeleteMessagesAsync(DeleteMe);
             }
             else
             {
@@ -35,7 +43,15 @@ namespace Dogmeat.Commands
                 IEnumerable<IMessage> UserMessages = Messages.Where(Message => Message.Author == User);
 
                 Context.Channel.DeleteMessagesAsync(UserMessages);
-                Context.Channel.SendMessageAsync($"Purged {count} messages from {User.Nickname ?? User.Username}");
+
+                IEnumerable<IMessage> DeleteMe = new List<IMessage>
+                {
+                    await Context.Channel.SendMessageAsync($"Purged {count} messages from {User.Username}")
+                };
+
+                Thread.Sleep(5000);
+                
+                Context.Channel.DeleteMessagesAsync(DeleteMe);
             }
         }
     }

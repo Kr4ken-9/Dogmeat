@@ -29,7 +29,7 @@ namespace Dogmeat.Commands
             else
                 User.Guild.AddBanAsync(User, 0, Reason);
             
-            ReplyAsync($"{User.Nickname ?? User.Username} is no more.");
+            ReplyAsync($"{User.Username} is no more.");
         }
     }
 }

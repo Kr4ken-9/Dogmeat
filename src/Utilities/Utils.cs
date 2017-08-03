@@ -258,7 +258,7 @@ namespace Dogmeat.Utilities
         {
             while (Vars.KeepAlive)
             {
-                Vars.Answers = DogmeatAnswersAsync().Result;
+                Vars.Answers = await DogmeatAnswersAsync();
                 Vars.Memes = DogmeatMemesAsync().Result;
                 Vars.Responses = DogmeatResponsesAsync().Result;
                 
@@ -276,10 +276,10 @@ namespace Dogmeat.Utilities
 
         public static async Task CreateMutedRole(SocketGuild Guild)
         {
-            await Guild.CreateRoleAsync("Muted", null, Color.Red);
+            await Guild.CreateRoleAsync("Muted", Vars.MutedPermissions, Color.Red);
             
             foreach (SocketTextChannel Channel in Guild.TextChannels)
-                Channel.AddPermissionOverwriteAsync(GetMutedRole(Guild), Vars.MutedPermissions);
+                Channel.AddPermissionOverwriteAsync(GetMutedRole(Guild), Vars.MutedChannelPermissions);
         }
     }
 }

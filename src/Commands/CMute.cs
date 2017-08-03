@@ -30,20 +30,18 @@ namespace Dogmeat.Commands
                 ReplyAsync("Muted role created.");
             }
 
-            IGuildUser target = (IGuildUser) User;
             IRole muted = Utils.GetMutedRole((SocketGuild) Context.Guild);
 
-            if (target.RoleIds.Contains(muted.Id))
+            if (User.RoleIds.Contains(muted.Id))
             {
-                target.RemoveRoleAsync(muted);
-                ReplyAsync($"{Context.User.Username} unmuted {User.Nickname ?? User.Username}");
+                User.RemoveRoleAsync(muted);
+                ReplyAsync($"{Context.User.Username} unmuted {User.Username}");
             }
             
             else
             {
-                target.AddRoleAsync(muted);
-                ReplyAsync($"{Context.User.Username} muted {User.Nickname ?? User.Username}");
-                
+                User.AddRoleAsync(muted);
+                ReplyAsync($"{Context.User.Username} muted {User.Username}");
             }
         }
     }
