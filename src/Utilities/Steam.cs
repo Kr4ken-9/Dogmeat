@@ -16,13 +16,6 @@ namespace Dogmeat.Utilities
         
         public static async Task<SteamCommunityProfileModel> GetProfile(String Input)
         {
-            if(ulong.TryParse(Input, out ulong Id))
-            {
-                SteamCommunityProfileModel Profile = await GetProfile(Id);
-
-                if (Profile != null) return Profile;
-            }
-            
             ulong ID = (await Vars.SteamInterface.ResolveVanityUrlAsync(Input)).Data;
 
             if (ID == null) return null;

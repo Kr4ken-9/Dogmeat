@@ -11,7 +11,7 @@ namespace Dogmeat.Commands
         [Command("kick"), Summary("Kicks specified user")]
         public async Task KickAsync([Summary("User to kick")] IGuildUser User, [Summary("Reason for kick")] String Reason = null)
         {
-            switch (await Utils.CheckMasterAsync(Context.Guild, Context.User))
+            switch (await Utilities.Commands.CheckMasterAsync(Context.Guild, Context.User))
             {
                 case EMaster.NONE:
                     ReplyAsync("I have no master on this server.");
@@ -20,7 +20,7 @@ namespace Dogmeat.Commands
                     ReplyAsync("You must be my master to execute this command.");
                     return;
             }
-            
+                
             ReplyAsync($"{User.Mention} is no more.");
             User.KickAsync(Reason);
         }

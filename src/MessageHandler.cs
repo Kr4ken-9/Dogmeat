@@ -84,17 +84,17 @@ namespace Dogmeat
         {
             Vars.Client.MessageReceived += async msg =>
             {
-                if (msg.Channel.Id == 333334079921455105)
-                {
-                    if (StringComparer.OrdinalIgnoreCase.Compare(msg.Content, "Klaatu barada nikto") == 0)
-                        await AccessAsync(msg);
-                    else
-                        await WrongChannelAsync(msg);
-                }
-                else if (CultureInfo.InvariantCulture.CompareInfo.IndexOf(msg.Content, "Dogmeat", CompareOptions.IgnoreCase) >= 0 && !msg.Author.IsBot)
+                if (CultureInfo.InvariantCulture.CompareInfo.IndexOf(msg.Content, "Dogmeat",
+                        CompareOptions.IgnoreCase) >= 0 && !msg.Author.IsBot)
                     await MentionedAsync(msg);
-                else if (CultureInfo.InvariantCulture.CompareInfo.IndexOf(msg.Content, "Taemgod", CompareOptions.IgnoreCase) >= 0 && !msg.Author.IsBot)
+                
+                else if (CultureInfo.InvariantCulture.CompareInfo.IndexOf(msg.Content, "Taemgod",
+                             CompareOptions.IgnoreCase) >= 0 && !msg.Author.IsBot)
                     await DefConAsync(msg);
+                
+                else if (CultureInfo.InvariantCulture.CompareInfo.IndexOf(msg.Content, "Good boy",
+                             CompareOptions.IgnoreCase) >= 0 && !msg.Author.IsBot)
+                    await Patronization(msg);
             };
         }
         
@@ -115,7 +115,7 @@ namespace Dogmeat
 
         public static async Task MentionedAsync(SocketMessage e)
         {
-            e.Channel.SendMessageAsync(await Utils.ResponsePickerAsync(e.Content.ToUpper()));
+            e.Channel.SendMessageAsync(await Responses.ResponsePickerAsync(e.Content.ToUpper()));
             Logger.Log("Mentioned me.", ((SocketGuildChannel)e.Channel).Guild, e.Author);
         }
 
@@ -123,6 +123,12 @@ namespace Dogmeat
         {
             e.Channel.SendMessageAsync("DefCon42 is a sexy beast. Also, fuck off.");
             Logger.Log("Reversed my name.", ((SocketGuildChannel)e.Channel).Guild, e.Author);
+        }
+
+        public static async Task Patronization(SocketMessage e)
+        {
+            e.Channel.SendMessageAsync("Don't patronize me, faggot.");
+            Logger.Log("Patronized me.", ((SocketGuildChannel)e.Channel).Guild, e.Author);
         }
         
         #endregion

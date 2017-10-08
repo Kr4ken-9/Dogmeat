@@ -5,20 +5,17 @@
     <OutputTypeEx>exe</OutputTypeEx>
     <RuntimeIdentifiers>ubuntu.16.04-x64;win81-x64</RuntimeIdentifiers>
     <WarningLevel>0</WarningLevel>
-    <AssemblyVersion>2.2.2.0</AssemblyVersion>
-    <FileVersion>2.2.2.0</FileVersion>
+    <AssemblyVersion>2.2.4.0</AssemblyVersion>
+    <FileVersion>2.2.4.0</FileVersion>
     <PackageReleaseNotes>
     </PackageReleaseNotes>
     <Company>Kr4ken</Company>
     <RootNamespace>Dogmeat</RootNamespace>
-    <Description>2.2.3.0 Release Notes:
-10/7/17
-- Updated Dependencies
-- Removed Unused Dependency
-- Working Mute Command
-- Better Randomization
-- Organization and Cleanliness
-- Mentions</Description>
+    <Description>2.2.4.0 Release Notes:
+10/8/17
+- Cleaner Response Picking
+- Utility Organization
+- Patronization</Description>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="License.md" />

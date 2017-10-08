@@ -13,7 +13,7 @@ namespace Dogmeat.Commands
         [Command("purge"), Alias("prune"), Summary("Purges messages on executed channel.")]
         public async Task PurgeAsync([Summary("Number of messages to purge")] int count, [Summary("User to prune")] IGuildUser User = null)
         {
-            switch (await Utils.CheckMasterAsync(Context.Guild, Context.User))
+            switch (await Utilities.Commands.CheckMasterAsync(Context.Guild, Context.User))
             {
                 case EMaster.NONE:
                     ReplyAsync("I have no master on this server.");

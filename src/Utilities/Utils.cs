@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Threading;
@@ -21,141 +23,6 @@ namespace Dogmeat.Utilities
         public static IRole GetRole(IGuild Guild, ulong ID) => Guild.Roles.FirstOrDefault(role => role.Id == ID);
 
         public static IRole GetRole(IGuild Guild, String Name) => Guild.Roles.FirstOrDefault(role => role.Name == Name);
-
-        private static async Task<String[]> DogmeatResponsesAsync()
-        {
-            string Content = "";
-            using (HttpClient Client = new HttpClient())
-            {
-                HttpResponseMessage Response = await Client.GetAsync("http://198.245.61.226/kr4ken/dogmeat/replies.txt");
-                Content = await Response.Content.ReadAsStringAsync();
-            }
-            
-            return Content.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
-        }
-
-        public static async Task<String[]> DogmeatMemesAsync()
-        {
-            string Content = "";
-            using (HttpClient Client = new HttpClient())
-            {
-                HttpResponseMessage Response = await Client.GetAsync("http://198.245.61.226/kr4ken/dogmeat/memes.txt");
-                Content = await Response.Content.ReadAsStringAsync();
-            }
-            
-            return Content.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
-        }
-
-        public static async Task<String[]> DogmeatAnswersAsync()
-        {
-            string Content = "";
-            using (HttpClient Client = new HttpClient())
-            {
-                HttpResponseMessage Response = await Client.GetAsync("http://198.245.61.226/kr4ken/dogmeat/answers.txt");
-                Content = await Response.Content.ReadAsStringAsync();
-            }
-            
-            return Content.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
-        }
-
-        public static async Task<String> ResponsePickerAsync(String Content)
-        {
-            String[] Responses = Vars.Responses;
-
-            if (Content.Contains("MASTER") ||
-                Content.Contains("CREATOR") ||
-                Content.Contains("DEVELOPER"))
-                return "*I am reluctantly groomed by that faggot Kr4ken*";
-
-            if (Content.Contains("?"))
-            {
-                String[] Answers = Vars.Answers;
-                return Answers[Vars.Random.Next(0, Answers.Length)];
-            }
-
-            #region Mexican
-
-            if (Content.Contains("JUAN") ||
-                Content.Contains("MEXICO") ||
-                Content.Contains("MEXICAN") ||
-                Content.Contains("EDUARDO") ||
-                Content.Contains("TRUMP") ||
-                Content.Contains("DONALD") ||
-                Content.Contains("PRESIDENT"))
-                return Responses[Vars.Random.Next(19, 21)];
-
-            #endregion
-
-            #region Jew
-
-            if (Content.Contains("JEW"))
-                return Responses[Vars.Random.Next(16, 19)];
-
-            #endregion
-
-            #region AA
-
-            if (Content.Contains("BLACK") ||
-                Content.Contains("NIGG"))
-                return Responses[15];
-
-            #endregion
-
-            #region Clinton
-
-            if (Content.Contains("HILLARY") ||
-                Content.Contains("CLINTON") ||
-                Content.Contains("MEME QUEEN"))
-                return Responses[9];
-
-            #endregion
-
-            #region Insult
-
-            if (Content.Contains("FUCK") ||
-                Content.Contains("CUNT") ||
-                Content.Contains("ASSHOLE") ||
-                Content.Contains("DOUCHE") ||
-                Content.Contains("KYS") ||
-                Content.Contains("ROAST") ||
-                Content.Contains("COCK"))
-                return Responses[4];
-
-            #endregion
-
-            #region LGBT
-
-            if (Content.Contains("GAY") ||
-                Content.Contains("LESBIAN") ||
-                Content.Contains("TRANS") ||
-                Content.Contains("SEXUAL"))
-                return Responses[5];
-
-            #endregion
-
-            #region Arya
-
-            if (Content.Contains("RACIS") ||
-                Content.Contains("HITLER") ||
-                Content.Contains("RACE"))
-                return Responses[6];
-
-            #endregion
-
-            #region Female
-
-            if (Content.Contains("WOMEN") ||
-                Content.Contains("GIRL") ||
-                Content.Contains("WOMAN") ||
-                Content.Contains("GRILL") ||
-                Content.Contains("VAGINA") ||
-                Content.Contains("PUSSY"))
-                return Responses[7];
-
-            #endregion
-            
-            return Responses[Vars.Random.Next(0, Responses.Length)];
-        }
 
         #endregion Variables
 
@@ -262,9 +129,9 @@ namespace Dogmeat.Utilities
         {
             while (Vars.KeepAlive)
             {
-                Vars.Answers = await DogmeatAnswersAsync();
-                Vars.Memes = DogmeatMemesAsync().Result;
-                Vars.Responses = DogmeatResponsesAsync().Result;
+                Vars.Answers = await Responses.DogmeatAnswersAsync();
+                Vars.Memes = Responses.DogmeatMemesAsync().Result;
+                Vars.RawResponses = Responses.DogmeatResponsesAsync().Result;
                 
                 using (HttpClient Client = new HttpClient())
                 {
@@ -276,26 +143,6 @@ namespace Dogmeat.Utilities
                 Thread.Sleep(600000);
             }
             Task.Delay(-1);
-        }
-
-        public static async Task<IRole> CreateMutedRole(IGuild Guild)
-        {
-            IRole Muted = await Guild.CreateRoleAsync("Muted", Vars.MutedPermissions, Color.Red);
-
-            foreach (SocketTextChannel Channel in ((SocketGuild) Guild).TextChannels)
-                Channel.AddPermissionOverwriteAsync(Muted, Vars.MutedChannelPermissions);
-
-            return Muted;
-        }
-
-        public static async Task<EMaster> CheckMasterAsync(IGuild Guild, IUser User)
-        {
-            if (GetMasterRole(Guild) == null)
-                return EMaster.NONE;
-
-            return !((SocketGuildUser) User).Roles.Contains(GetMasterRole(Guild))
-                ? EMaster.FALSE
-                : EMaster.TRUE;
         }
     }
 }

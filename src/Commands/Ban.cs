@@ -11,7 +11,7 @@ namespace Dogmeat.Commands
         [Command("ban"), Summary("Bans a user")]
         public async Task BanAsync([Summary("User of person to ban")] IGuildUser User, [Summary("Reason for ban")] String Reason = null)
         {
-            switch (await Utils.CheckMasterAsync(Context.Guild, Context.User))
+            switch (await Utilities.Commands.CheckMasterAsync(Context.Guild, Context.User))
             {
                 case EMaster.NONE:
                     ReplyAsync("I have no master on this server.");
