@@ -53,6 +53,12 @@ The source is personalized. If you use him as a base for your own, you are encou
 
 ---
 
+**Have a recommendation?**
+
+[![Feature Requests](http://feathub.com/Kr4ken-9/Dogmeat?format=svg)](http://feathub.com/Kr4ken-9/Dogmeat)
+
+---
+
 **Blah blah blah (insert stuff here)?**
 
 [Read the FAQ](FAQ), if your question is still unanswered, email me a Kr4kenKT@gmail.com.
