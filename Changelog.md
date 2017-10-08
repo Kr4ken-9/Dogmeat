@@ -9,6 +9,16 @@ This changelog is from October 2017. Older changelog can be found [here](OldChan
 
 ---
 
+**2.2.4.0**
+
+10/8/17
+
+- Cleaner Response Picking
+- Utility Organization
+- Patronization
+
+---
+
 **2.2.3.0**
 
 10/7/17
