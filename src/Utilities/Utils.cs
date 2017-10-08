@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Net.Http;
 using Discord;
 using Discord.WebSocket;
 
@@ -14,13 +14,13 @@ namespace Dogmeat.Utilities
 
         public static bool ContinueShutdown;
 
-        public static IRole GetMasterRole(SocketGuild Guild) => Guild.Roles.FirstOrDefault(role => role.Name == "Master");
+        public static IRole GetMasterRole(IGuild Guild) => Guild.Roles.FirstOrDefault(role => role.Name == "Master");
 
-        public static IRole GetMutedRole(SocketGuild Guild) => Guild.Roles.FirstOrDefault(role => role.Name == "Muted");
+        public static IRole GetMutedRole(IGuild Guild) => Guild.Roles.FirstOrDefault(role => role.Name == "Muted");
 
-        public static IRole GetRole(SocketGuild Guild, ulong ID) => Guild.Roles.FirstOrDefault(role => role.Id == ID);
+        public static IRole GetRole(IGuild Guild, ulong ID) => Guild.Roles.FirstOrDefault(role => role.Id == ID);
 
-        public static IRole GetRole(SocketGuild Guild, String Name) => Guild.Roles.FirstOrDefault(role => role.Name == Name);
+        public static IRole GetRole(IGuild Guild, String Name) => Guild.Roles.FirstOrDefault(role => role.Name == Name);
 
         private static async Task<String[]> DogmeatResponsesAsync()
         {
@@ -31,7 +31,7 @@ namespace Dogmeat.Utilities
                 Content = await Response.Content.ReadAsStringAsync();
             }
             
-            return Content.Split(new String[] { "\r\n", "\n" }, StringSplitOptions.None);
+            return Content.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
         }
 
         public static async Task<String[]> DogmeatMemesAsync()
@@ -43,7 +43,7 @@ namespace Dogmeat.Utilities
                 Content = await Response.Content.ReadAsStringAsync();
             }
             
-            return Content.Split(new String[] { "\r\n", "\n" }, StringSplitOptions.None);
+            return Content.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
         }
 
         public static async Task<String[]> DogmeatAnswersAsync()
@@ -55,65 +55,64 @@ namespace Dogmeat.Utilities
                 Content = await Response.Content.ReadAsStringAsync();
             }
             
-            return Content.Split(new String[] { "\r\n", "\n" }, StringSplitOptions.None);
+            return Content.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
         }
 
         public static async Task<String> ResponsePickerAsync(String Content)
         {
             String[] Responses = Vars.Responses;
-            Random r = new Random();
 
             if (Content.Contains("MASTER") ||
                 Content.Contains("CREATOR") ||
                 Content.Contains("DEVELOPER"))
                 return "*I am reluctantly groomed by that faggot Kr4ken*";
 
-            else if (Content.Contains("?"))
+            if (Content.Contains("?"))
             {
                 String[] Answers = Vars.Answers;
-                return Answers[new Random().Next(0, Answers.Length)];
+                return Answers[Vars.Random.Next(0, Answers.Length)];
             }
 
             #region Mexican
 
-            else if (Content.Contains("JUAN") ||
+            if (Content.Contains("JUAN") ||
                 Content.Contains("MEXICO") ||
                 Content.Contains("MEXICAN") ||
                 Content.Contains("EDUARDO") ||
                 Content.Contains("TRUMP") ||
                 Content.Contains("DONALD") ||
                 Content.Contains("PRESIDENT"))
-                return Responses[r.Next(19, 21)];
+                return Responses[Vars.Random.Next(19, 21)];
 
-            #endregion Mexican
+            #endregion
 
             #region Jew
 
-            else if (Content.Contains("JEW"))
-                return Responses[r.Next(16, 19)];
+            if (Content.Contains("JEW"))
+                return Responses[Vars.Random.Next(16, 19)];
 
-            #endregion Jew
+            #endregion
 
             #region AA
 
-            else if (Content.Contains("BLACK") ||
-                Content.Contains("NIGGER"))
+            if (Content.Contains("BLACK") ||
+                Content.Contains("NIGG"))
                 return Responses[15];
 
-            #endregion AA
+            #endregion
 
             #region Clinton
 
-            else if (Content.Contains("HILLARY") ||
+            if (Content.Contains("HILLARY") ||
                 Content.Contains("CLINTON") ||
                 Content.Contains("MEME QUEEN"))
                 return Responses[9];
 
-            #endregion Clinton
+            #endregion
 
             #region Insult
 
-            else if (Content.Contains("FUCK") ||
+            if (Content.Contains("FUCK") ||
                 Content.Contains("CUNT") ||
                 Content.Contains("ASSHOLE") ||
                 Content.Contains("DOUCHE") ||
@@ -122,30 +121,30 @@ namespace Dogmeat.Utilities
                 Content.Contains("COCK"))
                 return Responses[4];
 
-            #endregion Insult
+            #endregion
 
             #region LGBT
 
-            else if (Content.Contains("GAY") ||
+            if (Content.Contains("GAY") ||
                 Content.Contains("LESBIAN") ||
                 Content.Contains("TRANS") ||
                 Content.Contains("SEXUAL"))
                 return Responses[5];
 
-            #endregion LGBT
+            #endregion
 
             #region Arya
 
-            else if (Content.Contains("RACIS") ||
+            if (Content.Contains("RACIS") ||
                 Content.Contains("HITLER") ||
                 Content.Contains("RACE"))
                 return Responses[6];
 
-            #endregion Arya
+            #endregion
 
             #region Female
 
-            else if (Content.Contains("WOMEN") ||
+            if (Content.Contains("WOMEN") ||
                 Content.Contains("GIRL") ||
                 Content.Contains("WOMAN") ||
                 Content.Contains("GRILL") ||
@@ -153,10 +152,9 @@ namespace Dogmeat.Utilities
                 Content.Contains("PUSSY"))
                 return Responses[7];
 
-            #endregion Female
-
-            else
-                return Responses[r.Next(0, Responses.Length)];
+            #endregion
+            
+            return Responses[Vars.Random.Next(0, Responses.Length)];
         }
 
         #endregion Variables
@@ -191,14 +189,17 @@ namespace Dogmeat.Utilities
         
         #region Connection
 
-        public static async Task MaintainConnection()
+        public static async Task MaintainConnectionAsync()
         {
             while (Vars.KeepAlive)
             {
                 if (Vars.Client.ConnectionState == ConnectionState.Disconnected)
                 {
+                    await DisconnectAsync();
+                    
                     Vars.Client.LoginAsync(TokenType.Bot, Vars.Token);
                     Vars.Client.StartAsync();
+                    Vars.KeepAlive = true;
 
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine(DateTime.Now + ": Dogmeat has disconnected and automagically reconnected.");
@@ -215,46 +216,49 @@ namespace Dogmeat.Utilities
             Task.Delay(-1);
         }
 
-        public static void Shutdown()
+        public static async Task ShutdownAsync()
         {
             Vars.KeepAlive = false;
             ContinueShutdown = true;
             Logger.Log("Client is shutting down in five seconds.", ConsoleColor.Red);
-            new Thread(() =>
-            {
-                while (!ContinueShutdown)
-                {
-                    Logger.Log("5", ConsoleColor.Red);
-                    Thread.Sleep(1000);
 
-                    Logger.Log("4", ConsoleColor.Red);
-                    Thread.Sleep(1000);
-
-                    Logger.Log("3", ConsoleColor.Red);
-                    Thread.Sleep(1000);
-
-                    Logger.Log("2", ConsoleColor.Red);
-                    Thread.Sleep(1000);
-
-                    Logger.Log("1", ConsoleColor.Red);
-                    Thread.Sleep(1000);
-
-                    Disconnect();
-                    Environment.Exit(0);
-                }
-            }).Start();
+            await ShutdownMeatAsync();
         }
 
-        public static void Disconnect()
+        public static async Task ShutdownMeatAsync()
+        {
+            while (!ContinueShutdown)
+            {
+                Logger.Log("5", ConsoleColor.Red);
+                Thread.Sleep(1000);
+
+                Logger.Log("4", ConsoleColor.Red);
+                Thread.Sleep(1000);
+
+                Logger.Log("3", ConsoleColor.Red);
+                Thread.Sleep(1000);
+
+                Logger.Log("2", ConsoleColor.Red);
+                Thread.Sleep(1000);
+
+                Logger.Log("1", ConsoleColor.Red);
+                Thread.Sleep(1000);
+
+                await DisconnectAsync();
+                Environment.Exit(0);
+            }
+        }
+
+        public static async Task DisconnectAsync()
         {
             Vars.KeepAlive = false;
-            Vars.Client.StopAsync();
+            await Vars.Client.StopAsync();
             Logger.Log("Dogmeat disconnected.", ConsoleColor.Red);
         }
         
         #endregion
 
-        public static async Task UpdateVars()
+        public static async Task UpdateVarsAsync()
         {
             while (Vars.KeepAlive)
             {
@@ -274,12 +278,24 @@ namespace Dogmeat.Utilities
             Task.Delay(-1);
         }
 
-        public static async Task CreateMutedRole(SocketGuild Guild)
+        public static async Task<IRole> CreateMutedRole(IGuild Guild)
         {
-            await Guild.CreateRoleAsync("Muted", Vars.MutedPermissions, Color.Red);
-            
-            foreach (SocketTextChannel Channel in Guild.TextChannels)
-                Channel.AddPermissionOverwriteAsync(GetMutedRole(Guild), Vars.MutedChannelPermissions);
+            IRole Muted = await Guild.CreateRoleAsync("Muted", Vars.MutedPermissions, Color.Red);
+
+            foreach (SocketTextChannel Channel in ((SocketGuild) Guild).TextChannels)
+                Channel.AddPermissionOverwriteAsync(Muted, Vars.MutedChannelPermissions);
+
+            return Muted;
+        }
+
+        public static async Task<EMaster> CheckMasterAsync(IGuild Guild, IUser User)
+        {
+            if (GetMasterRole(Guild) == null)
+                return EMaster.NONE;
+
+            return !((SocketGuildUser) User).Roles.Contains(GetMasterRole(Guild))
+                ? EMaster.FALSE
+                : EMaster.TRUE;
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Discord.Commands;
 
 namespace Dogmeat.Commands
@@ -9,10 +8,8 @@ namespace Dogmeat.Commands
         [Command("meme"), Summary("Only the dankest")]
         public async Task MemeAsync()
         {
-            String[] Memes = Vars.Memes;
-            Random r = new Random();
-            int index = r.Next(0, Memes.Length + 1);
-            ReplyAsync(Memes[index]);
+            int index = Vars.Random.Next(0, Vars.Memes.Length + 1);
+            ReplyAsync(Vars.Memes[index]);
         }
     }
 }

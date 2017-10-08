@@ -2,14 +2,13 @@
 using Discord;
 using Discord.Commands;
 using Steam.Models.SteamCommunity;
-using Dogmeat.Utilities;
 
 namespace Dogmeat.Commands
 {
-    public class CSteamBans : ModuleBase
+    public class SteamBans : ModuleBase
     {
         [Command("steambans"), Summary("Probes a steam account for bans")]
-        public async Task SteamProfile([Summary("Vanity URL or ID of steam profile")] string name = null)
+        public async Task SteamBansAsync([Summary("Vanity URL or ID of steam profile")] string name = null)
         {
             SteamCommunityProfileModel Profile = await Utilities.Steam.GetProfile(name);
             
@@ -31,8 +30,8 @@ namespace Dogmeat.Commands
 
             uint BanCount = BansModel.NumberOfGameBans + BansModel.NumberOfVACBans;
             
-            ReplyAsync("", embed: new EmbedBuilder()
-                {
+            ReplyAsync("", embed: new EmbedBuilder
+                    {
                     Title = $"Ban summary for {Player.Nickname}",
                     Color = Colors.SexyBlue,
                     ThumbnailUrl = Player.AvatarMediumUrl,
@@ -45,14 +44,22 @@ namespace Dogmeat.Commands
                 {
                     F.IsInline = true;
                     F.Name = "Ban Conclusion";
-                    if (BanCount == 0)
-                        F.Value = "Anti-Cheater";
-                    else if (BanCount == 1)
-                        F.Value = "Ashamed Cheater";
-                    else if (BanCount <= 3)
-                        F.Value = "Proud Cheater";
-                    else
-                        F.Value = "Anti-Gamer";
+                    switch (BanCount)
+                    {
+                        case 0:
+                            F.Value = "Anti-Cheater";
+                            break;
+                        case 1:
+                        case 2:
+                            F.Value = "Ashamed Cheater";
+                            break;
+                        default:
+                            if (BanCount <= 3)
+                                F.Value = "Proud Cheater";
+                            else
+                                F.Value = "Anti-Gamer";
+                            break;
+                    }
                 })
                 .AddField(F =>
                 {

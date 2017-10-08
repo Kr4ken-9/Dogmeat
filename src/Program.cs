@@ -2,8 +2,8 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Discord;
-using Discord.WebSocket;
 using Discord.Commands;
+using Discord.WebSocket;
 using Dogmeat.Utilities;
 using Microsoft.Extensions.DependencyInjection;
 using SteamWebAPI2.Interfaces;
@@ -16,18 +16,20 @@ namespace Dogmeat
 
         public async Task RunAsync()
         {
+            Vars.Random = new Random();
+            
             Vars.Client = new DiscordSocketClient();
             Vars.CService = new CommandService();
 
-            if (String.IsNullOrEmpty(Vars.Token))
+            while (String.IsNullOrEmpty(Vars.Token))
             {
-                Console.WriteLine("Please enter Bot token: ");
+                Console.WriteLine("Please enter Bot token:");
                 Vars.Token = Console.ReadLine();
             }
 
-            if (String.IsNullOrEmpty(Vars.SteamAPIKey))
+            while (String.IsNullOrEmpty(Vars.SteamAPIKey))
             {
-                Console.WriteLine("Please enter Steam API token: ");
+                Console.WriteLine("Please enter Steam API token:");
                 Vars.SteamAPIKey = Console.ReadLine();
             }
 
@@ -57,11 +59,11 @@ namespace Dogmeat
             
             #region Continous Tasks
             
-            CancellationTokenSource Token = new CancellationTokenSource();
+            CancellationToken Token = new CancellationTokenSource().Token;
             
-            new Task(() => Utils.MaintainConnection(), Token.Token, TaskCreationOptions.LongRunning).Start();
+            new Task(() => Utils.MaintainConnectionAsync(), Token, TaskCreationOptions.LongRunning).Start();
 
-            new Task(() => Utils.UpdateVars(), Token.Token, TaskCreationOptions.LongRunning).Start();
+            new Task(() => Utils.UpdateVarsAsync(), Token, TaskCreationOptions.LongRunning).Start();
             
             #endregion
 

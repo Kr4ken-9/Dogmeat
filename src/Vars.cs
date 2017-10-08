@@ -1,14 +1,15 @@
 ﻿using System;
-using System.Net.Http;
 using Discord;
-using Discord.WebSocket;
 using Discord.Commands;
+using Discord.WebSocket;
 using SteamWebAPI2.Interfaces;
 
 namespace Dogmeat
 {
     public class Vars
     {
+        public static Random Random;
+        
         public static String Token = "";
 
         public static String SteamAPIKey = "";

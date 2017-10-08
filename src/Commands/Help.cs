@@ -4,15 +4,15 @@ using Discord.Commands;
 
 namespace Dogmeat.Commands
 {
-    public class CHelp : ModuleBase
+    public class Help : ModuleBase
     {
         [Command("help"), Summary("Dogmeat is a free spirit, and only responds to exact circumstances.")]
         public async Task HelpAsync()
         {
             IDMChannel DMChannel = await Context.User.GetOrCreateDMChannelAsync();
 
-            await DMChannel.SendMessageAsync("", embed: new EmbedBuilder()
-                {
+            await DMChannel.SendMessageAsync("", embed: new EmbedBuilder
+                    {
                     Title = "Dogmeat Manual",
                     Color = Colors.SexyBlue,
                     Url = "https://ex-presidents.github.io/Dogmeat",

@@ -7,10 +7,10 @@ using Steam.Models.SteamCommunity;
 
 namespace Dogmeat.Commands
 {
-    public class CSteamProfile : ModuleBase
+    public class SteamProfile : ModuleBase
     {
         [Command("steamprofile"), Summary("Gets basic steam profile information based on input")]
-        public async Task SteamProfile([Summary("Vanity URL or ID of steam profile")] string name = null)
+        public async Task SteamProfileAsync([Summary("Vanity URL or ID of steam profile")] string name = null)
         {
             SteamCommunityProfileModel Profile = await Utilities.Steam.GetProfile(name);
 
@@ -28,8 +28,8 @@ namespace Dogmeat.Commands
 
             PlayerSummaryModel Player = await Utilities.Steam.GetPlayerSummary(Profile);
 
-            ReplyAsync("", embed: new EmbedBuilder()
-                {
+            ReplyAsync("", embed: new EmbedBuilder
+                    {
                     Title = $"Player summary for {Player.Nickname}",
                     Color = Colors.SexyBlue,
                     ThumbnailUrl = Player.AvatarMediumUrl,

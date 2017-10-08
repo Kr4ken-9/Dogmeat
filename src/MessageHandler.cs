@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
-using Discord.WebSocket;
+using Discord;
 using Discord.Commands;
+using Discord.WebSocket;
 using Dogmeat.Utilities;
 
 namespace Dogmeat   
@@ -13,7 +15,7 @@ namespace Dogmeat
 
         #region Owner Commands
 
-        public static async Task InitializeOwnerCommandsHandler() => Vars.Client.MessageReceived += async (msg) =>
+        public static async Task InitializeOwnerCommandsHandler() => Vars.Client.MessageReceived += async msg =>
         {
             if (msg.Channel.Id == Vars.Commands.Id && !msg.Content.Contains("~") &&
                 msg.Author.Id != Vars.Client.CurrentUser.Id)
@@ -22,7 +24,7 @@ namespace Dogmeat
 
         public static async Task HandleOwnerCommand(SocketMessage msg)
         {
-            string Input = msg.Content;
+            String Input = msg.Content;
 
             if (Input == null)
                 return;
@@ -30,7 +32,7 @@ namespace Dogmeat
             String[] Inputs = Input.Split('"')
                 .Select((element, index) => index % 2 == 0
                     ? element.Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries)
-                    : new string[] {element})
+                    : new[] {element})
                 .SelectMany(element => element).ToArray();
 
             switch (Inputs[0].ToUpperInvariant())
@@ -54,10 +56,10 @@ namespace Dogmeat
                 case "SHUTDOWN":
                 case "QUIT":
                 case "EXIT":
-                    Utils.Shutdown();
+                    Utils.ShutdownAsync();
                     break;
                 case "DISCONNECT":
-                    Utils.Disconnect();
+                    Utils.DisconnectAsync();
                     break;
                 case "RECONNECT":
                     Vars.KeepAlive = true;
@@ -80,7 +82,7 @@ namespace Dogmeat
         
         public static async Task InitializeGeneralHandler()
         {
-            Vars.Client.MessageReceived += async (msg) =>
+            Vars.Client.MessageReceived += async msg =>
             {
                 if (msg.Channel.Id == 333334079921455105)
                 {
@@ -105,7 +107,7 @@ namespace Dogmeat
 
         public static async Task WrongChannelAsync(SocketMessage e)
         {
-            var channel = await e.Author.GetOrCreateDMChannelAsync();
+            IDMChannel channel = await e.Author.GetOrCreateDMChannelAsync();
             channel.SendMessageAsync("You are not permitted to chat in that channel.");
             e.DeleteAsync();
             Logger.Log("Attempted to chat in a restricted channel.", ((SocketGuildChannel)e.Channel).Guild, e.Author);
@@ -129,7 +131,7 @@ namespace Dogmeat
         
         public static async Task InitializeCommandHandler()
         {
-            await Vars.CService.AddModulesAsync(System.Reflection.Assembly.GetEntryAssembly());
+            await Vars.CService.AddModulesAsync(Assembly.GetEntryAssembly());
 
             Vars.Client.MessageReceived += HandleCommand;
         }

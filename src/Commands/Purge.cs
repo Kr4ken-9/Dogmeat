@@ -1,29 +1,26 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using Discord.Commands;
+using System.Threading.Tasks;
 using Discord;
-using Discord.WebSocket;
+using Discord.Commands;
 using Dogmeat.Utilities;
 
 namespace Dogmeat.Commands
 { 
-    public class CPurge : ModuleBase
+    public class Purge : ModuleBase
     {
         [Command("purge"), Alias("prune"), Summary("Purges messages on executed channel.")]
-        public async Task Purge([Summary("Number of messages to purge")] int count, [Summary("User to prune")] IGuildUser User = null)
+        public async Task PurgeAsync([Summary("Number of messages to purge")] int count, [Summary("User to prune")] IGuildUser User = null)
         {
-            if (Utils.GetMasterRole((SocketGuild) Context.Guild) == null)
+            switch (await Utils.CheckMasterAsync(Context.Guild, Context.User))
             {
-                await ReplyAsync("I have no master on this server.");
-                return;
-            }
-            else if (!((SocketGuildUser) Context.User).Roles.Contains(Utils.GetMasterRole((SocketGuild) Context.Guild)))
-            {
-                await ReplyAsync("You must be my master to execute this command.");
-                return;
+                case EMaster.NONE:
+                    ReplyAsync("I have no master on this server.");
+                    return;
+                case EMaster.FALSE:
+                    ReplyAsync("You must be my master to execute this command.");
+                    return;
             }
 
             if (User == null)
@@ -46,7 +43,7 @@ namespace Dogmeat.Commands
 
                 IEnumerable<IMessage> DeleteMe = new List<IMessage>
                 {
-                    await Context.Channel.SendMessageAsync($"Purged {count} messages from {User.Username}")
+                    await Context.Channel.SendMessageAsync($"Purged {count} messages from {User.Mention}")
                 };
 
                 Thread.Sleep(5000);

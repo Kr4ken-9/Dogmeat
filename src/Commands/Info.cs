@@ -6,12 +6,12 @@ using Dogmeat.Utilities;
 
 namespace Dogmeat.Commands
 {
-    public class CInfo : ModuleBase
+    public class Info : ModuleBase
     {
         [Command("info"), Summary("Prints info regarding Dogmeat.")]
-        public async Task Info()
+        public async Task InfoAsync()
         {
-            await ReplyAsync("", embed: new EmbedBuilder()
+            await ReplyAsync("", embed: new EmbedBuilder
                     {
                         Title = "Dogmeat Summary",
                         Color = Colors.SexyBlue,
