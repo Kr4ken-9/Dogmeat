@@ -3,7 +3,7 @@ An open-source discord bot on the discord.net 1.0 api
 
 ---
 
-https://ex-presidents.github.io/Dogmeat
+https://kr4ken-9.github.io/Dogmeat
 
 ---
 
