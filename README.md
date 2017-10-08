@@ -3,6 +3,8 @@ An open-source discord bot on the discord.net 1.0 api
 
 ---
 
+[![Feature Requests](http://feathub.com/Kr4ken-9/Dogmeat?format=svg)](http://feathub.com/Kr4ken-9/Dogmeat)
+
 https://kr4ken-9.github.io/Dogmeat
 
 ---
