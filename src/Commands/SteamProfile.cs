@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
+using Dogmeat.Utilities;
 using Steam.Models.SteamCommunity;
 
 namespace Dogmeat.Commands
@@ -27,44 +29,19 @@ namespace Dogmeat.Commands
             }
 
             PlayerSummaryModel Player = await Utilities.Steam.GetPlayerSummary(Profile);
-
-            ReplyAsync("", embed: new EmbedBuilder
-                    {
-                    Title = $"Player summary for {Player.Nickname}",
-                    Color = Colors.SexyBlue,
-                    ThumbnailUrl = Player.AvatarMediumUrl,
-                    Url = Player.ProfileUrl
-                }
-                
-                #region Fields
-                
-                .AddField(F =>
-                {
-                    F.IsInline = true;
-                    F.Name = "SteamID";
-                    F.Value = Player.SteamId;
-                })
-                .AddField(F =>
-                {
-                    F.IsInline = true;
-                    F.Name = "Most Played Game";
-                    F.Value = Profile.MostPlayedGames.First().Name;
-                })
-                .AddField(F =>
-                {
-                    F.IsInline = true;
-                    F.Name = "Currently Playing";
-                    F.Value = String.IsNullOrEmpty(Player.PlayingGameName) ? "None" : Player.PlayingGameName;
-                })
-                .AddField(F =>
-                {
-                    F.IsInline = true;
-                    F.Name = "Status";
-                    F.Value = Profile.State;
-                })
             
-            #endregion
-            );
+            List<Action<EmbedFieldBuilder>> Fields = new List<Action<EmbedFieldBuilder>>
+            {
+                await Utils.CreateEmbedFieldAsync(true, "SteamID", Player.ProfileUrl),
+                await Utils.CreateEmbedFieldAsync(true, "Currently Playing", String.IsNullOrEmpty(Player.PlayingGameName)
+                    ? "None" : Player.PlayingGameName),
+                await Utils.CreateEmbedFieldAsync(true, "Status", Profile.State)
+            };
+
+            Embed Embed = await Utils.CreateEmbedAsync($"Player summary for {Player.Nickname}", Colors.SexyBlue,
+                Player.AvatarMediumUrl, Player.ProfileUrl, Fields.ToArray());
+
+            ReplyAsync("", embed: Embed);
         }
     }
 }

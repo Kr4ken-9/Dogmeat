@@ -1,6 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
+using Dogmeat.Utilities;
 using Steam.Models.SteamCommunity;
 
 namespace Dogmeat.Commands
@@ -28,72 +31,50 @@ namespace Dogmeat.Commands
 
             PlayerBansModel BansModel = await Utilities.Steam.GetPlayerBans(Profile);
 
-            uint BanCount = BansModel.NumberOfGameBans + BansModel.NumberOfVACBans;
+            String BanC = BanConclusion((byte)(BansModel.NumberOfGameBans + BansModel.NumberOfVACBans));
+
+            List<Action<EmbedFieldBuilder>> Fields = new List<Action<EmbedFieldBuilder>>
+            {
+                await Utils.CreateEmbedFieldAsync(true, "Ban Conclusion", BanC),
+                await Utils.CreateEmbedFieldAsync(true, "Community Banned", BansModel.CommunityBanned),
+                await Utils.CreateEmbedFieldAsync(true, "VAC Banned", BansModel.VACBanned),
+                await Utils.CreateEmbedFieldAsync(true, "Economy Bans", BansModel.EconomyBan),
+                await Utils.CreateEmbedFieldAsync(true, "Ban Count",
+                    $"Game Bans: {BansModel.NumberOfGameBans}, VAC Bans: {BansModel.NumberOfVACBans}"),
+                await Utils.CreateEmbedFieldAsync(true, "Last Ban", $"{BansModel.DaysSinceLastBan} days ago.")
+            };
+
+            Embed Embed = await Utils.CreateEmbedAsync($"Ban summary for {Player.Nickname}", BanColor(BanC),
+                Player.AvatarMediumUrl, Player.ProfileUrl, Fields.ToArray());
             
-            ReplyAsync("", embed: new EmbedBuilder
-                    {
-                    Title = $"Ban summary for {Player.Nickname}",
-                    Color = Colors.SexyBlue,
-                    ThumbnailUrl = Player.AvatarMediumUrl,
-                    Url = Player.ProfileUrl
-                }
-                
-                #region Fields
-                
-                .AddField(F =>
-                {
-                    F.IsInline = true;
-                    F.Name = "Ban Conclusion";
-                    switch (BanCount)
-                    {
-                        case 0:
-                            F.Value = "Anti-Cheater";
-                            break;
-                        case 1:
-                        case 2:
-                            F.Value = "Ashamed Cheater";
-                            break;
-                        default:
-                            if (BanCount <= 3)
-                                F.Value = "Proud Cheater";
-                            else
-                                F.Value = "Anti-Gamer";
-                            break;
-                    }
-                })
-                .AddField(F =>
-                {
-                    F.IsInline = true;
-                    F.Name = "Community Banned";
-                    F.Value = BansModel.CommunityBanned;
-                })
-                .AddField(F =>
-                {
-                    F.IsInline = true;
-                    F.Name = "VAC Banned";
-                    F.Value = BansModel.VACBanned;
-                })
-                .AddField(F =>
-                {
-                    F.IsInline = true;
-                    F.Name = "Economy Bans";
-                    F.Value = BansModel.EconomyBan;
-                })
-                .AddField(F =>
-                {
-                    F.IsInline = true;
-                    F.Name = "Ban Count";
-                    F.Value = "Game Bans: " + BansModel.NumberOfGameBans + ", VAC Bans: " + BansModel.NumberOfVACBans;
-                })
-                .AddField(F =>
-                {
-                    F.IsInline = true;
-                    F.Name = "Last Ban";
-                    F.Value = BansModel.DaysSinceLastBan + " days ago.";
-                })
-            
-            #endregion
-            );
+            ReplyAsync("", embed: Embed);
+        }
+
+        private static String BanConclusion(byte BanCount)
+        {
+            switch (BanCount)
+            {
+                case 0:
+                    return "Anti-Cheater";
+                case 1:
+                case 2:
+                    return "Ashamed Cheater";
+                default:
+                    return BanCount <= 3 ? "Proud Cheater" : "Anti-Gamer";
+            }
+        }
+
+        private static Color BanColor(String BanConclusion)
+        {
+            switch (BanConclusion)
+            {
+                case "Anti-Cheater":
+                    return Colors.SexyLime;
+                case "Ashamed Cheater":
+                    return Colors.SexyOrange;
+                default:
+                    return Color.Red;
+            }
         }
     }
 }
