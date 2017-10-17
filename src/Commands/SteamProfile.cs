@@ -32,14 +32,14 @@ namespace Dogmeat.Commands
             
             List<Action<EmbedFieldBuilder>> Fields = new List<Action<EmbedFieldBuilder>>
             {
-                await Utils.CreateEmbedFieldAsync(true, "SteamID", Player.ProfileUrl),
-                await Utils.CreateEmbedFieldAsync(true, "Currently Playing", String.IsNullOrEmpty(Player.PlayingGameName)
-                    ? "None" : Player.PlayingGameName),
-                await Utils.CreateEmbedFieldAsync(true, "Status", Profile.State)
+                await Utilities.Commands.CreateEmbedFieldAsync("SteamID", Player.ProfileUrl),
+                await Utilities.Commands.CreateEmbedFieldAsync("Currently Playing",
+                    String.IsNullOrEmpty(Player.PlayingGameName) ? "None" : Player.PlayingGameName),
+                await Utilities.Commands.CreateEmbedFieldAsync("Status", Profile.State)
             };
 
-            Embed Embed = await Utils.CreateEmbedAsync($"Player summary for {Player.Nickname}", Colors.SexyBlue,
-                Player.AvatarMediumUrl, Player.ProfileUrl, Fields.ToArray());
+            Embed Embed = await Utilities.Commands.CreateEmbedAsync($"Player summary for {Player.Nickname}",
+                Colors.SexyBlue, Player.AvatarMediumUrl, Player.ProfileUrl, Fields.ToArray());
 
             ReplyAsync("", embed: Embed);
         }

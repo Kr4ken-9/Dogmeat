@@ -145,33 +145,5 @@ namespace Dogmeat.Utilities
             }
             Task.Delay(-1);
         }
-
-        public static async Task<Action<EmbedFieldBuilder>> CreateEmbedFieldAsync(bool IsInline, String Name, object Value)
-        {
-            return F =>
-            {
-                F.IsInline = IsInline;
-                F.Name = Name;
-                F.Value = Value;
-            };
-        }
-
-        public static async Task<Embed> CreateEmbedAsync(String Title, Color? Color, String ThumbnailURL, String URL, Action<EmbedFieldBuilder>[] Fields = null)
-        {
-            EmbedBuilder Embed = new EmbedBuilder
-            {
-                Title = Title,
-                Color = Color,
-                ThumbnailUrl = ThumbnailURL,
-                Url = URL
-            };
-
-            if (Fields == null) return Embed.Build();
-            
-            for (int i = 0; i < Fields.Length; i++)
-                Embed.AddField(Fields[i]);
-
-            return Embed.Build();
-        }
     }
 }

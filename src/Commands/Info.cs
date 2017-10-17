@@ -1,4 +1,6 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
@@ -11,48 +13,21 @@ namespace Dogmeat.Commands
         [Command("info"), Summary("Prints info regarding Dogmeat.")]
         public async Task InfoAsync()
         {
-            await ReplyAsync("", embed: new EmbedBuilder
-                    {
-                        Title = "Dogmeat Summary",
-                        Color = Colors.SexyBlue,
-                        Url = "https://ex-presidents.github.io/Dogmeat",
-                        ThumbnailUrl = "https://cdn.discordapp.com/app-icons/272798023816445955/fdef8956d05fdb4d04b0ccbb811c2fc5.jpg"
-                    }
-                    
-                    #region Fields
+            List<Action<EmbedFieldBuilder>> Fields = new List<Action<EmbedFieldBuilder>>
+            {
+                await Utilities.Commands.CreateEmbedFieldAsync("Creation Date", "1/22/17"),
+                await Utilities.Commands.CreateEmbedFieldAsync("Version",
+                    Assembly.GetEntryAssembly().GetName().Version),
+                await Utilities.Commands.CreateEmbedFieldAsync("Guilds", Vars.Client.Guilds.Count),
+                await Utilities.Commands.CreateEmbedFieldAsync("Users", await Utils.GetAllUsers()),
+                await Utilities.Commands.CreateEmbedFieldAsync("Latest Commit", $"https://github.com/Ex-Presidents/Dogmeat/commit/{Vars.LatestCommit}")
+            };
 
-                    .AddField(async F =>
-                    {
-                        F.IsInline = true;
-                        F.Name = "Creation Date";
-                        F.Value = "1/22/17";
-                    })
-                    .AddField(async F =>
-                    {
-                        F.IsInline = true;
-                        F.Name = "Version";
-                        F.Value = Assembly.GetEntryAssembly().GetName().Version;
-                    })
-                    .AddField(async F =>
-                    {
-                        F.IsInline = true;
-                        F.Name = "Guilds";
-                        F.Value = Vars.Client.Guilds.Count;
-                    })
-                    .AddField(async F =>
-                    {
-                        F.IsInline = true;
-                        F.Name = "Users";
-                        F.Value = await Utils.GetAllUsers();
-                    })
-                    .AddField(async F =>
-                    {
-                        F.IsInline = true;
-                        F.Name = "Latest Commit";
-                        F.Value = $"https://github.com/Ex-Presidents/Dogmeat/commit/{Vars.LatestCommit}";
-                    })
-                #endregion
-            );
+            Embed Embed = await Utilities.Commands.CreateEmbedAsync("Dogmeat Summary", Colors.SexyBlue,
+                "https://cdn.discordapp.com/app-icons/272798023816445955/fdef8956d05fdb4d04b0ccbb811c2fc5.jpg",
+                "https://ex-presidents.github.io/Dogmeat", Fields.ToArray());
+            
+            await ReplyAsync("", embed: Embed);
         }
     }
 }

@@ -12,15 +12,7 @@ namespace Dogmeat.Commands
         [Command("mute"), Summary("Mutes a user")]
         public async Task MuteAsync([Summary("User to mute")] IGuildUser User)
         {
-            switch (await Utilities.Commands.CheckMasterAsync(Context.Guild, Context.User))
-            {
-                case EMaster.NONE:
-                    ReplyAsync("I have no master on this server.");
-                    return;
-                case EMaster.FALSE:
-                    ReplyAsync("You must be my master to execute this command.");
-                    return;
-            }
+            if (!await Utilities.Commands.CommandMasterAsync(Context.Guild, User, Context.Channel)) return;
 
             IRole Muted = null;
 

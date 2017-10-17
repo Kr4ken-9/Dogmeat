@@ -35,16 +35,16 @@ namespace Dogmeat.Commands
 
             List<Action<EmbedFieldBuilder>> Fields = new List<Action<EmbedFieldBuilder>>
             {
-                await Utils.CreateEmbedFieldAsync(true, "Ban Conclusion", BanC),
-                await Utils.CreateEmbedFieldAsync(true, "Community Banned", BansModel.CommunityBanned),
-                await Utils.CreateEmbedFieldAsync(true, "VAC Banned", BansModel.VACBanned),
-                await Utils.CreateEmbedFieldAsync(true, "Economy Bans", BansModel.EconomyBan),
-                await Utils.CreateEmbedFieldAsync(true, "Ban Count",
+                await Utilities.Commands.CreateEmbedFieldAsync("Ban Conclusion", BanC),
+                await Utilities.Commands.CreateEmbedFieldAsync("Community Banned", BansModel.CommunityBanned),
+                await Utilities.Commands.CreateEmbedFieldAsync("VAC Banned", BansModel.VACBanned),
+                await Utilities.Commands.CreateEmbedFieldAsync("Economy Bans", BansModel.EconomyBan),
+                await Utilities.Commands.CreateEmbedFieldAsync("Ban Count",
                     $"Game Bans: {BansModel.NumberOfGameBans}, VAC Bans: {BansModel.NumberOfVACBans}"),
-                await Utils.CreateEmbedFieldAsync(true, "Last Ban", $"{BansModel.DaysSinceLastBan} days ago.")
+                await Utilities.Commands.CreateEmbedFieldAsync("Last Ban", $"{BansModel.DaysSinceLastBan} days ago.")
             };
 
-            Embed Embed = await Utils.CreateEmbedAsync($"Ban summary for {Player.Nickname}", BanColor(BanC),
+            Embed Embed = await Utilities.Commands.CreateEmbedAsync($"Ban summary for {Player.Nickname}", BanColor(BanC),
                 Player.AvatarMediumUrl, Player.ProfileUrl, Fields.ToArray());
             
             ReplyAsync("", embed: Embed);

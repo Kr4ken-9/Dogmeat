@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
+using Discord.WebSocket;
 using Dogmeat.Utilities;
 
 namespace Dogmeat.Commands
@@ -11,15 +12,7 @@ namespace Dogmeat.Commands
         [Command("ban"), Summary("Bans a user")]
         public async Task BanAsync([Summary("User of person to ban")] IGuildUser User, [Summary("Reason for ban")] String Reason = null)
         {
-            switch (await Utilities.Commands.CheckMasterAsync(Context.Guild, Context.User))
-            {
-                case EMaster.NONE:
-                    ReplyAsync("I have no master on this server.");
-                    return;
-                case EMaster.FALSE:
-                    ReplyAsync("You must be my master to execute this command.");
-                    return;
-            }
+            if (!await Utilities.Commands.CommandMasterAsync(Context.Guild, Context.User, Context.Channel)) return;
             
             ReplyAsync($"{User.Mention} is no more.");
 
