@@ -9,6 +9,15 @@ This changelog is from October 2017. Older changelog can be found [here](OldChan
 
 ---
 
+**2.2.6.0**
+
+10/16/17
+
+- Streamlined Embeds
+- Streamlined Privileged Commands
+
+---
+
 **2.2.5.0**
 
 10/16/17
