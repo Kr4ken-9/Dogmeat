@@ -9,6 +9,16 @@ This changelog is from October 2017. Older changelog can be found [here](OldChan
 
 ---
 
+**2.2.7.0**
+
+10/17/17
+
+- Fixed announcements
+- Removed useless conditionals
+- Organization
+
+---
+
 **2.2.6.0**
 
 10/16/17
