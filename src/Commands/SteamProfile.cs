@@ -16,18 +16,6 @@ namespace Dogmeat.Commands
         {
             SteamCommunityProfileModel Profile = await Utilities.Steam.GetProfile(name);
 
-            if (Profile == null)
-            {
-                ReplyAsync("Input was not a valid URL or ID.");
-                return;
-            }
-
-            if (Profile.VisibilityState != 3)
-            {
-                ReplyAsync("Player's profile was not public.");
-                return;
-            }
-
             PlayerSummaryModel Player = await Utilities.Steam.GetPlayerSummary(Profile);
             
             List<Action<EmbedFieldBuilder>> Fields = new List<Action<EmbedFieldBuilder>>

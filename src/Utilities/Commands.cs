@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
+using Steam.Models.SteamCommunity;
 
 namespace Dogmeat.Utilities
 {
@@ -18,7 +19,7 @@ namespace Dogmeat.Utilities
                 : EMaster.TRUE;
         }
         
-        public static async Task<IRole> CreateMutedRole(IGuild Guild)
+        public static async Task<IRole> CreateMutedRoleAsync(IGuild Guild)
         {
             IRole Muted = await Guild.CreateRoleAsync("Muted", Vars.MutedPermissions, Color.Red);
 

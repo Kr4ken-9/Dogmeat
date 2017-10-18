@@ -18,7 +18,7 @@ namespace Dogmeat.Commands
 
             if (Utils.GetMutedRole(Context.Guild) == null)
             {
-                Muted = await Utilities.Commands.CreateMutedRole(Context.Guild);
+                Muted = await Utilities.Commands.CreateMutedRoleAsync(Context.Guild);
                 ReplyAsync("Muted role created.");
             }
 

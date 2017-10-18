@@ -44,14 +44,9 @@ namespace Dogmeat
 
                     String output = Inputs[2];
 
-                    foreach (SocketGuild Guild in Vars.Client.Guilds)
-                    {
-                        SocketTextChannel TChannel =
-                            (SocketTextChannel) Guild.Channels.FirstOrDefault(channel => channel.Id == ID);
+                    SocketTextChannel Channel = (SocketTextChannel)Vars.Client.GetChannel(ID);
 
-                        TChannel?.SendMessageAsync(output);
-                    }
-                    
+                    Channel?.SendMessageAsync(output);
                     break;
                 case "SHUTDOWN":
                 case "QUIT":

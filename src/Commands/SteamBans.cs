@@ -14,18 +14,6 @@ namespace Dogmeat.Commands
         public async Task SteamBansAsync([Summary("Vanity URL or ID of steam profile")] string name = null)
         {
             SteamCommunityProfileModel Profile = await Utilities.Steam.GetProfile(name);
-            
-            if (Profile == null)
-            {
-                ReplyAsync("Input was not a valid URL or ID.");
-                return;
-            }
-
-            if (Profile.VisibilityState != 3)
-            {
-                ReplyAsync("Player's profile was not public.");
-                return;
-            }
 
             PlayerSummaryModel Player = await Utilities.Steam.GetPlayerSummary(Profile);
 
