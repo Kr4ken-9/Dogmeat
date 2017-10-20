@@ -24,6 +24,8 @@
   <ItemGroup>
     <PackageReference Include="Discord.Net.Commands" Version="1.0.2" />
     <PackageReference Include="Discord.Net.WebSocket" Version="1.0.2" />
+    <PackageReference Include="MySqlConnector" Version="0.28.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
     <PackageReference Include="SteamWebAPI2" Version="4.0.1" />
   </ItemGroup>
 </Project>

@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using Dogmeat.Config;
 using Dogmeat.Utilities;
 using Microsoft.Extensions.DependencyInjection;
 using SteamWebAPI2.Interfaces;
@@ -20,6 +21,8 @@ namespace Dogmeat
             
             Vars.Client = new DiscordSocketClient();
             Vars.CService = new CommandService();
+            
+            ConfigManager.LoadConfig();
 
             while (String.IsNullOrEmpty(Vars.Token))
             {
@@ -45,7 +48,6 @@ namespace Dogmeat
 
         private async Task OnStart()
         {
-            Vars.PointBlank = Vars.Client.GetGuild(332435336921612299);
             Vars.Main = Vars.Client.GetGuild(281249097770598402);
             Vars.Commands = await Vars.Main.GetChannelAsync(297587358063394816);
             Vars.Logging = await Vars.Main.GetChannelAsync(297587378804097025);

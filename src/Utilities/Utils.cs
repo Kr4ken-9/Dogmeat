@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
+using Dogmeat.Config;
 
 namespace Dogmeat.Utilities
 {
@@ -88,6 +86,9 @@ namespace Dogmeat.Utilities
         {
             Vars.KeepAlive = false;
             ContinueShutdown = true;
+            
+            ConfigManager.SaveConfig();
+            
             Logger.Log("Client is shutting down in five seconds.", ConsoleColor.Red);
 
             await ShutdownMeatAsync();
@@ -131,8 +132,10 @@ namespace Dogmeat.Utilities
             while (Vars.KeepAlive)
             {
                 Vars.Answers = await Responses.DogmeatAnswersAsync();
-                Vars.Memes = Responses.DogmeatMemesAsync().Result;
-                Vars.RawResponses = Responses.DogmeatResponsesAsync().Result;
+                Vars.Memes = await Responses.DogmeatMemesAsync();
+                Vars.RawResponses = await Responses.DogmeatResponsesAsync();
+                
+                ConfigManager.SaveConfig();
                 
                 using (HttpClient Client = new HttpClient())
                 {

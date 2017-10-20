@@ -3,9 +3,9 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using Dogmeat.Config;
 using Dogmeat.Utilities;
 
 namespace Dogmeat   
@@ -22,7 +22,7 @@ namespace Dogmeat
                 await HandleOwnerCommand(msg);
         };
 
-        public static async Task HandleOwnerCommand(SocketMessage msg)
+        private static async Task HandleOwnerCommand(SocketMessage msg)
         {
             String Input = msg.Content;
 
@@ -64,6 +64,9 @@ namespace Dogmeat
                     Logger.Log("Shutdown canceled", ConsoleColor.Green);
                     Utils.ContinueShutdown = false;
                     break;
+                case "SAVE":
+                    ConfigManager.SaveConfig();
+                    break;
                 default:
                     Logger.Log(Inputs[0] + " is not a command.", ConsoleColor.Red);
                     break;
@@ -92,35 +95,20 @@ namespace Dogmeat
                     await Patronization(msg);
             };
         }
-        
-        public static async Task AccessAsync(SocketMessage e)
-        {
-            (e.Author as SocketGuildUser).AddRoleAsync(Vars.PointBlank.GetRole(333334103858348033));
-            e.DeleteAsync();
-            Logger.Log("Underwent Initiation", ((SocketGuildChannel)e.Channel).Guild, e.Author);
-        }
 
-        public static async Task WrongChannelAsync(SocketMessage e)
-        {
-            IDMChannel channel = await e.Author.GetOrCreateDMChannelAsync();
-            channel.SendMessageAsync("You are not permitted to chat in that channel.");
-            e.DeleteAsync();
-            Logger.Log("Attempted to chat in a restricted channel.", ((SocketGuildChannel)e.Channel).Guild, e.Author);
-        }
-
-        public static async Task MentionedAsync(SocketMessage e)
+        private static async Task MentionedAsync(SocketMessage e)
         {
             e.Channel.SendMessageAsync(await Responses.ResponsePickerAsync(e.Content.ToUpper()));
             Logger.Log("Mentioned me.", ((SocketGuildChannel)e.Channel).Guild, e.Author);
         }
 
-        public static async Task DefConAsync(SocketMessage e)
+        private static async Task DefConAsync(SocketMessage e)
         {
             e.Channel.SendMessageAsync("DefCon42 is a sexy beast. Also, fuck off.");
             Logger.Log("Reversed my name.", ((SocketGuildChannel)e.Channel).Guild, e.Author);
         }
 
-        public static async Task Patronization(SocketMessage e)
+        private static async Task Patronization(SocketMessage e)
         {
             e.Channel.SendMessageAsync("Don't patronize me, faggot.");
             Logger.Log("Patronized me.", ((SocketGuildChannel)e.Channel).Guild, e.Author);
@@ -137,7 +125,7 @@ namespace Dogmeat
             Vars.Client.MessageReceived += HandleCommand;
         }
 
-        public static async Task HandleCommand(SocketMessage CommandParameter)
+        private static async Task HandleCommand(SocketMessage CommandParameter)
         {
             SocketUserMessage Message = CommandParameter as SocketUserMessage;
 

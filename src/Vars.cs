@@ -20,8 +20,6 @@ namespace Dogmeat
 
         public static IChannel Commands;
 
-        public static IGuild PointBlank;
-
         public static IGuild Main;
 
         public static DiscordSocketClient Client;
