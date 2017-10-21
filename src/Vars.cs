@@ -2,6 +2,7 @@
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using Dogmeat.UUI;
 using SteamWebAPI2.Interfaces;
 
 namespace Dogmeat
@@ -13,6 +14,8 @@ namespace Dogmeat
         public static String Token = "";
 
         public static String SteamAPIKey = "";
+
+        public static UserInfoHandler UUIHandler;
 
         public static SteamUser SteamInterface;
 

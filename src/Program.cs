@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Discord;
@@ -6,7 +7,9 @@ using Discord.Commands;
 using Discord.WebSocket;
 using Dogmeat.Config;
 using Dogmeat.Utilities;
+using Dogmeat.UUI;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 using SteamWebAPI2.Interfaces;
 
 namespace Dogmeat
@@ -36,6 +39,20 @@ namespace Dogmeat
                 Vars.SteamAPIKey = Console.ReadLine();
             }
 
+            if (!ConfigManager.CheckConfigItem("mysql.json"))
+            {
+                Console.WriteLine("You must have a mysql configuration for Universal User Info functionality.");
+                Console.WriteLine("Would you like to configure it now? Y/N");
+
+                Connection PotentialConnection = UserInfoHandler.AggregateConnection(Console.ReadLine());
+
+                if (PotentialConnection != null)
+                    File.WriteAllText(ConfigManager.ConfigPath("mysql.json"),
+                        JsonConvert.SerializeObject(PotentialConnection, Formatting.Indented));
+            }
+            
+            Vars.UUIHandler = UserInfoHandler.LoadConnection();
+
             await Vars.Client.LoginAsync(TokenType.Bot, Vars.Token);
             await Vars.Client.StartAsync();
 
@@ -62,8 +79,6 @@ namespace Dogmeat
             #region Continous Tasks
             
             CancellationToken Token = new CancellationTokenSource().Token;
-            
-            new Task(() => Utils.MaintainConnectionAsync(), Token, TaskCreationOptions.LongRunning).Start();
 
             new Task(() => Utils.UpdateVarsAsync(), Token, TaskCreationOptions.LongRunning).Start();
             

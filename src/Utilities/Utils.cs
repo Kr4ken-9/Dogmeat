@@ -55,33 +55,6 @@ namespace Dogmeat.Utilities
         
         #region Connection
 
-        public static async Task MaintainConnectionAsync()
-        {
-            while (Vars.KeepAlive)
-            {
-                if (Vars.Client.ConnectionState == ConnectionState.Disconnected)
-                {
-                    await DisconnectAsync();
-                    
-                    Vars.Client.LoginAsync(TokenType.Bot, Vars.Token);
-                    Vars.Client.StartAsync();
-                    Vars.KeepAlive = true;
-
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine(DateTime.Now + ": Dogmeat has disconnected and automagically reconnected.");
-                    Console.ForegroundColor = ConsoleColor.Gray;
-                }
-                else
-                {
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine(DateTime.Now + ": Client still connected.");
-                    Console.ForegroundColor = ConsoleColor.Gray;
-                }
-                Thread.Sleep(3600000);
-            }
-            Task.Delay(-1);
-        }
-
         public static async Task ShutdownAsync()
         {
             Vars.KeepAlive = false;
