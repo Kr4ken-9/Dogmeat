@@ -27,29 +27,7 @@ namespace Dogmeat
             
             ConfigManager.LoadConfig();
 
-            while (String.IsNullOrEmpty(Vars.Token))
-            {
-                Console.WriteLine("Please enter Bot token:");
-                Vars.Token = Console.ReadLine();
-            }
-
-            while (String.IsNullOrEmpty(Vars.SteamAPIKey))
-            {
-                Console.WriteLine("Please enter Steam API token:");
-                Vars.SteamAPIKey = Console.ReadLine();
-            }
-
-            if (!ConfigManager.CheckConfigItem("mysql.json"))
-            {
-                Console.WriteLine("You must have a mysql configuration for Universal User Info functionality.");
-                Console.WriteLine("Would you like to configure it now? Y/N");
-
-                Connection PotentialConnection = UserInfoHandler.AggregateConnection(Console.ReadLine());
-
-                if (PotentialConnection != null)
-                    File.WriteAllText(ConfigManager.ConfigPath("mysql.json"),
-                        JsonConvert.SerializeObject(PotentialConnection, Formatting.Indented));
-            }
+            await CheckVariables();
             
             Vars.UUIHandler = UserInfoHandler.LoadConnection();
 
@@ -76,16 +54,39 @@ namespace Dogmeat
 
             MessageHandler.InitializeOwnerCommandsHandler();
             
-            #region Continous Tasks
-            
             CancellationToken Token = new CancellationTokenSource().Token;
 
             new Task(() => Utils.UpdateVarsAsync(), Token, TaskCreationOptions.LongRunning).Start();
-            
-            #endregion
 
             if (Vars.UnderMaintenance)
                 Vars.Client.SetGameAsync("Under Maintenace");
+        }
+
+        private async Task CheckVariables()
+        {
+            while (String.IsNullOrEmpty(Vars.Token))
+            {
+                Console.WriteLine("Please enter Bot token:");
+                Vars.Token = Console.ReadLine();
+            }
+
+            while (String.IsNullOrEmpty(Vars.SteamAPIKey))
+            {
+                Console.WriteLine("Please enter Steam API token:");
+                Vars.SteamAPIKey = Console.ReadLine();
+            }
+
+            if (!ConfigManager.CheckConfigItem("mysql.json"))
+            {
+                Console.WriteLine("You must have a mysql configuration for Universal User Info functionality.");
+                Console.WriteLine("Would you like to configure it now? Y/N");
+
+                Connection PotentialConnection = UserInfoHandler.AggregateConnection(Console.ReadLine());
+
+                if (PotentialConnection != null)
+                    File.WriteAllText(ConfigManager.ConfigPath("mysql.json"),
+                        JsonConvert.SerializeObject(PotentialConnection, Formatting.Indented));
+            }
         }
 
     }

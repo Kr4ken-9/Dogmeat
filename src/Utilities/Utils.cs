@@ -19,13 +19,7 @@ namespace Dogmeat.Utilities
 
         public static IRole GetMutedRole(IGuild Guild) => Guild.Roles.FirstOrDefault(role => role.Name == "Muted");
 
-        public static IRole GetRole(IGuild Guild, ulong ID) => Guild.Roles.FirstOrDefault(role => role.Id == ID);
-
-        public static IRole GetRole(IGuild Guild, String Name) => Guild.Roles.FirstOrDefault(role => role.Name == Name);
-
         #endregion Variables
-
-        #region Users
 
         public static async Task<int> GetAllUsers()
         {
@@ -36,22 +30,6 @@ namespace Dogmeat.Utilities
 
             return Users;
         }
-
-        private static async Task<IGuildUser> GetUserByName(IGuild Guild, String Name) =>
-            (await Guild.GetUsersAsync()).FirstOrDefault(user => user.Nickname.Contains(Name) || user.Username.Contains(Name));
-
-        private static async Task<IGuildUser> GetUserByID(IGuild Guild, String ID)
-        {
-            if (!ulong.TryParse(ID, out ulong Id))
-                return null;
-
-            return await Guild.GetUserAsync(Id);
-        }
-
-        public static async Task<IGuildUser> GetUser(IGuild Guild, String Input) =>
-            await GetUserByName(Guild, Input) ?? await GetUserByName(Guild, Input);
-
-        #endregion Users
         
         #region Connection
 

@@ -11,42 +11,29 @@ namespace Dogmeat
     {
         public static Random Random;
         
-        public static String Token = "";
-
-        public static String SteamAPIKey = "";
+        public static String Token = "", SteamAPIKey = "", LatestCommit;
+        
+        public static IChannel Logging, Commands;
+        
+        public static String[] RawResponses, Memes, Answers;
+        
+        public static bool KeepAlive = true, UnderMaintenance = true;
 
         public static UserInfoHandler UUIHandler;
 
         public static SteamUser SteamInterface;
 
-        public static IChannel Logging;
-
-        public static IChannel Commands;
-
         public static IGuild Main;
 
         public static DiscordSocketClient Client;
-
-        public static bool KeepAlive = true;
 
         public static CommandService CService;
 
         public static IServiceProvider ISProvider;
 
-        public static String[] RawResponses;
+        public static OverwritePermissions MutedChannelPermissions =
+            new OverwritePermissions(sendMessages: PermValue.Deny);
 
-        public static String[] Memes;
-
-        public static String[] Answers;
-
-        public static OverwritePermissions MutedChannelPermissions = new OverwritePermissions(PermValue.Inherit,
-            PermValue.Inherit, PermValue.Inherit, PermValue.Inherit, PermValue.Deny);
-
-        public static GuildPermissions MutedPermissions =
-            new GuildPermissions(false, false, false, false, false, false, false, true, false);
-
-        public static String LatestCommit;
-
-        public static bool UnderMaintenance = true;
+        public static GuildPermissions MutedPermissions = new GuildPermissions(sendMessages: false);
     }
 }
