@@ -23,10 +23,10 @@ namespace Dogmeat.UUI
 
             ConnectionString = CString;
             
-            //CheckSchema();
+            //CheckTable();
         }
 
-        internal async Task CheckSchema()
+        internal async Task CheckTable()
         {
             try
             {
@@ -149,28 +149,24 @@ namespace Dogmeat.UUI
             {
                 case "Y":
                 case "YES":
-                    String Server = "";
-                    String Database = "";
-                    String UID = "";
-                    String Password = "";
-                    int Port;
+                    Connection Connection = new Connection("", "", "", "", 0);
 
                     Console.WriteLine("Enter server address:");
-                    Server = Console.ReadLine();
+                    Connection.Server = Console.ReadLine();
                         
                     Console.WriteLine("Enter database name:");
-                    Database = Console.ReadLine();
+                    Connection.Database = Console.ReadLine();
                         
                     Console.WriteLine("Enter user name:");
-                    UID = Console.ReadLine();
+                    Connection.UID = Console.ReadLine();
                         
                     Console.WriteLine("Enter password:");
-                    Password = Console.ReadLine();
+                    Connection.Password = Console.ReadLine();
                         
                     Console.WriteLine("Enter port:");
-                    Port = int.Parse(Console.ReadLine());
-                    
-                    return new Connection(Server, Database, UID, Password, Port);
+                    Connection.Port = int.Parse(Console.ReadLine());
+
+                    return Connection;
                 default:
                     return null;
             }

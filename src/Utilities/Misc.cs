@@ -9,7 +9,7 @@ using Dogmeat.Config;
 
 namespace Dogmeat.Utilities
 {
-    public class Utils
+    public class Misc
     {
         #region Variables
 

@@ -5,9 +5,7 @@ namespace Dogmeat.Utilities
 {
     public class Logger
     {
-        public static void Log(String Message) => Log(Message, ConsoleColor.Gray);
-
-        public static void Log(String Message, ConsoleColor Color)
+        public static void Log(String Message, ConsoleColor Color = ConsoleColor.Gray)
         {
             Console.ForegroundColor = Color;
             Console.WriteLine(DateTime.Now + ": " + Message);
@@ -15,9 +13,7 @@ namespace Dogmeat.Utilities
             ((SocketTextChannel)Vars.Logging).SendMessageAsync(DateTime.Now + ": " + Message);
         }
 
-        public static void Log(String Message, SocketGuild Guild, SocketUser User) => Log(Message, ConsoleColor.Gray, Guild, User);
-
-        public static void Log(String Message, ConsoleColor Color, SocketGuild Guild, SocketUser User)
+        public static void Log(String Message, SocketGuild Guild, SocketUser User, ConsoleColor Color = ConsoleColor.Gray)
         {
             Console.ForegroundColor = Color;
             Console.WriteLine(DateTime.Now + ": [" + Guild.Name + "] " + User.Username + " " + Message);

@@ -35,14 +35,21 @@ namespace Dogmeat
                     : new[] {element})
                 .SelectMany(element => element).ToArray();
 
-            switch (Inputs[0].ToUpperInvariant())
+            OwnerCommand(Inputs);
+            
+            Logger.Log("Issued command " + Inputs[0], Vars.Main as SocketGuild, msg.Author);
+        }
+
+        private static async Task OwnerCommand(String[] Parameters)
+        {
+            switch (Parameters[0].ToUpperInvariant())
             {
                 case "ANNOUNCE":
                 case "SAY":
-                    if (!ulong.TryParse(Inputs[1], out ulong ID))
+                    if (!ulong.TryParse(Parameters[1], out ulong ID))
                         Logger.Log("That is not a valid ID.");
 
-                    String output = Inputs[2];
+                    String output = Parameters[2];
 
                     SocketTextChannel Channel = (SocketTextChannel)Vars.Client.GetChannel(ID);
 
@@ -51,10 +58,10 @@ namespace Dogmeat
                 case "SHUTDOWN":
                 case "QUIT":
                 case "EXIT":
-                    Utils.ShutdownAsync();
+                    Misc.ShutdownAsync();
                     break;
                 case "DISCONNECT":
-                    Utils.DisconnectAsync();
+                    Misc.DisconnectAsync();
                     break;
                 case "RECONNECT":
                     Vars.KeepAlive = true;
@@ -62,16 +69,15 @@ namespace Dogmeat
                     break;
                 case "CANCEL":
                     Logger.Log("Shutdown canceled", ConsoleColor.Green);
-                    Utils.ContinueShutdown = false;
+                    Misc.ContinueShutdown = false;
                     break;
                 case "SAVE":
                     ConfigManager.SaveConfig();
                     break;
                 default:
-                    Logger.Log(Inputs[0] + " is not a command.", ConsoleColor.Red);
+                    Logger.Log(Parameters[0] + " is not a command.", ConsoleColor.Red);
                     break;
             }
-            Logger.Log("Issued command " + Inputs[0], Vars.Main as SocketGuild, msg.Author);
         }
 
         #endregion

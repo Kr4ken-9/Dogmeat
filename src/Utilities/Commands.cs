@@ -11,10 +11,10 @@ namespace Dogmeat.Utilities
     {
         public static async Task<EMaster> CheckMasterAsync(IGuild Guild, IUser User)
         {
-            if (Utils.GetMasterRole(Guild) == null)
+            if (Misc.GetMasterRole(Guild) == null)
                 return EMaster.NONE;
 
-            return !((SocketGuildUser) User).Roles.Contains(Utils.GetMasterRole(Guild))
+            return !((SocketGuildUser) User).Roles.Contains(Misc.GetMasterRole(Guild))
                 ? EMaster.FALSE
                 : EMaster.TRUE;
         }

@@ -56,7 +56,7 @@ namespace Dogmeat
             
             CancellationToken Token = new CancellationTokenSource().Token;
 
-            new Task(() => Utils.UpdateVarsAsync(), Token, TaskCreationOptions.LongRunning).Start();
+            new Task(() => Misc.UpdateVarsAsync(), Token, TaskCreationOptions.LongRunning).Start();
 
             if (Vars.UnderMaintenance)
                 Vars.Client.SetGameAsync("Under Maintenace");
