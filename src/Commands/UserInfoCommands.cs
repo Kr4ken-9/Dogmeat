@@ -33,5 +33,19 @@ namespace Dogmeat.Commands
 
             ReplyAsync("", embed: Embed);
         }
+        
+        [Command("tag"), Summary("Retrieves a user-configurable output for given tag")]
+        public async Task Tag([Summary("User to retrieve profile for")] String ID)
+        {
+            if (!await Vars.UUIHandler.CheckTag(ID))
+            {
+                ReplyAsync($"{ID} is not in database.");
+                return;
+            }
+
+            String Body = await Vars.UUIHandler.GetTag(ID);
+
+            ReplyAsync(Body);
+        }
     }
 }

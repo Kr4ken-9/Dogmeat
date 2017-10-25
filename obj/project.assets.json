@@ -444,7 +444,7 @@
           }
         }
       },
-      "MySqlConnector/0.28.2": {
+      "MySqlConnector/0.29.1": {
         "type": "package",
         "dependencies": {
           "NETStandard.Library": "1.6.1",
@@ -3098,7 +3098,7 @@
           "runtimes/unix/lib/netstandard1.3/Microsoft.Win32.Registry.dll": {}
         }
       },
-      "MySqlConnector/0.28.2": {
+      "MySqlConnector/0.29.1": {
         "type": "package",
         "dependencies": {
           "NETStandard.Library": "1.6.1",
@@ -5962,7 +5962,7 @@
           "runtimes/win/lib/netstandard1.3/Microsoft.Win32.Registry.dll": {}
         }
       },
-      "MySqlConnector/0.28.2": {
+      "MySqlConnector/0.29.1": {
         "type": "package",
         "dependencies": {
           "NETStandard.Library": "1.6.1",
@@ -8878,16 +8878,16 @@
         "runtimes/win/lib/netstandard1.3/Microsoft.Win32.Registry.dll"
       ]
     },
-    "MySqlConnector/0.28.2": {
-      "sha512": "SAZCKdaRhtCR/kEB6XczKkwjzV+3Rros6guqfsCaOOKBZBWPt1xnaBjMdtxpSJF0/L7kmrvgqIiDk0jlTlyKdg==",
+    "MySqlConnector/0.29.1": {
+      "sha512": "BcJP9ITOMiqbG7mpZxHO02NYPLRIyTXnoJgXLevj/4g35F72dpDoCJMJNgr0p23S0GsZ+CE4pmzogeoFINQ9MA==",
       "type": "package",
-      "path": "mysqlconnector/0.28.2",
+      "path": "mysqlconnector/0.29.1",
       "files": [
         "lib/net45/MySqlConnector.dll",
         "lib/net46/MySqlConnector.dll",
         "lib/netstandard1.3/MySqlConnector.dll",
         "lib/netstandard2.0/MySqlConnector.dll",
-        "mysqlconnector.0.28.2.nupkg.sha512",
+        "mysqlconnector.0.29.1.nupkg.sha512",
         "mysqlconnector.nuspec"
       ]
     },
@@ -14782,7 +14782,7 @@
       "Discord.Net.Commands >= 1.0.2",
       "Discord.Net.WebSocket >= 1.0.2",
       "Microsoft.NETCore.App >= 1.1.2",
-      "MySqlConnector >= 0.28.2",
+      "MySqlConnector >= 0.29.1",
       "Newtonsoft.Json >= 10.0.3",
       "SteamWebAPI2 >= 4.0.1"
     ]
@@ -14793,11 +14793,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/media/kr4ken/6AF8399DF8396909/Repos/Dogmeat/Dogmeat 2.0.csproj",
+      "projectUniqueName": "/Repos/Dogmeat/Dogmeat 2.0.csproj",
       "projectName": "Dogmeat 2.0",
-      "projectPath": "/media/kr4ken/6AF8399DF8396909/Repos/Dogmeat/Dogmeat 2.0.csproj",
+      "projectPath": "/Repos/Dogmeat/Dogmeat 2.0.csproj",
       "packagesPath": "/home/kr4ken/.nuget/packages/",
-      "outputPath": "/media/kr4ken/6AF8399DF8396909/Repos/Dogmeat/obj/",
+      "outputPath": "/Repos/Dogmeat/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/home/kr4ken/.config/NuGet/NuGet.Config"
@@ -14831,7 +14831,7 @@
           },
           "MySqlConnector": {
             "target": "Package",
-            "version": "0.28.2"
+            "version": "0.29.1"
           },
           "Newtonsoft.Json": {
             "target": "Package",

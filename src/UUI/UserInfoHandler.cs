@@ -22,37 +22,24 @@ namespace Dogmeat.UUI
                                              $"PORT={CString.Port};");
 
             ConnectionString = CString;
-            
-            //CheckTable();
+
+            //CheckTables();
         }
 
-        internal async Task CheckTable()
+        public void SaveConnection() =>
+            File.WriteAllText(ConfigManager.ConfigPath("mysql.json"),
+                JsonConvert.SerializeObject(ConnectionString, Formatting.Indented));
+
+        public static UserInfoHandler LoadConnection()
         {
-            try
-            {
-                MySqlCommand Command = Connection.CreateCommand();
-                Command.CommandText = "SHOW TABLES LIKE 'Users'";
-            
-                await Connection.OpenAsync();
+            Connection C = JsonConvert.DeserializeObject<Connection>
+                (File.ReadAllText(ConfigManager.ConfigPath("mysql.json")));
 
-                if (await Command.ExecuteScalarAsync() != null)
-                    return;
-
-                Command.CommandText =
-                    "CREATE TABLE Users" +
-                    "(ID BIGINT UNSIGNED NOT NULL, " +
-                    "Experience MEDIUMINT UNSIGNED NOT NULL, " +
-                    "Level SMALLINT UNSIGNED NOT NULL, " +
-                    "Global INT UNSIGNED NOT NULL, " +
-                    "Description varchar(30) NOT NULL, " +
-                    "PRIMARY KEY (ID))";
-
-                await Command.ExecuteNonQueryAsync();
-            }
-            catch (Exception e) { Console.WriteLine(e); }
-            finally { Connection.Close(); }
+            return new UserInfoHandler(C);
         }
-
+        
+        #region Users
+        
         public async Task AddUser(UUser User) => AddUser(User.ID, User.Experience, User.Description);
 
         public async Task AddUser(ulong ID, ushort Experience = 0, String Description = "none")
@@ -60,20 +47,13 @@ namespace Dogmeat.UUI
             if (Description.Length > 30)
                 throw new Exception("Description limit is thirty characters.");
             
-            try
-            {
-                MySqlCommand Command = Connection.CreateCommand();
-                Command.Parameters.AddWithValue("ID", ID);
-                Command.Parameters.AddWithValue("Experience", Experience);
-                Command.Parameters.AddWithValue("Description", Description);
-                Command.CommandText = "INSERT INTO Users VALUES(@ID, @Experience, 0, 0, @Description)";
+            MySqlCommand Command = Connection.CreateCommand();
+            Command.Parameters.AddWithValue("ID", ID);
+            Command.Parameters.AddWithValue("Experience", Experience);
+            Command.Parameters.AddWithValue("Description", Description);
+            Command.CommandText = "INSERT INTO Users VALUES(@ID, @Experience, 0, 0, @Description)";
 
-                await Connection.OpenAsync();
-
-                await Command.ExecuteNonQueryAsync();
-            }
-            catch (Exception e) { Console.WriteLine(e); }
-            finally { Connection.Close(); }
+            await Utilities.MySql.ExecuteCommand(Connection, Command, Utilities.MySql.CommandExecuteType.NONQUERY);
         }
 
         public async Task<UUser> GetUser(ulong ID)
@@ -109,40 +89,145 @@ namespace Dogmeat.UUI
         {
             bool Exists = false;
             
+            MySqlCommand Command = Connection.CreateCommand();
+            Command.Parameters.AddWithValue("ID", ID);
+            Command.CommandText = "SELECT EXISTS(SELECT 1 FROM Users WHERE ID = @ID LIMIT 1);";
+
+            object Result =
+                await Utilities.MySql.ExecuteCommand(Connection, Command, Utilities.MySql.CommandExecuteType.SCALAR);
+            
+            if (Result != null)
+            {
+                Int32.TryParse(Result.ToString(), out int exists);
+
+                Exists = exists != 0;
+            }
+            
+            return Exists;
+        }
+        
+        #endregion
+
+        public async Task AddTag(String ID, String Body)
+        {
+            if(ID.Length > 10)
+                throw new Exception("ID limit is ten characters");
+            
+            if(Body.Length > 50)
+                throw new Exception("Description limit is fifty characters");
+
+            MySqlCommand Command = Connection.CreateCommand();
+            Command.Parameters.AddWithValue("ID", ID);
+            Command.Parameters.AddWithValue("Body", Body);
+            Command.CommandText = "INSERT INTO Tags VALUES(@ID, @Body)";
+
+            await Utilities.MySql.ExecuteCommand(Connection, Command, Utilities.MySql.CommandExecuteType.NONQUERY);
+        }
+        
+        public async Task<bool> CheckTag(String ID)
+        {
+            bool Exists = false;
+            
+            MySqlCommand Command = Connection.CreateCommand();
+            Command.Parameters.AddWithValue("ID", ID);
+            Command.CommandText = "SELECT EXISTS(SELECT 1 FROM Tags WHERE ID = @ID LIMIT 1);";
+
+            object Result =
+                await Utilities.MySql.ExecuteCommand(Connection, Command, Utilities.MySql.CommandExecuteType.SCALAR);
+            
+            if (Result != null)
+            {
+                Int32.TryParse(Result.ToString(), out int exists);
+
+                Exists = exists != 0;
+            }
+            
+            return Exists;
+        }
+        
+        public async Task<String> GetTag(String ID)
+        {
+            String Body = "";
+            
             try
             {
                 MySqlCommand Command = Connection.CreateCommand();
                 Command.Parameters.AddWithValue("ID", ID);
-                Command.CommandText = "SELECT EXISTS(SELECT 1 FROM Users WHERE ID = @ID LIMIT 1);";
+                Command.CommandText = "SELECT * FROM Tags WHERE ID = @ID";
 
                 await Connection.OpenAsync();
 
-                object result = await Command.ExecuteScalarAsync();
-                if (result != null)
-                {
-                    Int32.TryParse(result.ToString(), out int exists);
-
-                    Exists = exists != 0;
-                }
+                using (MySqlDataReader Reader = Command.ExecuteReader())
+                    while (await Reader.ReadAsync())
+                        Body = Reader.GetString(1);
             }
             catch (Exception e) { Console.WriteLine(e); }
             finally { Connection.Close(); }
 
-            return Exists;
+            return Body;
         }
+        
+        #region Tables
 
-        public void SaveConnection() =>
-            File.WriteAllText(ConfigManager.ConfigPath("mysql.json"),
-                JsonConvert.SerializeObject(ConnectionString, Formatting.Indented));
-
-        public static UserInfoHandler LoadConnection()
+        internal async Task CheckTables()
         {
-            Connection C = JsonConvert.DeserializeObject<Connection>
-                (File.ReadAllText(ConfigManager.ConfigPath("mysql.json")));
+            await CheckUsersTable();
+            await CheckTagsTable();
+        }
+        
+        internal async Task CheckUsersTable()
+        {
+            try
+            {
+                MySqlCommand Command = Connection.CreateCommand();
+                Command.CommandText = "SHOW TABLES LIKE 'Users'";
+            
+                await Connection.OpenAsync();
 
-            return new UserInfoHandler(C);
+                if (await Command.ExecuteScalarAsync() != null)
+                    return;
+
+                Command.CommandText =
+                    "CREATE TABLE Users" +
+                    "(ID BIGINT UNSIGNED NOT NULL, " +
+                    "Experience MEDIUMINT UNSIGNED NOT NULL, " +
+                    "Level SMALLINT UNSIGNED NOT NULL, " +
+                    "Global INT UNSIGNED NOT NULL, " +
+                    "Description varchar(30) NOT NULL, " +
+                    "PRIMARY KEY (ID))";
+
+                await Command.ExecuteNonQueryAsync();
+            }
+            catch (Exception e) { Console.WriteLine(e); }
+            finally { Connection.Close(); }
         }
 
+        internal async Task CheckTagsTable()
+        {
+            try
+            {
+                MySqlCommand Command = Connection.CreateCommand();
+                Command.CommandText = "SHOW TABLES LIKE 'Tags'";
+
+                await Connection.OpenAsync();
+
+                if (await Command.ExecuteScalarAsync() != null)
+                    return;
+                
+                Command.CommandText =
+                    "CREATE TABLE Tags" +
+                    "(ID varchar(10) NOT NULL, " +
+                    "Body varchar(50) NOT NULL, " +
+                    "PRIMARY KEY (ID))";
+
+                await Command.ExecuteNonQueryAsync();
+            }
+            catch (Exception e) { Console.WriteLine(e); }
+            finally { Connection.Close(); }
+        }
+
+        #endregion
+        
         public static Connection AggregateConnection(String Input)
         {
             switch (Input.ToUpperInvariant())
