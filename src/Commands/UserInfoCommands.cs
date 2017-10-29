@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
-using Dogmeat.UUI;
+using Dogmeat.Database;
 
 namespace Dogmeat.Commands
 {
@@ -12,13 +12,13 @@ namespace Dogmeat.Commands
         [Command("profile"), Summary("Retrieves a user's profile from mysql database")]
         public async Task Profile([Summary("User to retrieve profile for")] IGuildUser Target)
         {
-            if (!await Vars.UUIHandler.CheckUser(Target.Id))
+            if (!await Vars.DBHandler.UUIHandler.CheckUser(Target.Id))
             {
                 ReplyAsync($"{Target.Mention} is not in database.");
                 return;
             }
 
-            UUser User = await Vars.UUIHandler.GetUser(Target.Id);
+            UUser User = await Vars.DBHandler.UUIHandler.GetUser(Target.Id);
             
             List<Action<EmbedFieldBuilder>> Fields = new List<Action<EmbedFieldBuilder>>
             {
@@ -35,17 +35,36 @@ namespace Dogmeat.Commands
         }
         
         [Command("tag"), Summary("Retrieves a user-configurable output for given tag")]
-        public async Task Tag([Summary("User to retrieve profile for")] String ID)
+        public async Task Tag([Summary("User to retrieve profile for")] String ID, String Body = "")
         {
-            if (!await Vars.UUIHandler.CheckTag(ID))
+            if (!await Vars.DBHandler.TagHandler.CheckTag(ID))
             {
-                ReplyAsync($"{ID} is not in database.");
+                if (String.IsNullOrEmpty(Body) || String.IsNullOrEmpty(ID))
+                {
+                    ReplyAsync("ID and Body must not be empty or null");
+                    return;
+                }
+                
+                if (ID.Length > 10)
+                {
+                    ReplyAsync("ID must be ten characters or less");
+                    return;
+                }
+
+                if (Body.Length > 50)
+                {
+                    ReplyAsync("Body must be fifty characters or less");
+                    return;
+                }
+                
+                Vars.DBHandler.TagHandler.AddTag(ID, Body);
+                ReplyAsync($"Added tag {ID} with Body: {Body}");
                 return;
             }
 
-            String Body = await Vars.UUIHandler.GetTag(ID);
+            String RetrievedBody = await Vars.DBHandler.TagHandler.GetTag(ID);
 
-            ReplyAsync(Body);
+            ReplyAsync(RetrievedBody);
         }
     }
 }

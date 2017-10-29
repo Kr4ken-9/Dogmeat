@@ -2,7 +2,7 @@
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
-using Dogmeat.UUI;
+using Dogmeat.Database;
 using SteamWebAPI2.Interfaces;
 
 namespace Dogmeat
@@ -19,7 +19,7 @@ namespace Dogmeat
         
         public static bool KeepAlive = true, UnderMaintenance = true;
 
-        public static UserInfoHandler UUIHandler;
+        public static DatabaseHandler DBHandler;
 
         public static SteamUser SteamInterface;
 
