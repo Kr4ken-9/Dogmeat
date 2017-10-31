@@ -12,13 +12,16 @@ namespace Dogmeat.Database
 
         public String Description;
 
-        public UUser(ulong id, ushort experience, ushort level, uint global, string description)
+        public DateTime LastChat;
+
+        public UUser(ulong id, ushort experience, ushort level, uint global, string description, DateTime lastChat)
         {
             ID = id;
             Experience = experience;
             Level = level;
             Global = global;
             Description = description;
+            LastChat = lastChat;
         }
     }
 }

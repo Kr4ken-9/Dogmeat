@@ -21,7 +21,6 @@ namespace Dogmeat
         public async Task RunAsync()
         {
             Vars.Random = new Random();
-            
             Vars.Client = new DiscordSocketClient();
             Vars.CService = new CommandService();
             
@@ -49,10 +48,9 @@ namespace Dogmeat
             Vars.SteamInterface = new SteamUser(Vars.SteamAPIKey);
 
             MessageHandler.InitializeCommandHandler();
-
             MessageHandler.InitializeGeneralHandler();
-
             MessageHandler.InitializeOwnerCommandsHandler();
+            MessageHandler.InitializeExperienceHandler();
             
             CancellationToken Token = new CancellationTokenSource().Token;
 
@@ -78,7 +76,7 @@ namespace Dogmeat
 
             if (!ConfigManager.CheckConfigItem("mysql.json"))
             {
-                Console.WriteLine("You must have a mysql configuration for Universal User Info functionality.");
+                Console.WriteLine("You must have a mysql configuration for database functionality.");
                 Console.WriteLine("Would you like to configure it now? Y/N");
 
                 Connection PotentialConnection = DatabaseHandler.AggregateConnection(Console.ReadLine());

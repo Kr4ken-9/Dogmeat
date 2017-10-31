@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Discord.Commands;
 using Discord.WebSocket;
 using Dogmeat.Config;
+using Dogmeat.Database;
 using Dogmeat.Utilities;
 
 namespace Dogmeat   
@@ -17,7 +18,7 @@ namespace Dogmeat
 
         public static async Task InitializeOwnerCommandsHandler() => Vars.Client.MessageReceived += async msg =>
         {
-            if (msg.Channel.Id == Vars.Commands.Id && !msg.Content.Contains("~") &&
+            if (msg.Channel.Id == Vars.Commands.Id && !msg.Content.StartsWith("~") &&
                 msg.Author.Id != Vars.Client.CurrentUser.Id)
                 await HandleOwnerCommand(msg);
         };
@@ -121,7 +122,33 @@ namespace Dogmeat
         }
         
         #endregion
-        
+
+        public static async Task InitializeExperienceHandler() => Vars.Client.MessageReceived += async msg =>
+        {
+            if (!msg.Author.IsBot && !msg.Content.StartsWith("~") && Vars.Commands.Id != msg.Channel.Id
+                && msg.Channel.Id == 222826708972208128)
+                HandleExperience(msg);
+        };
+
+        private static async Task HandleExperience(SocketMessage Context)
+        {
+            UUser Author;
+
+            if (!await Vars.DBHandler.UUIHandler.CheckUser(Context.Author.Id))
+            {
+                Author = new UUser(Context.Author.Id, 0, 0, 0, "None", DateTime.Now);
+                await Vars.DBHandler.UUIHandler.AddUser(Author);
+                
+                await Vars.DBHandler.UUIHandler.IncreaseExperience(Author.ID, UserInfoHandler.CalculateExperience());
+                return;
+            }
+            
+            Author = await Vars.DBHandler.UUIHandler.GetUser(Context.Author.Id);
+
+            if ((DateTime.Now - Author.LastChat).TotalSeconds >= 120)
+                await Vars.DBHandler.UUIHandler.IncreaseExperience(Author.ID, UserInfoHandler.CalculateExperience());
+        }
+
         #region Commands
         
         public static async Task InitializeCommandHandler()

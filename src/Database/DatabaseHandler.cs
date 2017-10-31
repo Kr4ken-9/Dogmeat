@@ -59,6 +59,7 @@ namespace Dogmeat.Database
                     "Level SMALLINT UNSIGNED NOT NULL, " +
                     "Global INT UNSIGNED NOT NULL, " +
                     "Description varchar(30) NOT NULL, " +
+                    "LastChat timestamp NOT NULL DEFAULT NOW() ON UPDATE CURRENT_TIMESTAMP, " +
                     "PRIMARY KEY (ID))";
 
                 await Command.ExecuteNonQueryAsync();

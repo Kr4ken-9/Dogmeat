@@ -62,9 +62,9 @@ namespace Dogmeat.Commands
                 return;
             }
 
-            String RetrievedBody = await Vars.DBHandler.TagHandler.GetTag(ID);
+            Body = await Vars.DBHandler.TagHandler.GetTag(ID);
 
-            ReplyAsync(RetrievedBody);
+            ReplyAsync(Body);
         }
     }
 }
