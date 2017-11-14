@@ -29,8 +29,6 @@ namespace Dogmeat
 
         public static CommandService CService;
 
-        public static IServiceProvider ISProvider;
-
         public static OverwritePermissions MutedChannelPermissions =
             new OverwritePermissions(sendMessages: PermValue.Deny);
 

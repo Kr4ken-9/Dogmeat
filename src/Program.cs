@@ -33,8 +33,6 @@ namespace Dogmeat
             await Vars.Client.LoginAsync(TokenType.Bot, Vars.Token);
             await Vars.Client.StartAsync();
 
-            Vars.ISProvider = new ServiceCollection().BuildServiceProvider();
-
             Vars.Client.Ready += OnStart;
 
             await Task.Delay(-1);

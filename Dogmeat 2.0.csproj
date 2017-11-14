@@ -1,21 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <OutputType>exe</OutputType>
-    <TargetFramework>netcoreapp1.1</TargetFramework>
-    <OutputTypeEx>exe</OutputTypeEx>
-    <RuntimeIdentifiers>ubuntu.16.04-x64;win81-x64</RuntimeIdentifiers>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <RuntimeIdentifiers>linux-x64</RuntimeIdentifiers>
     <WarningLevel>0</WarningLevel>
     <AssemblyVersion>2.2.7.0</AssemblyVersion>
     <FileVersion>2.2.7.0</FileVersion>
-    <PackageReleaseNotes>
-    </PackageReleaseNotes>
     <Company>Kr4ken</Company>
     <RootNamespace>Dogmeat</RootNamespace>
-    <Description>2.2.7.0 Release Notes:
-10/17/17
-- Fixed announcements
-- Removed useless conditionals
-- Organization</Description>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="License.md" />
@@ -24,7 +16,7 @@
   <ItemGroup>
     <PackageReference Include="Discord.Net.Commands" Version="1.0.2" />
     <PackageReference Include="Discord.Net.WebSocket" Version="1.0.2" />
-    <PackageReference Include="MySqlConnector" Version="0.29.1" />
+    <PackageReference Include="MySqlConnector" Version="0.30.0" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
     <PackageReference Include="SteamWebAPI2" Version="4.0.1" />
   </ItemGroup>

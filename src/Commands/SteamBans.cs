@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
-using Dogmeat.Utilities;
 using Steam.Models.SteamCommunity;
 
 namespace Dogmeat.Commands
