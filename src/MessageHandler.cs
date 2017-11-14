@@ -13,15 +13,32 @@ namespace Dogmeat
 {
     public class MessageHandler
     {
-
-        #region Owner Commands
-
-        public static async Task InitializeOwnerCommandsHandler() => Vars.Client.MessageReceived += async msg =>
+        public static async Task InitializeListener() => Vars.Client.MessageReceived += async msg =>
         {
-            if (msg.Channel.Id == Vars.Commands.Id && !msg.Content.StartsWith("~") &&
-                msg.Author.Id != Vars.Client.CurrentUser.Id)
-                await HandleOwnerCommand(msg);
+            if (msg.Channel.Id == Vars.Commands.Id)
+                HandleOwnerCommand(msg);
+            
+            else if (CultureInfo.InvariantCulture.CompareInfo.IndexOf(msg.Content, "Dogmeat",
+                    CompareOptions.IgnoreCase) >= 0 && !msg.Author.IsBot)
+                MentionedAsync(msg);
+                
+            else if (CultureInfo.InvariantCulture.CompareInfo.IndexOf(msg.Content, "Taemgod",
+                         CompareOptions.IgnoreCase) >= 0 && !msg.Author.IsBot)
+                DefConAsync(msg);
+                
+            else if (CultureInfo.InvariantCulture.CompareInfo.IndexOf(msg.Content, "Good boy",
+                         CompareOptions.IgnoreCase) >= 0 && !msg.Author.IsBot)
+                Patronization(msg);
+
+            else if (!msg.Author.IsBot && !msg.Content.StartsWith("~") && Vars.Commands.Id != msg.Channel.Id
+                     && msg.Channel.Id == 379168449680637956)
+                HandleExperience(msg);
+            else
+                HandleCommand(msg);
         };
+        
+        
+        #region Owner Commands
 
         private static async Task HandleOwnerCommand(SocketMessage msg)
         {
@@ -84,24 +101,6 @@ namespace Dogmeat
         #endregion
         
         #region General
-        
-        public static async Task InitializeGeneralHandler()
-        {
-            Vars.Client.MessageReceived += async msg =>
-            {
-                if (CultureInfo.InvariantCulture.CompareInfo.IndexOf(msg.Content, "Dogmeat",
-                        CompareOptions.IgnoreCase) >= 0 && !msg.Author.IsBot)
-                    await MentionedAsync(msg);
-                
-                else if (CultureInfo.InvariantCulture.CompareInfo.IndexOf(msg.Content, "Taemgod",
-                             CompareOptions.IgnoreCase) >= 0 && !msg.Author.IsBot)
-                    await DefConAsync(msg);
-                
-                else if (CultureInfo.InvariantCulture.CompareInfo.IndexOf(msg.Content, "Good boy",
-                             CompareOptions.IgnoreCase) >= 0 && !msg.Author.IsBot)
-                    await Patronization(msg);
-            };
-        }
 
         private static async Task MentionedAsync(SocketMessage e)
         {
@@ -123,13 +122,6 @@ namespace Dogmeat
         
         #endregion
 
-        public static async Task InitializeExperienceHandler() => Vars.Client.MessageReceived += async msg =>
-        {
-            if (!msg.Author.IsBot && !msg.Content.StartsWith("~") && Vars.Commands.Id != msg.Channel.Id
-                && msg.Channel.Id == 222826708972208128)
-                HandleExperience(msg);
-        };
-
         private static async Task HandleExperience(SocketMessage Context)
         {
             UUser Author;
@@ -147,15 +139,6 @@ namespace Dogmeat
 
             if ((DateTime.Now - Author.LastChat).TotalSeconds >= 120)
                 await Vars.DBHandler.UUIHandler.IncreaseExperience(Author.ID, UserInfoHandler.CalculateExperience());
-        }
-
-        #region Commands
-        
-        public static async Task InitializeCommandHandler()
-        {
-            await Vars.CService.AddModulesAsync(Assembly.GetEntryAssembly());
-
-            Vars.Client.MessageReceived += HandleCommand;
         }
 
         private static async Task HandleCommand(SocketMessage CommandParameter)
@@ -177,7 +160,5 @@ namespace Dogmeat
             else
                 Logger.Log("Executed a command.", (Message.Channel as SocketGuildChannel).Guild, Message.Author);
         }
-        
-        #endregion
     }
 }

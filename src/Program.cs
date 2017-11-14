@@ -45,10 +45,7 @@ namespace Dogmeat
             Vars.Logging = await Vars.Main.GetChannelAsync(297587378804097025);
             Vars.SteamInterface = new SteamUser(Vars.SteamAPIKey);
 
-            MessageHandler.InitializeCommandHandler();
-            MessageHandler.InitializeGeneralHandler();
-            MessageHandler.InitializeOwnerCommandsHandler();
-            MessageHandler.InitializeExperienceHandler();
+            MessageHandler.InitializeListener();
             
             CancellationToken Token = new CancellationTokenSource().Token;
 
