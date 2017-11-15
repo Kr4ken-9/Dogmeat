@@ -64,15 +64,19 @@ namespace Dogmeat.Database
             object Result =
                 await Utilities.MySql.ExecuteCommand(Connection, Command, Utilities.MySql.CommandExecuteType.SCALAR);
 
-            if (Result != null)
-            {
-                Int32.TryParse(Result.ToString(), out int exists);
+            if (Result == null) return Exists;
+            
+            Int32.TryParse(Result.ToString(), out int exists);
 
-                Exists = exists != 0;
-            }
+            Exists = exists != 0;
 
             return Exists;
         }
+
+        public event EventHandler<ExperienceEventArgs> ExperienceUpdate;
+
+        public void OnExperienceUpdate(UUser User, ushort Experience) => 
+            ExperienceUpdate(this, new ExperienceEventArgs(User, Experience));
 
         public async Task IncreaseExperience(ulong ID, ushort Experience)
         {

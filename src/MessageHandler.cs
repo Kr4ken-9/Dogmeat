@@ -136,9 +136,9 @@ namespace Dogmeat
             }
             
             Author = await Vars.DBHandler.UUIHandler.GetUser(Context.Author.Id);
-
+            
             if ((DateTime.Now - Author.LastChat).TotalSeconds >= 120)
-                await Vars.DBHandler.UUIHandler.IncreaseExperience(Author.ID, UserInfoHandler.CalculateExperience());
+                Vars.DBHandler.UUIHandler.OnExperienceUpdate(Author, UserInfoHandler.CalculateExperience());
         }
 
         private static async Task HandleCommand(SocketMessage CommandParameter)
