@@ -131,7 +131,7 @@ namespace Dogmeat
                 Author = new UUser(Context.Author.Id, 0, 0, 0, "None", DateTime.Now);
                 await Vars.DBHandler.UUIHandler.AddUser(Author);
                 
-                await Vars.DBHandler.UUIHandler.IncreaseExperience(Author.ID, UserInfoHandler.CalculateExperience());
+                Vars.DBHandler.UUIHandler.OnExperienceUpdate(Author, UserInfoHandler.CalculateExperience());
                 return;
             }
             

@@ -9,23 +9,26 @@ namespace Dogmeat.Utilities
         public static async Task<object> ExecuteCommand(MySqlConnection Connection, MySqlCommand Command, CommandExecuteType ExeType)
         {
             object Result = null;
-            
-            try
+
+            lock (Connection)
             {
-                await Connection.OpenAsync();
-                
-                switch (ExeType)
+                try
                 {
-                    case CommandExecuteType.NONQUERY:
-                        Result = await Command.ExecuteNonQueryAsync();
-                        break;
-                    case CommandExecuteType.SCALAR:
-                        Result = await Command.ExecuteScalarAsync();
-                        break;
+                    Connection.OpenAsync().GetAwaiter().GetResult();
+
+                    switch (ExeType)
+                    {
+                        case CommandExecuteType.NONQUERY:
+                            Result = Command.ExecuteNonQueryAsync().GetAwaiter().GetResult();
+                            break;
+                        case CommandExecuteType.SCALAR:
+                            Result = Command.ExecuteScalarAsync().GetAwaiter().GetResult();
+                            break;
+                    }
                 }
+                catch (Exception Ex) { Console.WriteLine(Ex); }
+                finally { Connection.Close(); }
             }
-            catch(Exception ex) { Console.WriteLine(ex); }
-            finally { Connection.Close(); }
 
             return Result;
         }

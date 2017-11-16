@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Discord;
@@ -8,7 +9,6 @@ using Discord.WebSocket;
 using Dogmeat.Config;
 using Dogmeat.Utilities;
 using Dogmeat.Database;
-using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using SteamWebAPI2.Interfaces;
 
@@ -46,6 +46,10 @@ namespace Dogmeat
             Vars.SteamInterface = new SteamUser(Vars.SteamAPIKey);
 
             MessageHandler.InitializeListener();
+            await Vars.CService.AddModulesAsync(Assembly.GetEntryAssembly());
+            
+            Vars.DBHandler.UUIHandler.ExperienceUpdate += async (sender, args) =>
+                await Vars.DBHandler.UUIHandler.IncreaseExperience(args.User.ID, args.Amount);
             
             CancellationToken Token = new CancellationTokenSource().Token;
 

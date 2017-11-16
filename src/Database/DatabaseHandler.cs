@@ -29,7 +29,7 @@ namespace Dogmeat.Database
             UUIHandler = new UserInfoHandler(Connection);
             TagHandler = new TagHandler(Connection);
 
-            //CheckTables();
+            CheckTables().GetAwaiter().GetResult();
         }
         
         #region Tables
@@ -82,8 +82,8 @@ namespace Dogmeat.Database
                 
                 Command.CommandText =
                     "CREATE TABLE Tags" +
-                    "(ID varchar(10) NOT NULL, " +
-                    "Body varchar(50) NOT NULL, " +
+                    "(ID varchar(20) NOT NULL, " +
+                    "Body varchar(3000) NOT NULL, " +
                     "PRIMARY KEY (ID))";
 
                 await Command.ExecuteNonQueryAsync();

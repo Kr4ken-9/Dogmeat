@@ -27,28 +27,31 @@ namespace Dogmeat.Database
         {
             UUser User = new UUser(ID, 0, 0, 0, "", DateTime.MinValue);
 
-            try
+            lock (Vars.DBHandler.Connection)
             {
-                MySqlCommand Command = Connection.CreateCommand();
-                Command.Parameters.AddWithValue("ID", ID);
-                Command.CommandText = "SELECT * FROM Users WHERE ID = @ID";
-
-                await Connection.OpenAsync();
-
-                using (MySqlDataReader Reader = Command.ExecuteReader())
+                try
                 {
-                    while (await Reader.ReadAsync())
+                    MySqlCommand Command = Connection.CreateCommand();
+                    Command.Parameters.AddWithValue("ID", ID);
+                    Command.CommandText = "SELECT * FROM Users WHERE ID = @ID";
+
+                    Connection.OpenAsync().GetAwaiter().GetResult();
+
+                    using (MySqlDataReader Reader = Command.ExecuteReader())
                     {
-                        User.Experience = (ushort) Reader.GetInt16(1);
-                        User.Level = (ushort) Reader.GetInt16(2);
-                        User.Global = (uint) Reader.GetInt32(3);
-                        User.Description = Reader.GetString(4);
-                        User.LastChat = Reader.GetDateTime(5);
+                        while (Reader.ReadAsync().GetAwaiter().GetResult())
+                        {
+                            User.Experience = (ushort) Reader.GetInt16(1);
+                            User.Level = (ushort) Reader.GetInt16(2);
+                            User.Global = (uint) Reader.GetInt32(3);
+                            User.Description = Reader.GetString(4);
+                            User.LastChat = Reader.GetDateTime(5);
+                        }
                     }
                 }
+                catch (Exception e) { Console.WriteLine(e); }
+                finally { Connection.Close(); }
             }
-            catch (Exception e) { Console.WriteLine(e); }
-            finally { Connection.Close(); }
 
             return User;
         }

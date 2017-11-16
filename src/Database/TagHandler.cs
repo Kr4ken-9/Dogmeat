@@ -36,35 +36,37 @@ namespace Dogmeat.Database
 
             object Result =
                 await Utilities.MySql.ExecuteCommand(Connection, Command, Utilities.MySql.CommandExecuteType.SCALAR);
-            
-            if (Result != null)
-            {
-                Int32.TryParse(Result.ToString(), out int exists);
 
-                Exists = exists != 0;
-            }
+            if (Result == null) return Exists;
             
+            Int32.TryParse(Result.ToString(), out int exists);
+
+            Exists = exists != 0;
+
             return Exists;
         }
         
         public async Task<String> GetTag(String ID)
         {
             String Body = "";
-            
-            try
+
+            lock (Vars.DBHandler.Connection)
             {
-                MySqlCommand Command = Connection.CreateCommand();
-                Command.Parameters.AddWithValue("ID", ID);
-                Command.CommandText = "SELECT * FROM Tags WHERE ID = @ID";
+                try
+                {
+                    MySqlCommand Command = Connection.CreateCommand();
+                    Command.Parameters.AddWithValue("ID", ID);
+                    Command.CommandText = "SELECT * FROM Tags WHERE ID = @ID";
 
-                await Connection.OpenAsync();
+                    Connection.OpenAsync().GetAwaiter().GetResult();
 
-                using (MySqlDataReader Reader = Command.ExecuteReader())
-                    while (await Reader.ReadAsync())
-                        Body = Reader.GetString(1);
+                    using (MySqlDataReader Reader = Command.ExecuteReader())
+                        while (Reader.ReadAsync().GetAwaiter().GetResult())
+                            Body = Reader.GetString(1);
+                }
+                catch (Exception e) { Console.WriteLine(e); }
+                finally { Connection.Close(); }
             }
-            catch (Exception e) { Console.WriteLine(e); }
-            finally { Connection.Close(); }
 
             return Body;
         }

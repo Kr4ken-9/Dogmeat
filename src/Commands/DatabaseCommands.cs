@@ -7,20 +7,42 @@ using Dogmeat.Database;
 
 namespace Dogmeat.Commands
 {
-    public class UserInfoCommands : ModuleBase
+    public class DatabaseCommands : ModuleBase
     {
         [Command("profile"), Summary("Retrieves a user's profile from mysql database")]
-        public async Task Profile([Summary("User to retrieve profile for")] IGuildUser Target)
+        public async Task Profile([Summary("User to retrieve profile for")] IUser Target = null)
         {
+            UUser User;
+            
+            if (Target == null)
+            {
+                if (!await Vars.DBHandler.UUIHandler.CheckUser(Context.User.Id))
+                {
+                    ReplyAsync($"{Context.User.Mention} is not in database.");
+                    return;
+                }
+
+                User = await Vars.DBHandler.UUIHandler.GetUser(Context.User.Id);
+                
+                ReplyAsync("", embed: await GenerateProfile(User, Context.User));
+
+                return;
+            }
+            
             if (!await Vars.DBHandler.UUIHandler.CheckUser(Target.Id))
             {
                 ReplyAsync($"{Target.Mention} is not in database.");
                 return;
             }
 
-            UUser User = await Vars.DBHandler.UUIHandler.GetUser(Target.Id);
-            
-            List<Action<EmbedFieldBuilder>> Fields = new List<Action<EmbedFieldBuilder>>
+            User = await Vars.DBHandler.UUIHandler.GetUser(Target.Id);
+
+            ReplyAsync("", embed: await GenerateProfile(User, Target));
+        }
+
+        private async Task<Embed> GenerateProfile(UUser User, IUser Target)
+        {
+            Action<EmbedFieldBuilder>[] Fields =
             {
                 await Utilities.Commands.CreateEmbedFieldAsync("Experience", User.Experience),
                 await Utilities.Commands.CreateEmbedFieldAsync("Level", User.Level),
@@ -28,10 +50,8 @@ namespace Dogmeat.Commands
                 await Utilities.Commands.CreateEmbedFieldAsync("Description", User.Description)
             };
 
-            Embed Embed = await Utilities.Commands.CreateEmbedAsync($"User info for {Target.Username}",
-                Colors.SexyPurple, Target.GetAvatarUrl(), "", Fields.ToArray());
-
-            ReplyAsync("", embed: Embed);
+            return await Utilities.Commands.CreateEmbedAsync($"User info for {Target.Username}",
+                Colors.SexyPurple, Target.GetAvatarUrl(), "", Fields);
         }
         
         [Command("tag"), Summary("Retrieves a user-configurable output for given tag")]
@@ -51,9 +71,9 @@ namespace Dogmeat.Commands
                     return;
                 }
 
-                if (Body.Length > 50)
+                if (Body.Length > 3000)
                 {
-                    ReplyAsync("Body must be fifty characters or less");
+                    ReplyAsync("Body must be three thousand characters or less");
                     return;
                 }
                 
