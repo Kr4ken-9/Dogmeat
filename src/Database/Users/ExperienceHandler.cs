@@ -5,9 +5,7 @@ using MySql.Data.MySqlClient;
 namespace Dogmeat.Database
 {
     public class ExperienceHandler
-    {
-        public ExperienceHandler() { }
-        
+    {   
         public event EventHandler<ExperienceEventArgs> ExperienceUpdate;
 
         public void OnExperienceUpdate(UUser User, ushort Experience) => 

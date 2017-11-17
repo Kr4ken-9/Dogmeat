@@ -38,6 +38,7 @@ namespace Dogmeat.Database
         {
             await CheckUsersTable();
             await CheckTagsTable();
+            await CheckInsignasTable();
         }
         
         internal async Task CheckUsersTable()
@@ -58,7 +59,8 @@ namespace Dogmeat.Database
                     "Experience MEDIUMINT UNSIGNED NOT NULL, " +
                     "Level SMALLINT UNSIGNED NOT NULL, " +
                     "Global INT UNSIGNED NOT NULL, " +
-                    "Description varchar(30) NOT NULL, " +
+                    "Description varchar(50) NOT NULL, " +
+                    "Insignias varchar(100) NOT NULL, " +
                     "LastChat timestamp NOT NULL DEFAULT NOW() ON UPDATE CURRENT_TIMESTAMP, " +
                     "PRIMARY KEY (ID))";
 
@@ -84,6 +86,31 @@ namespace Dogmeat.Database
                     "CREATE TABLE Tags" +
                     "(ID varchar(20) NOT NULL, " +
                     "Body varchar(3000) NOT NULL, " +
+                    "PRIMARY KEY (ID))";
+
+                await Command.ExecuteNonQueryAsync();
+            }
+            catch (Exception e) { Console.WriteLine(e); }
+            finally { Connection.Close(); }
+        }
+
+        internal async Task CheckInsignasTable()
+        {
+            try
+            {
+                MySqlCommand Command = Connection.CreateCommand();
+                Command.CommandText = "SHOW TABLES LIKE 'Insignias'";
+
+                await Connection.OpenAsync();
+
+                if (await Command.ExecuteScalarAsync() != null)
+                    return;
+                
+                Command.CommandText =
+                    "CREATE TABLE Insignias" +
+                    "(ID varchar(20) NOT NULL, " +
+                    "Name varchar(20) NOT NULL, " +
+                    "URL varchar(30) NOT NULL, " +
                     "PRIMARY KEY (ID))";
 
                 await Command.ExecuteNonQueryAsync();

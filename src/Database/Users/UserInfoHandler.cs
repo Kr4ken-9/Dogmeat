@@ -14,20 +14,21 @@ namespace Dogmeat.Database
 
         public async Task AddUser(UUser User) => AddUser(User.ID, User.Experience, User.Description);
 
-        public async Task AddUser(ulong ID, ushort Experience = 0, String Description = "none")
+        public async Task AddUser(ulong ID, ushort Experience = 0, String Description = "None", String Insignias = "None")
         {
             MySqlCommand Command = Connection.CreateCommand();
             Command.Parameters.AddWithValue("ID", ID);
             Command.Parameters.AddWithValue("Experience", Experience);
             Command.Parameters.AddWithValue("Description", Description);
-            Command.CommandText = "INSERT INTO Users VALUES(@ID, @Experience, 0, 0, @Description, now())";
+            Command.Parameters.AddWithValue("Insignias", Insignias);
+            Command.CommandText = "INSERT INTO Users VALUES(@ID, @Experience, 0, 0, @Description, @Insignias, now())";
 
             await Utilities.MySql.ExecuteCommand(Command, Utilities.MySql.CommandExecuteType.NONQUERY);
         }
 
         public async Task<UUser> GetUser(ulong ID)
         {
-            UUser User = new UUser(ID, 0, 0, 0, "", DateTime.MinValue);
+            UUser User = new UUser(ID, 0, 0, 0, "", "", DateTime.MinValue);
 
             lock (Vars.DBHandler.Connection)
             {
@@ -47,7 +48,8 @@ namespace Dogmeat.Database
                             User.Level = (ushort) Reader.GetInt16(2);
                             User.Global = (uint) Reader.GetInt32(3);
                             User.Description = Reader.GetString(4);
-                            User.LastChat = Reader.GetDateTime(5);
+                            User.Insignia = Reader.GetString(5);
+                            User.LastChat = Reader.GetDateTime(6);
                         }
                     }
                 }
