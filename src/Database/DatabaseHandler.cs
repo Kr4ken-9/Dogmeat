@@ -40,8 +40,8 @@ namespace Dogmeat.Database
             await CheckTagsTable();
             await CheckInsignasTable();
         }
-        
-        internal async Task CheckUsersTable()
+
+        private async Task CheckUsersTable()
         {
             try
             {
@@ -70,7 +70,7 @@ namespace Dogmeat.Database
             finally { Connection.Close(); }
         }
 
-        internal async Task CheckTagsTable()
+        private async Task CheckTagsTable()
         {
             try
             {
@@ -94,7 +94,7 @@ namespace Dogmeat.Database
             finally { Connection.Close(); }
         }
 
-        internal async Task CheckInsignasTable()
+        private async Task CheckInsignasTable()
         {
             try
             {

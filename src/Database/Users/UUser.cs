@@ -10,18 +10,18 @@ namespace Dogmeat.Database
         
         public uint Global;
 
-        public String Description, Insignia;
+        public String Description, Insignias;
 
         public DateTime LastChat;
 
-        public UUser(ulong id, ushort experience, ushort level, uint global, String description, String insignia, DateTime lastChat)
+        public UUser(ulong id, ushort experience, ushort level, uint global, String description, String insignias, DateTime lastChat)
         {
             ID = id;
             Experience = experience;
             Level = level;
             Global = global;
             Description = description;
-            Insignia = insignia;
+            Insignias = insignias;
             LastChat = lastChat;
         }
     }

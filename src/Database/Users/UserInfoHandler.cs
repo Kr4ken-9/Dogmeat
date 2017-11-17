@@ -12,7 +12,7 @@ namespace Dogmeat.Database
         
         public ExperienceHandler ExpHandler = new ExperienceHandler();
 
-        public async Task AddUser(UUser User) => AddUser(User.ID, User.Experience, User.Description);
+        public async Task AddUser(UUser User) => AddUser(User.ID, User.Experience, User.Description, User.Insignias);
 
         public async Task AddUser(ulong ID, ushort Experience = 0, String Description = "None", String Insignias = "None")
         {
@@ -48,7 +48,7 @@ namespace Dogmeat.Database
                             User.Level = (ushort) Reader.GetInt16(2);
                             User.Global = (uint) Reader.GetInt32(3);
                             User.Description = Reader.GetString(4);
-                            User.Insignia = Reader.GetString(5);
+                            User.Insignias = Reader.GetString(5);
                             User.LastChat = Reader.GetDateTime(6);
                         }
                     }

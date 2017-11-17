@@ -86,5 +86,32 @@ namespace Dogmeat.Commands
 
             ReplyAsync(Body);
         }
+
+        [Command("insignias"), Summary("Retrieves insignias for given user")]
+        public async Task Insignias([Summary("User to retrieve insignias for")] IUser Target = null)
+        {
+            UUser UTarget = null;
+            
+            if (Target == null)
+            {
+                Target = Context.User;
+                
+                if (!await Vars.DBHandler.UUIHandler.CheckUser(Target.Id))
+                {
+                    await ReplyAsync($"{Context.User.Id} is not in the database.");
+                    return;
+                }
+
+                UTarget = await Vars.DBHandler.UUIHandler.GetUser(Target.Id);
+
+                if (UTarget.Insignias == "None")
+                {
+                    await ReplyAsync($"{Target.Mention} has no insignias.");
+                    return;
+                }
+
+                ReplyAsync(UTarget.Insignias);
+            }
+        }
     }
 }
