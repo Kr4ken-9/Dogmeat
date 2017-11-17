@@ -48,8 +48,8 @@ namespace Dogmeat
             MessageHandler.InitializeListener();
             await Vars.CService.AddModulesAsync(Assembly.GetEntryAssembly());
             
-            Vars.DBHandler.UUIHandler.ExperienceUpdate += async (sender, args) =>
-                await Vars.DBHandler.UUIHandler.IncreaseExperience(args.User.ID, args.Amount);
+            Vars.DBHandler.UUIHandler.ExpHandler.ExperienceUpdate += async (sender, args) =>
+                await Vars.DBHandler.UUIHandler.ExpHandler.IncreaseExperience(args.User.ID, args.Amount);
             
             CancellationToken Token = new CancellationTokenSource().Token;
 

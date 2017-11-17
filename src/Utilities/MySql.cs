@@ -6,15 +6,15 @@ namespace Dogmeat.Utilities
 {
     public class MySql
     {
-        public static async Task<object> ExecuteCommand(MySqlConnection Connection, MySqlCommand Command, CommandExecuteType ExeType)
+        public static async Task<object> ExecuteCommand(MySqlCommand Command, CommandExecuteType ExeType)
         {
             object Result = null;
 
-            lock (Connection)
+            lock (Vars.DBHandler.Connection)
             {
                 try
                 {
-                    Connection.OpenAsync().GetAwaiter().GetResult();
+                    Vars.DBHandler.Connection.OpenAsync().GetAwaiter().GetResult();
 
                     switch (ExeType)
                     {
@@ -27,7 +27,7 @@ namespace Dogmeat.Utilities
                     }
                 }
                 catch (Exception Ex) { Console.WriteLine(Ex); }
-                finally { Connection.Close(); }
+                finally { Vars.DBHandler.Connection.Close(); }
             }
 
             return Result;

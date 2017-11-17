@@ -23,7 +23,7 @@ namespace Dogmeat.Database
             Command.Parameters.AddWithValue("Body", Body);
             Command.CommandText = "INSERT INTO Tags VALUES(@ID, @Body)";
 
-            await Utilities.MySql.ExecuteCommand(Connection, Command, Utilities.MySql.CommandExecuteType.NONQUERY);
+            await Utilities.MySql.ExecuteCommand(Command, Utilities.MySql.CommandExecuteType.NONQUERY);
         }
         
         public async Task<bool> CheckTag(String ID)
@@ -35,7 +35,7 @@ namespace Dogmeat.Database
             Command.CommandText = "SELECT EXISTS(SELECT 1 FROM Tags WHERE ID = @ID LIMIT 1);";
 
             object Result =
-                await Utilities.MySql.ExecuteCommand(Connection, Command, Utilities.MySql.CommandExecuteType.SCALAR);
+                await Utilities.MySql.ExecuteCommand(Command, Utilities.MySql.CommandExecuteType.SCALAR);
 
             if (Result == null) return Exists;
             

@@ -9,6 +9,8 @@ namespace Dogmeat.Database
         public MySqlConnection Connection;
 
         public UserInfoHandler(MySqlConnection connection) => Connection = connection;
+        
+        public ExperienceHandler ExpHandler = new ExperienceHandler();
 
         public async Task AddUser(UUser User) => AddUser(User.ID, User.Experience, User.Description);
 
@@ -20,7 +22,7 @@ namespace Dogmeat.Database
             Command.Parameters.AddWithValue("Description", Description);
             Command.CommandText = "INSERT INTO Users VALUES(@ID, @Experience, 0, 0, @Description, now())";
 
-            await Utilities.MySql.ExecuteCommand(Connection, Command, Utilities.MySql.CommandExecuteType.NONQUERY);
+            await Utilities.MySql.ExecuteCommand(Command, Utilities.MySql.CommandExecuteType.NONQUERY);
         }
 
         public async Task<UUser> GetUser(ulong ID)
@@ -65,7 +67,7 @@ namespace Dogmeat.Database
             Command.CommandText = "SELECT EXISTS(SELECT 1 FROM Users WHERE ID = @ID LIMIT 1);";
 
             object Result =
-                await Utilities.MySql.ExecuteCommand(Connection, Command, Utilities.MySql.CommandExecuteType.SCALAR);
+                await Utilities.MySql.ExecuteCommand(Command, Utilities.MySql.CommandExecuteType.SCALAR);
 
             if (Result == null) return Exists;
             
@@ -75,22 +77,5 @@ namespace Dogmeat.Database
 
             return Exists;
         }
-
-        public event EventHandler<ExperienceEventArgs> ExperienceUpdate;
-
-        public void OnExperienceUpdate(UUser User, ushort Experience) => 
-            ExperienceUpdate(this, new ExperienceEventArgs(User, Experience));
-
-        public async Task IncreaseExperience(ulong ID, ushort Experience)
-        {
-            MySqlCommand Command = Connection.CreateCommand();
-            Command.Parameters.AddWithValue("ID", ID);
-            Command.Parameters.AddWithValue("Experience", Experience);
-            Command.CommandText = "UPDATE Users SET Experience = Experience + @Experience WHERE ID = @ID";
-            
-            await Utilities.MySql.ExecuteCommand(Connection, Command, Utilities.MySql.CommandExecuteType.NONQUERY);
-        }
-
-        public static Byte CalculateExperience() => (Byte) Vars.Random.Next(10, 21);
     }
 }
