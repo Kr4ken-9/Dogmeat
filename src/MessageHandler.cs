@@ -37,7 +37,6 @@ namespace Dogmeat
                 HandleCommand(msg);
         };
         
-        
         #region Owner Commands
 
         private static async Task HandleOwnerCommand(SocketMessage msg)
@@ -55,7 +54,7 @@ namespace Dogmeat
 
             OwnerCommand(Inputs);
             
-            Logger.Log("Issued command " + Inputs[0], Vars.Main as SocketGuild, msg.Author);
+            Logger.Log($"Issued command {Inputs[0]}", Vars.Main as SocketGuild, msg.Author);
         }
 
         private static async Task OwnerCommand(String[] Parameters)
@@ -93,7 +92,7 @@ namespace Dogmeat
                     ConfigManager.SaveConfig();
                     break;
                 default:
-                    Logger.Log(Parameters[0] + " is not a command.", ConsoleColor.Red);
+                    Logger.Log($"{Parameters[0]} is not a command.", ConsoleColor.Red);
                     break;
             }
         }
@@ -128,7 +127,7 @@ namespace Dogmeat
 
             if (!await Vars.DBHandler.UUIHandler.CheckUser(Context.Author.Id))
             {
-                Author = new UUser(Context.Author.Id, 0, 0, 0, "None", DateTime.Now);
+                Author = new UUser(Context.Author.Id, 0, 0, 0, "None", Vars.Now());
                 await Vars.DBHandler.UUIHandler.AddUser(Author);
                 
                 Vars.DBHandler.UUIHandler.OnExperienceUpdate(Author, UserInfoHandler.CalculateExperience());
@@ -137,7 +136,7 @@ namespace Dogmeat
             
             Author = await Vars.DBHandler.UUIHandler.GetUser(Context.Author.Id);
             
-            if ((DateTime.Now - Author.LastChat).TotalSeconds >= 120)
+            if ((Author.LastChat - Vars.Now()).TotalSeconds >= 120)
                 Vars.DBHandler.UUIHandler.OnExperienceUpdate(Author, UserInfoHandler.CalculateExperience());
         }
 
@@ -149,7 +148,9 @@ namespace Dogmeat
 
             int argPos = 0;
 
-            if (!(Message.HasMentionPrefix(Vars.Client.CurrentUser, ref argPos) || Message.HasCharPrefix('~', ref argPos)) || Message.HasStringPrefix("~~", ref argPos)) return;
+            if (!(Message.HasMentionPrefix(Vars.Client.CurrentUser, ref argPos) ||
+                  Message.HasCharPrefix('~', ref argPos)) || Message.HasStringPrefix("~~", ref argPos))
+                return;
 
             CommandContext Context = new CommandContext(Vars.Client, Message);
 
@@ -158,7 +159,8 @@ namespace Dogmeat
             if (!Result.IsSuccess)
                 await Message.Channel.SendMessageAsync($"**Error:** {Result.ErrorReason}");
             else
-                Logger.Log("Executed a command.", (Message.Channel as SocketGuildChannel).Guild, Message.Author);
+                Logger.Log($"Executed command {CommandParameter.Content.Split(' ')[0].TrimStart('~')}",
+                    (Message.Channel as SocketGuildChannel).Guild, Message.Author);
         }
     }
 }

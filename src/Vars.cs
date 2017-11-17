@@ -33,5 +33,9 @@ namespace Dogmeat
             new OverwritePermissions(sendMessages: PermValue.Deny);
 
         public static GuildPermissions MutedPermissions = new GuildPermissions(sendMessages: false);
+
+        // Make sure this is synchronized with database time zone
+        public static DateTime Now() =>
+            TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.UtcNow, "EST");
     }
 }
