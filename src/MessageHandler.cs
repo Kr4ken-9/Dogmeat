@@ -136,7 +136,7 @@ namespace Dogmeat
             
             Author = await Vars.DBHandler.UUIHandler.GetUser(Context.Author.Id);
             
-            if ((Author.LastChat - Vars.Now()).TotalSeconds >= 120)
+            if ((Vars.Now() - Author.LastChat).TotalSeconds >= 120)
                 Vars.DBHandler.UUIHandler.OnExperienceUpdate(Author, UserInfoHandler.CalculateExperience());
         }
 
