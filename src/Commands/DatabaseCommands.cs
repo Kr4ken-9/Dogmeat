@@ -56,7 +56,7 @@ namespace Dogmeat.Commands
         }
         
         [Command("tag"), Summary("Retrieves a user-configurable output for given tag")]
-        public async Task Tag([Summary("User to retrieve profile for")] String ID, String Body = "")
+        public async Task Tag([Summary("User to retrieve profile for")] String ID, [RemainderAttribute] String Body = "")
         {
             if (!await Vars.DBHandler.Tags.CheckTag(ID))
             {

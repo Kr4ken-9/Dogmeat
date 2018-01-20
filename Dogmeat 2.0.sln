@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26228.4
+VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dogmeat 2.0", "Dogmeat 2.0.csproj", "{35F04917-9C51-4591-88F6-66F5B2CAD1C2}"
 EndProject
@@ -20,9 +20,11 @@ Global
 		{35F04917-9C51-4591-88F6-66F5B2CAD1C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{35F04917-9C51-4591-88F6-66F5B2CAD1C2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{35F04917-9C51-4591-88F6-66F5B2CAD1C2}.Release|x64.ActiveCfg = Release|Any CPU
-		{35F04917-9C51-4591-88F6-66F5B2CAD1C2}.Release|x64.Build.0 = Release|Any 
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {42988A39-491D-4BE9-AD3B-E18566884E13}
 	EndGlobalSection
 EndGlobal
