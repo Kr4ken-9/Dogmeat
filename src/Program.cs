@@ -23,9 +23,9 @@ namespace Dogmeat
             Vars.Random = new Random();
             Vars.Client = new DiscordSocketClient();
             Vars.CService = new CommandService();
-            
-            ConfigManager.LoadConfig();
 
+            ConfigManager.LoadConfig();
+            
             await CheckVariables();
             
             Vars.DBHandler = DatabaseHandler.LoadConnection();

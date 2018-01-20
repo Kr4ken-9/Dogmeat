@@ -31,7 +31,7 @@ namespace Dogmeat
                 Patronization(msg);
 
             else if (!msg.Author.IsBot && !msg.Content.StartsWith("~") && Vars.Commands.Id != msg.Channel.Id
-                     && msg.Channel.Id == 379168449680637956)
+                     && msg.Channel.Id == 222826708972208128)
                 HandleExperience(msg);
             else
                 HandleCommand(msg);
@@ -127,7 +127,7 @@ namespace Dogmeat
 
             if (!await Vars.DBHandler.UUIHandler.CheckUser(Context.Author.Id))
             {
-                Author = new UUser(Context.Author.Id, 0, 0, 0, "None", "Alpha Participant", Vars.Now());
+                Author = new UUser(Context.Author.Id, 0, 0, 0, "None", "APart", Vars.Now());
                 await Vars.DBHandler.UUIHandler.AddUser(Author);
 
                 Vars.DBHandler.UUIHandler.ExpHandler.OnExperienceUpdate(Author, ExperienceHandler.CalculateExperience());

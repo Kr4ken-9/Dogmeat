@@ -15,7 +15,9 @@ namespace Dogmeat.Database
 
         public UserInfoHandler UUIHandler;
 
-        public TagHandler TagHandler;
+        public TagHandler Tags;
+
+        public InsigniaHandler Insignias;
         
         public DatabaseHandler(Connection CString)
         {
@@ -27,14 +29,15 @@ namespace Dogmeat.Database
 
             ConnectionString = CString;
             UUIHandler = new UserInfoHandler(Connection);
-            TagHandler = new TagHandler(Connection);
+            Tags = new TagHandler(Connection);
+            Insignias = new InsigniaHandler(Connection);
 
             CheckTables().GetAwaiter().GetResult();
         }
         
         #region Tables
 
-        internal async Task CheckTables()
+        private async Task CheckTables()
         {
             await CheckUsersTable();
             await CheckTagsTable();
@@ -110,7 +113,7 @@ namespace Dogmeat.Database
                     "CREATE TABLE Insignias" +
                     "(ID varchar(20) NOT NULL, " +
                     "Name varchar(20) NOT NULL, " +
-                    "URL varchar(30) NOT NULL, " +
+                    "URL varchar(40) NOT NULL, " +
                     "PRIMARY KEY (ID))";
 
                 await Command.ExecuteNonQueryAsync();

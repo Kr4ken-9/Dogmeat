@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
 
@@ -12,12 +13,6 @@ namespace Dogmeat.Database
 
         public async Task AddTag(String ID, String Body)
         {
-            if(ID.Length > 10)
-                throw new Exception("ID limit is ten characters");
-            
-            if(Body.Length > 50)
-                throw new Exception("Description limit is fifty characters");
-
             MySqlCommand Command = Connection.CreateCommand();
             Command.Parameters.AddWithValue("ID", ID);
             Command.Parameters.AddWithValue("Body", Body);
