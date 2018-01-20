@@ -130,14 +130,17 @@ namespace Dogmeat
                 Author = new UUser(Context.Author.Id, 0, 0, 0, "None", "APart", Vars.Now());
                 await Vars.DBHandler.UUIHandler.AddUser(Author);
 
-                Vars.DBHandler.UUIHandler.ExpHandler.OnExperienceUpdate(Author, ExperienceHandler.CalculateExperience());
+                Vars.DBHandler.UUIHandler.ExpHandler.OnExperienceUpdate(Author, ExperienceHandler.CalculateExperience(), Context);
                 return;
             }
             
             Author = await Vars.DBHandler.UUIHandler.GetUser(Context.Author.Id);
             
             if ((Vars.Now() - Author.LastChat).TotalSeconds >= 120)
-                Vars.DBHandler.UUIHandler.ExpHandler.OnExperienceUpdate(Author, ExperienceHandler.CalculateExperience());
+            {
+                Vars.DBHandler.UUIHandler.ExpHandler.OnExperienceUpdate(Author, ExperienceHandler.CalculateExperience(), Context);
+            }
+                
         }
 
         private static async Task HandleCommand(SocketMessage CommandParameter)

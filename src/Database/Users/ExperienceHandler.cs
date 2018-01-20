@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
+using Discord.WebSocket;
+using Discord;
 
 namespace Dogmeat.Database
 {
@@ -8,18 +10,33 @@ namespace Dogmeat.Database
     {   
         public event EventHandler<ExperienceEventArgs> ExperienceUpdate;
 
-        public void OnExperienceUpdate(UUser User, ushort Experience) => 
-            ExperienceUpdate(this, new ExperienceEventArgs(User, Experience));
+        public void OnExperienceUpdate(UUser User, ushort Experience, SocketMessage Context) => 
+            ExperienceUpdate(this, new ExperienceEventArgs(User, Experience, Context));
         
-        public async Task IncreaseExperience(ulong ID, ushort Experience)
+        public async Task IncreaseExperience(ulong ID, ushort Experience, SocketMessage context)
         {
             MySqlCommand Command = Vars.DBHandler.Connection.CreateCommand();
             Command.Parameters.AddWithValue("ID", ID);
             Command.Parameters.AddWithValue("Experience", Experience);
             Command.CommandText = "UPDATE Users SET Experience = Experience + @Experience WHERE ID = @ID";
-            
             await Utilities.MySql.ExecuteCommand(Command, Utilities.MySql.CommandExecuteType.NONQUERY);
+
+            UUser user = await Vars.DBHandler.UUIHandler.GetUser(ID);
+            if (CalculateLevelThreshold(user.Level) < user.Experience)
+            {
+                Command.Parameters.AddWithValue("ID", user.ID);
+                Command.CommandText = "UPDATE Users SET Level = Level + 1 WHERE ID = @ID";
+                await Utilities.MySql.ExecuteCommand(Command, Utilities.MySql.CommandExecuteType.NONQUERY);
+
+                EmbedBuilder embed = new EmbedBuilder();
+                embed.WithTitle("Level Up!");
+                embed.WithDescription("You level up to level " + (user.Level + 1) + "!");
+
+                await context.Channel.SendMessageAsync("", false, embed);
+            }
         }
+
+        public static int CalculateLevelThreshold(int level) => 5 * (int)Math.Pow(level, 2) + 50 * level + 100;
 
         public static Byte CalculateExperience() => (Byte) Vars.Random.Next(0, 11);
     }
@@ -28,11 +45,13 @@ namespace Dogmeat.Database
     {
         public UUser User;
         public ushort Amount;
+        public SocketMessage Context;
 
-        public ExperienceEventArgs(UUser user, ushort amount)
+        public ExperienceEventArgs(UUser user, ushort amount, SocketMessage context)
         {
             User = user;
             Amount = amount;
+            Context = context;
         }
     }
 }
