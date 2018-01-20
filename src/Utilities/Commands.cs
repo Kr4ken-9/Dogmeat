@@ -54,14 +54,15 @@ namespace Dogmeat.Utilities
             };
         }
 
-        public static async Task<Embed> CreateEmbedAsync(String Title, Color? Color, String ThumbnailURL, String URL, Action<EmbedFieldBuilder>[] Fields = null)
+        public static async Task<Embed> CreateEmbedAsync(String Title, Color? Color, String ThumbnailURL, String URL, Action<EmbedFieldBuilder>[] Fields = null, string Description = null)
         {
             EmbedBuilder Embed = new EmbedBuilder
             {
                 Title = Title,
                 Color = Color,
                 ThumbnailUrl = ThumbnailURL,
-                Url = URL
+                Url = URL,
+                Description = Description
             };
 
             if (Fields == null) return Embed.Build();

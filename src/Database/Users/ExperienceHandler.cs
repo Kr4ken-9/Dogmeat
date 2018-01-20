@@ -28,11 +28,10 @@ namespace Dogmeat.Database
                 Command.CommandText = "UPDATE Users SET Level = Level + 1 WHERE ID = @ID";
                 await Utilities.MySql.ExecuteCommand(Command, Utilities.MySql.CommandExecuteType.NONQUERY);
 
-                EmbedBuilder embed = new EmbedBuilder();
-                embed.WithTitle("Level Up!");
-                embed.WithDescription("You level up to level " + (user.Level + 1) + "!");
+                Embed Embed = await Utilities.Commands.CreateEmbedAsync("Level Up!",
+                Discord.Color.Default, null, null, null, $"You level up to level {user.Level + 1}!");
 
-                await context.Channel.SendMessageAsync("", false, embed);
+                await context.Channel.SendMessageAsync("", false, Embed);
             }
         }
 

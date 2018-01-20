@@ -16,13 +16,9 @@ namespace Dogmeat.Commands
         {
             UUser user;
             if (target == null)
-            {
                 user = await Vars.DBHandler.UUIHandler.GetUser(Context.User.Id);
-            }
             else
-            {
                 user = await Vars.DBHandler.UUIHandler.GetUser(target.Id);
-            }
             
             MySqlCommand Command = Vars.DBHandler.Connection.CreateCommand();
             Command.Parameters.AddWithValue("ID", user.ID);
@@ -32,19 +28,17 @@ namespace Dogmeat.Commands
             int rank;
             if (result == null)
             {
-                await Context.Channel.SendMessageAsync("The query failed for some reason...");
+                ReplyAsync("The query failed for some reason...");
                 return;
             }
             else
-            {
                 rank = (int)result;
-            }
 
             List<Action<EmbedFieldBuilder>> Fields = new List<Action<EmbedFieldBuilder>>
             {
                 await Utilities.Commands.CreateEmbedFieldAsync("Level", user.Level),
-                await Utilities.Commands.CreateEmbedFieldAsync("Experience",  user.Level + " / " + ExperienceHandler.CalculateLevelThreshold(user.Level)),
-                await Utilities.Commands.CreateEmbedFieldAsync("Rank", "#" + (rank + 1))
+                await Utilities.Commands.CreateEmbedFieldAsync("Experience",  $"{user.Level} / {ExperienceHandler.CalculateLevelThreshold(user.Level)}"),
+                await Utilities.Commands.CreateEmbedFieldAsync("Rank", $"#{rank + 1}")
             };
 
             Embed Embed = await Utilities.Commands.CreateEmbedAsync(target == null ? Context.User.Username : target.Username + "'s Ranking",
