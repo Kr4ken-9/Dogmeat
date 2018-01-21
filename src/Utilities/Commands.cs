@@ -59,7 +59,7 @@ namespace Dogmeat.Utilities
             EmbedBuilder Embed = new EmbedBuilder
             {
                 Title = Title,
-                Color = Color == null ? Discord.Color.Default : Color,
+                Color = (Color == null ? Discord.Color.Default : Color),
                 ThumbnailUrl = ThumbnailURL,
                 Url = URL,
                 Description = Description
