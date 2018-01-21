@@ -25,14 +25,14 @@ namespace Dogmeat.Commands
             Command.CommandText = "SELECT COUNT(*) AS rank FROM Users WHERE Experience > (SELECT Experience FROM Users WHERE ID = @ID)";
 
             object result = await Utilities.MySql.ExecuteCommand(Command, Utilities.MySql.CommandExecuteType.SCALAR);
-            int rank;
+            long rank;
             if (result == null)
             {
                 ReplyAsync("The query failed for some reason...");
                 return;
             }
             else
-                rank = (int)result;
+                rank = (long)result;
 
             List<Action<EmbedFieldBuilder>> Fields = new List<Action<EmbedFieldBuilder>>
             {

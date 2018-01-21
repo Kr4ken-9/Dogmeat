@@ -10,7 +10,7 @@ namespace Dogmeat.Database
     {   
         public event EventHandler<ExperienceEventArgs> ExperienceUpdate;
 
-        public void OnExperienceUpdate(UUser User, ushort Experience, SocketMessage Context) => 
+        public void OnExperienceUpdate(UUser User, ushort Experience, SocketMessage Context) =>
             ExperienceUpdate(this, new ExperienceEventArgs(User, Experience, Context));
         
         public async Task IncreaseExperience(ulong ID, ushort Experience, SocketMessage context)
