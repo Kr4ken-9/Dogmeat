@@ -14,11 +14,7 @@ namespace Dogmeat.Commands
         [Command("rank"), Summary("Displays rank/exp info")]
         public async Task Rank(IUser target = null)
         {
-            UUser user;
-            if (target == null)
-                user = await Vars.DBHandler.UUIHandler.GetUser(Context.User.Id);
-            else
-                user = await Vars.DBHandler.UUIHandler.GetUser(target.Id);
+            UUser user = await Vars.DBHandler.UUIHandler.GetUser(target == null ? Context.User.Id : target.Id);
             
             MySqlCommand Command = Vars.DBHandler.Connection.CreateCommand();
             Command.Parameters.AddWithValue("ID", user.ID);
@@ -41,7 +37,7 @@ namespace Dogmeat.Commands
                 await Utilities.Commands.CreateEmbedFieldAsync("Rank", $"#{rank + 1}")
             };
 
-            Embed Embed = await Utilities.Commands.CreateEmbedAsync(target == null ? Context.User.Username : target.Username + "'s Ranking",
+            Embed Embed = await Utilities.Commands.CreateEmbedAsync((target == null ? Context.User.Username : target.Username) + "'s Ranking",
                 Discord.Color.Default, null, null, Fields.ToArray());
 
             ReplyAsync("", embed: Embed);
