@@ -29,7 +29,7 @@ namespace Dogmeat.Database
                 await Utilities.MySql.ExecuteCommand(Command, Utilities.MySql.CommandExecuteType.NONQUERY);
 
                 Embed Embed = await Utilities.Commands.CreateEmbedAsync("Level Up!",
-                Description: $"You leveled up to level {user.Level + 1}!");
+                $"You leveled up to level {user.Level + 1}!", Discord.Color.Default);
 
                 await context.Channel.SendMessageAsync("", embed: Embed);
             }

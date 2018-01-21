@@ -72,5 +72,31 @@ namespace Dogmeat.Utilities
 
             return Embed.Build();
         }
+
+        public static async Task<Embed> CreateEmbedAsync(String Title, Action<EmbedFieldBuilder>[] Fields, Color Color)
+        {
+            return await CreateEmbedAsync(Title, Fields: Fields, Color: Color);
+        }
+
+        public static async Task<Embed> CreateEmbedAsync(String Title, String Description, Color Color)
+        {
+            return await CreateEmbedAsync(Title, Description: Description, Color: Color);
+        }
+
+        public static async Task<Embed> CreateEmbedAsync(String Title, String Description, Action<EmbedFieldBuilder>[] Fields, Color Color)
+        {
+            return await CreateEmbedAsync(Title, Description: Description, Fields: Fields, Color: Color);
+        }
+
+        public static async Task<Embed> CreateEmbedAsync(String Title, String Description, Color Color, String URL)
+        {
+            return await CreateEmbedAsync(Title, Description: Description, Color: Color, URL: URL);
+        }
+
+        public static async Task<Embed> CreateEmbedAsync(String Title, String Description, Color Color, String URL, String ThumbnailURL)
+        {
+            return await CreateEmbedAsync(Title, Description: Description, Color: Color, URL:URL, ThumbnailURL: ThumbnailURL);
+        }
+
     }
 }
