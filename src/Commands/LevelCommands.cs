@@ -37,7 +37,7 @@ namespace Dogmeat.Commands
             List<Action<EmbedFieldBuilder>> Fields = new List<Action<EmbedFieldBuilder>>
             {
                 await Utilities.Commands.CreateEmbedFieldAsync("Level", user.Level),
-                await Utilities.Commands.CreateEmbedFieldAsync("Experience",  $"{user.Level} / {ExperienceHandler.CalculateLevelThreshold(user.Level)}"),
+                await Utilities.Commands.CreateEmbedFieldAsync("Experience",  $"{user.Experience} / {ExperienceHandler.CalculateLevelThreshold(user.Level)}"),
                 await Utilities.Commands.CreateEmbedFieldAsync("Rank", $"#{rank + 1}")
             };
 
