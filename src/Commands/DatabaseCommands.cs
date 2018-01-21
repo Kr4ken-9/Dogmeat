@@ -102,10 +102,12 @@ namespace Dogmeat.Commands
                 }
 
                 Vars.DBHandler.Tags.UpdateTag(ID, Body);
+                
                 ReplyAsync($"Body for tag `{ID}` changed to ```{Body}```");
+                return;
             }
 
-            ReplyAsync(Body);
+            ReplyAsync(Tag.Body);
         }
 
         [Command("insignias"), Summary("Retrieves insignias for given user")]
