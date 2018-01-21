@@ -76,7 +76,8 @@ namespace Dogmeat.Database
                     Command.CommandText =
                         "SELECT COUNT(*) AS rank FROM Users WHERE Experience > (SELECT Experience FROM Users WHERE ID = @ID)";
                     object res = await Utilities.MySql.ExecuteCommand(Command, Utilities.MySql.CommandExecuteType.SCALAR);
-                    return (long)res;
+
+                    return (long)res + 1;
                 }
             }
         }
