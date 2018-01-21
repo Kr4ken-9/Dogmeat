@@ -35,7 +35,7 @@ namespace Dogmeat.Database
             }
         }
 
-        public static int CalculateLevelThreshold(int level) => 5 * (int)Math.Pow(level, 2) + 50 * level + 100;
+        public static int CalculateLevelThreshold(int level) => 5 * (level * level) + 50 * level + 100;
 
         public static Byte CalculateExperience() => (Byte) Vars.Random.Next(0, 11);
     }
