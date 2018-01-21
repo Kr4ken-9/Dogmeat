@@ -80,22 +80,22 @@ namespace Dogmeat.Utilities
 
         public static async Task<Embed> CreateEmbedAsync(String Title, String Description, Color Color)
         {
-            return await CreateEmbedAsync(Title, Description: Description, Color: Color);
+            return await CreateEmbedAsync(Title, Description, Color);
         }
 
         public static async Task<Embed> CreateEmbedAsync(String Title, String Description, Action<EmbedFieldBuilder>[] Fields, Color Color)
         {
-            return await CreateEmbedAsync(Title, Description: Description, Fields: Fields, Color: Color);
+            return await CreateEmbedAsync(Title, Description, Fields: Fields, Color: Color);
         }
 
         public static async Task<Embed> CreateEmbedAsync(String Title, String Description, Color Color, String URL)
         {
-            return await CreateEmbedAsync(Title, Description: Description, Color: Color, URL: URL);
+            return await CreateEmbedAsync(Title, Description, Color, URL: URL);
         }
 
         public static async Task<Embed> CreateEmbedAsync(String Title, String Description, Color Color, String URL, String ThumbnailURL)
         {
-            return await CreateEmbedAsync(Title, Description: Description, Color: Color, URL:URL, ThumbnailURL: ThumbnailURL);
+            return await CreateEmbedAsync(Title, Description, Color, URL:URL, ThumbnailURL: ThumbnailURL);
         }
 
     }
