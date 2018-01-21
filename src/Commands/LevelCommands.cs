@@ -14,11 +14,12 @@ namespace Dogmeat.Commands
         [Command("rank"), Summary("Displays rank/exp info")]
         public async Task Rank(IUser target = null)
         {
-            UUser user = await Vars.DBHandler.UUIHandler.GetUser(target == null ? Context.User.Id : target.Id);
+            UUser user = await Vars.DBHandler.UUIHandler.GetUser(target?.Id ?? Context.User.Id);
             
             MySqlCommand Command = Vars.DBHandler.Connection.CreateCommand();
             Command.Parameters.AddWithValue("ID", user.ID);
-            Command.CommandText = "SELECT COUNT(*) AS rank FROM Users WHERE Experience > (SELECT Experience FROM Users WHERE ID = @ID)";
+            Command.CommandText =
+                "SELECT COUNT(*) AS rank FROM Users WHERE Experience > (SELECT Experience FROM Users WHERE ID = @ID)";
 
             object result = await Utilities.MySql.ExecuteCommand(Command, Utilities.MySql.CommandExecuteType.SCALAR);
             long rank;
@@ -27,18 +28,20 @@ namespace Dogmeat.Commands
                 ReplyAsync("The query failed for some reason...");
                 return;
             }
-            else
-                rank = (long)result;
+
+            rank = (long)result;
 
             List<Action<EmbedFieldBuilder>> Fields = new List<Action<EmbedFieldBuilder>>
             {
                 await Utilities.Commands.CreateEmbedFieldAsync("Level", user.Level),
-                await Utilities.Commands.CreateEmbedFieldAsync("Experience",  $"{user.Experience} / {ExperienceHandler.CalculateLevelThreshold(user.Level)}"),
+                await Utilities.Commands.CreateEmbedFieldAsync("Experience",
+                    $"{user.Experience} / {ExperienceHandler.CalculateLevelThreshold(user.Level)}"),
                 await Utilities.Commands.CreateEmbedFieldAsync("Rank", $"#{rank + 1}")
             };
 
-            Embed Embed = await Utilities.Commands.CreateEmbedAsync((target == null ? Context.User.Username : target.Username) + "'s Ranking",
-                Discord.Color.Default, Fields: Fields.ToArray());
+            Embed Embed = await Utilities.Commands.CreateEmbedAsync(
+                (target == null ? Context.User.Username : target.Username) + "'s Ranking",
+                Color.Default, Fields: Fields.ToArray());
 
             ReplyAsync("", embed: Embed);
         }
