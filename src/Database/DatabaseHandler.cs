@@ -60,7 +60,6 @@ namespace Dogmeat.Database
                     "(ID BIGINT UNSIGNED NOT NULL, " +
                     "Experience MEDIUMINT UNSIGNED NOT NULL, " +
                     "Level SMALLINT UNSIGNED NOT NULL, " +
-                    "Global INT UNSIGNED NOT NULL, " +
                     "Description varchar(50) NOT NULL, " +
                     "Insignias varchar(100) NOT NULL, " +
                     "LastChat timestamp NOT NULL DEFAULT NOW() ON UPDATE CURRENT_TIMESTAMP, " +
