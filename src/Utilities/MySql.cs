@@ -11,12 +11,11 @@ namespace Dogmeat.Utilities
         {
             object Result = null;
 
-            lock (Vars.DBHandler.Connection)
+            using (MySqlConnection c = new MySqlConnection(Vars.DBHandler.ConnectionString))
             {
                 try
                 {
-                    Vars.DBHandler.Connection.OpenAsync().GetAwaiter().GetResult();
-
+                    c.OpenAsync().GetAwaiter().GetResult();
                     switch (ExeType)
                     {
                         case CommandExecuteType.NONQUERY:
@@ -28,7 +27,7 @@ namespace Dogmeat.Utilities
                     }
                 }
                 catch (Exception Ex) { Console.WriteLine(Ex); }
-                finally { Vars.DBHandler.Connection.Close(); }
+                finally { c.Close(); }
             }
 
             return Result;

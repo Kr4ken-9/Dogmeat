@@ -15,21 +15,13 @@ namespace Dogmeat.Commands
         public async Task Rank(IUser target = null)
         {
             UUser user = await Vars.DBHandler.UUIHandler.GetUser(target?.Id ?? Context.User.Id);
-            
-            MySqlCommand Command = Vars.DBHandler.Connection.CreateCommand();
-            Command.Parameters.AddWithValue("ID", user.ID);
-            Command.CommandText =
-                "SELECT COUNT(*) AS rank FROM Users WHERE Experience > (SELECT Experience FROM Users WHERE ID = @ID)";
+            long rank = await Vars.DBHandler.UUIHandler.ExpHandler.GetRank(user.ID);
 
-            object result = await Utilities.MySql.ExecuteCommand(Command, Utilities.MySql.CommandExecuteType.SCALAR);
-            long rank;
-            if (result == null)
+            if (rank == null)
             {
                 ReplyAsync("The query failed for some reason...");
                 return;
             }
-
-            rank = (long)result;
 
             List<Action<EmbedFieldBuilder>> Fields = new List<Action<EmbedFieldBuilder>>
             {
