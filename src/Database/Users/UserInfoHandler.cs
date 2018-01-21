@@ -21,7 +21,7 @@ namespace Dogmeat.Database
             Command.Parameters.AddWithValue("Experience", Experience);
             Command.Parameters.AddWithValue("Description", Description);
             Command.Parameters.AddWithValue("Insignias", Insignias);
-            Command.CommandText = "INSERT INTO Users VALUES(@ID, @Experience, 0, 0, @Description, @Insignias, now())";
+            Command.CommandText = "INSERT INTO Users VALUES(@ID, @Experience, 0, @Description, @Insignias, now())";
 
             await Utilities.MySql.ExecuteCommand(Command, Utilities.MySql.CommandExecuteType.NONQUERY);
         }
