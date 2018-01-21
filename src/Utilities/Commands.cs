@@ -54,12 +54,12 @@ namespace Dogmeat.Utilities
             };
         }
 
-        public static async Task<Embed> CreateEmbedAsync(String Title, Color? Color, String ThumbnailURL, String URL, Action<EmbedFieldBuilder>[] Fields = null, string Description = null)
+        public static async Task<Embed> CreateEmbedAsync(String Title, Color? Color = null, String ThumbnailURL = null, String URL = null, Action<EmbedFieldBuilder>[] Fields = null, String Description = null)
         {
             EmbedBuilder Embed = new EmbedBuilder
             {
                 Title = Title,
-                Color = Color,
+                Color = Color == null ? Discord.Color.Default : Color,
                 ThumbnailUrl = ThumbnailURL,
                 Url = URL,
                 Description = Description
