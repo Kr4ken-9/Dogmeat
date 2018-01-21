@@ -47,7 +47,7 @@ namespace Dogmeat.Commands
             {
                 await Utilities.Commands.CreateEmbedFieldAsync("Experience", User.Experience),
                 await Utilities.Commands.CreateEmbedFieldAsync("Level", User.Level),
-                await Utilities.Commands.CreateEmbedFieldAsync("Global Rank", User.Global),
+                //await Utilities.Commands.CreateEmbedFieldAsync("Global Rank", User.Global), 
                 await Utilities.Commands.CreateEmbedFieldAsync("Description", User.Description)
             };
 

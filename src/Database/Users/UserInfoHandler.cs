@@ -21,14 +21,14 @@ namespace Dogmeat.Database
             Command.Parameters.AddWithValue("Experience", Experience);
             Command.Parameters.AddWithValue("Description", Description);
             Command.Parameters.AddWithValue("Insignias", Insignias);
-            Command.CommandText = "INSERT INTO Users VALUES(@ID, @Experience, 0, 0, @Description, @Insignias, now())";
+            Command.CommandText = "INSERT INTO Users VALUES(@ID, @Experience, 0, @Description, @Insignias, now())";
 
             await Utilities.MySql.ExecuteCommand(Command, Utilities.MySql.CommandExecuteType.NONQUERY);
         }
 
         public async Task<UUser> GetUser(ulong ID)
         {
-            UUser User = new UUser(ID, 0, 0, 0, "", "", DateTime.MinValue);
+            UUser User = new UUser(ID, 0, 0, "", "", DateTime.MinValue);
 
             lock (Vars.DBHandler.Connection)
             {
@@ -46,10 +46,9 @@ namespace Dogmeat.Database
                         {
                             User.Experience = (ushort) Reader.GetInt16(1);
                             User.Level = (ushort) Reader.GetInt16(2);
-                            User.Global = (uint) Reader.GetInt32(3);
-                            User.Description = Reader.GetString(4);
-                            User.Insignias = Reader.GetString(5);
-                            User.LastChat = Reader.GetDateTime(6);
+                            User.Description = Reader.GetString(3);
+                            User.Insignias = Reader.GetString(4);
+                            User.LastChat = Reader.GetDateTime(5);
                         }
                     }
                 }
