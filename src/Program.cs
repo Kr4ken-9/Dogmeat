@@ -49,7 +49,7 @@ namespace Dogmeat
             await Vars.CService.AddModulesAsync(Assembly.GetEntryAssembly());
             
             Vars.DBHandler.UUIHandler.ExpHandler.ExperienceUpdate += async (sender, args) =>
-                await Vars.DBHandler.UUIHandler.ExpHandler.IncreaseExperience(args.User.ID, args.Amount);
+                await Vars.DBHandler.UUIHandler.ExpHandler.IncreaseExperience(args.User.ID, args.Amount, args.Context);
             
             CancellationToken Token = new CancellationTokenSource().Token;
 

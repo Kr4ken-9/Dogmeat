@@ -31,7 +31,6 @@ namespace Dogmeat.Database
             UUIHandler = new UserInfoHandler(Connection);
             Tags = new TagHandler(Connection);
             Insignias = new InsigniaHandler(Connection);
-
             CheckTables().GetAwaiter().GetResult();
         }
         
