@@ -87,6 +87,7 @@ namespace Dogmeat.Database
                     "CREATE TABLE Tags" +
                     "(ID varchar(20) NOT NULL, " +
                     "Body varchar(3000) NOT NULL, " +
+                    "Owner BIGINT UNSIGNED NOT NULL, " +
                     "PRIMARY KEY (ID))";
 
                 await Command.ExecuteNonQueryAsync();

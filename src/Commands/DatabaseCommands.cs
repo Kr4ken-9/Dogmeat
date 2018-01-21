@@ -78,14 +78,36 @@ namespace Dogmeat.Commands
                     return;
                 }
                 
-                Vars.DBHandler.Tags.AddTag(ID, Body);
-                ReplyAsync($"Added tag {ID} with Body: {Body}");
+                Vars.DBHandler.Tags.AddTag(ID, Body, Context.User.Id);
+                ReplyAsync($"Added tag `{ID}` with Body: ```{Body}```");
                 return;
             }
 
-            Body = await Vars.DBHandler.Tags.GetTag(ID);
+            Tag Tag = await Vars.DBHandler.Tags.GetTag(ID);
 
-            ReplyAsync(Body);
+            if (Tag.Owner == Context.User.Id && !String.IsNullOrEmpty(Body))
+            {
+                if (MentionUtils.TryParseUser(Body, out ulong userId))
+                {
+                    Vars.DBHandler.Tags.UpdateTag(ID, userId);
+                    
+                    ReplyAsync($"Owner for tag `{ID}` changed to `{userId}`");
+                    return;
+                }
+                
+                if (Body.Length > 3000)
+                {
+                    ReplyAsync("Body must be three thousand characters or less");
+                    return;
+                }
+
+                Vars.DBHandler.Tags.UpdateTag(ID, Body);
+                
+                ReplyAsync($"Body for tag `{ID}` changed to ```{Body}```");
+                return;
+            }
+
+            ReplyAsync(Tag.Body);
         }
 
         [Command("insignias"), Summary("Retrieves insignias for given user")]
