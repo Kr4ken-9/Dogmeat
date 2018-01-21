@@ -41,7 +41,7 @@ namespace Dogmeat.Commands
 
             Embed Embed = await Utilities.Commands.CreateEmbedAsync(
                 (target == null ? Context.User.Username : target.Username) + "'s Ranking",
-                Color.Default, Fields: Fields.ToArray());
+                Fields.ToArray(), Discord.Color.Default);
 
             ReplyAsync("", embed: Embed);
         }
