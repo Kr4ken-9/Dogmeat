@@ -41,30 +41,25 @@ namespace Dogmeat.Database
 
             using (MySqlConnection c = new MySqlConnection(ConnectionString))
             {
-                try
+                using (MySqlCommand Command = c.CreateCommand())
                 {
-                    using (MySqlCommand Command = c.CreateCommand())
+                    Command.Parameters.AddWithValue("ID", ID);
+                    Command.CommandText = "SELECT * FROM Users WHERE ID = @ID";
+
+                    await c.OpenAsync();
+
+                    using (MySqlDataReader Reader = Command.ExecuteReader())
                     {
-                        Command.Parameters.AddWithValue("ID", ID);
-                        Command.CommandText = "SELECT * FROM Users WHERE ID = @ID";
-
-                        c.OpenAsync().GetAwaiter().GetResult();
-
-                        using (MySqlDataReader Reader = Command.ExecuteReader())
+                        while (Reader.ReadAsync().GetAwaiter().GetResult())
                         {
-                            while (Reader.ReadAsync().GetAwaiter().GetResult())
-                            {
-                                User.Experience = (ushort)Reader.GetInt16(1);
-                                User.Level = (ushort)Reader.GetInt16(2);
-                                User.Description = Reader.GetString(3);
-                                User.Insignias = Reader.GetString(4);
-                                User.LastChat = Reader.GetDateTime(5);
-                            }
+                            User.Experience = (ushort)Reader.GetInt16(1);
+                            User.Level = (ushort)Reader.GetInt16(2);
+                            User.Description = Reader.GetString(3);
+                            User.Insignias = Reader.GetString(4);
+                            User.LastChat = Reader.GetDateTime(5);
                         }
                     }
                 }
-                catch (Exception e) { Console.WriteLine(e); }
-                finally { c.Close(); }
             }
 
             return User;

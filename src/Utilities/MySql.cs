@@ -13,21 +13,16 @@ namespace Dogmeat.Utilities
 
             using (MySqlConnection c = new MySqlConnection(Vars.DBHandler.ConnectionString))
             {
-                try
+                await c.OpenAsync();
+                switch (ExeType)
                 {
-                    c.OpenAsync().GetAwaiter().GetResult();
-                    switch (ExeType)
-                    {
-                        case CommandExecuteType.NONQUERY:
-                            Result = Command.ExecuteNonQueryAsync().GetAwaiter().GetResult();
-                            break;
-                        case CommandExecuteType.SCALAR:
-                            Result = Command.ExecuteScalarAsync().GetAwaiter().GetResult();
-                            break;
-                    }
+                    case CommandExecuteType.NONQUERY:
+                        Result = Command.ExecuteNonQueryAsync().GetAwaiter().GetResult();
+                        break;
+                    case CommandExecuteType.SCALAR:
+                        Result = Command.ExecuteScalarAsync().GetAwaiter().GetResult();
+                        break;
                 }
-                catch (Exception Ex) { Console.WriteLine(Ex); }
-                finally { c.Close(); }
             }
 
             return Result;
