@@ -40,7 +40,7 @@ namespace Dogmeat.Commands
             Embed Embed = await Utilities.Commands.CreateEmbedAsync((target == null ? Context.User.Username : target.Username) + "'s Ranking",
                 Discord.Color.Default, null, null, Fields.ToArray());
 
-            ReplyAsync(String.Empty, embed: Embed);
+            ReplyAsync("", embed: Embed);
         }
     }
 }
