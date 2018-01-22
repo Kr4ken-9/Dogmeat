@@ -41,6 +41,7 @@ namespace Dogmeat.Database
         {
             using (MySqlConnection c = new MySqlConnection(ConnectionString))
             {
+                await c.OpenAsync();
                 using (MySqlCommand Command = c.CreateCommand())
                 {
                     Command.Parameters.AddWithValue("ID", ID);
@@ -56,6 +57,7 @@ namespace Dogmeat.Database
         {
             using (MySqlConnection c = new MySqlConnection(ConnectionString))
             {
+                await c.OpenAsync();
                 using (MySqlCommand Command = c.CreateCommand())
                 {
                     Command.Parameters.AddWithValue("ID", ID);
@@ -70,6 +72,7 @@ namespace Dogmeat.Database
         {
             using (MySqlConnection c = new MySqlConnection(ConnectionString))
             {
+                await c.OpenAsync();
                 using (MySqlCommand Command = c.CreateCommand())
                 {
                     Command.Parameters.AddWithValue("ID", ID);

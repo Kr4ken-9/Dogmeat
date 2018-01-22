@@ -47,31 +47,26 @@ namespace Dogmeat.Database
         {
             using (MySqlConnection c = new MySqlConnection(ConnectionString))
             {
-                try
+                await c.OpenAsync();
+                using (MySqlCommand Command = c.CreateCommand())
                 {
-                    using (MySqlCommand Command = c.CreateCommand())
-                    {
-                        Command.CommandText = "SHOW TABLES LIKE 'Users'";
-                        await c.OpenAsync();
+                    Command.CommandText = "SHOW TABLES LIKE 'Users'";
 
-                        if (await Command.ExecuteScalarAsync() != null)
-                            return;
+                    if (await Command.ExecuteScalarAsync() != null)
+                        return;
 
-                        Command.CommandText =
-                            "CREATE TABLE Users" +
-                            "(ID BIGINT UNSIGNED NOT NULL, " +
-                            "Experience MEDIUMINT UNSIGNED NOT NULL, " +
-                            "Level SMALLINT UNSIGNED NOT NULL, " +
-                            "Description varchar(50) NOT NULL, " +
-                            "Insignias varchar(100) NOT NULL, " +
-                            "LastChat timestamp NOT NULL DEFAULT NOW() ON UPDATE CURRENT_TIMESTAMP, " +
-                            "PRIMARY KEY (ID))";
+                    Command.CommandText =
+                        "CREATE TABLE Users" +
+                        "(ID BIGINT UNSIGNED NOT NULL, " +
+                        "Experience MEDIUMINT UNSIGNED NOT NULL, " +
+                        "Level SMALLINT UNSIGNED NOT NULL, " +
+                        "Description varchar(50) NOT NULL, " +
+                        "Insignias varchar(100) NOT NULL, " +
+                        "LastChat timestamp NOT NULL DEFAULT NOW() ON UPDATE CURRENT_TIMESTAMP, " +
+                        "PRIMARY KEY (ID))";
 
-                        await Command.ExecuteNonQueryAsync();
-                    }
+                    await Command.ExecuteNonQueryAsync();
                 }
-                catch (Exception e) { Console.WriteLine(e); }
-                finally { c.Close(); }
             }
         }
 
@@ -79,29 +74,24 @@ namespace Dogmeat.Database
         {
             using (MySqlConnection c = new MySqlConnection(ConnectionString))
             {
-                try
+                await c.OpenAsync();
+                using (MySqlCommand Command = c.CreateCommand())
                 {
-                    using (MySqlCommand Command = c.CreateCommand())
-                    {
-                        Command.CommandText = "SHOW TABLES LIKE 'Tags'";
+                    Command.CommandText = "SHOW TABLES LIKE 'Tags'";
 
-                        await c.OpenAsync();
 
-                        if (await Command.ExecuteScalarAsync() != null)
-                            return;
+                    if (await Command.ExecuteScalarAsync() != null)
+                        return;
 
-                        Command.CommandText =
-                            "CREATE TABLE Tags" +
-                            "(ID varchar(20) NOT NULL, " +
-                            "Body varchar(3000) NOT NULL, " +
-                            "Owner BIGINT UNSIGNED NOT NULL, " +
-                            "PRIMARY KEY (ID))";
+                    Command.CommandText =
+                        "CREATE TABLE Tags" +
+                        "(ID varchar(20) NOT NULL, " +
+                        "Body varchar(3000) NOT NULL, " +
+                        "Owner BIGINT UNSIGNED NOT NULL, " +
+                        "PRIMARY KEY (ID))";
 
-                        await Command.ExecuteNonQueryAsync();
-                    }
+                    await Command.ExecuteNonQueryAsync();
                 }
-                catch (Exception e) { Console.WriteLine(e); }
-                finally { c.Close(); }
             }
         }
 
@@ -109,30 +99,26 @@ namespace Dogmeat.Database
         {
             using (MySqlConnection c = new MySqlConnection(ConnectionString))
             {
-                try
+                await c.OpenAsync();
+                using (MySqlCommand Command = c.CreateCommand())
                 {
-                    using (MySqlCommand Command = c.CreateCommand())
-                    {
 
-                        Command.CommandText = "SHOW TABLES LIKE 'Insignias'";
+                    Command.CommandText = "SHOW TABLES LIKE 'Insignias'";
 
-                        await c.OpenAsync();
+                    await c.OpenAsync();
 
-                        if (await Command.ExecuteScalarAsync() != null)
-                            return;
+                    if (await Command.ExecuteScalarAsync() != null)
+                        return;
 
-                        Command.CommandText =
-                            "CREATE TABLE Insignias" +
-                            "(ID varchar(20) NOT NULL, " +
-                            "Name varchar(20) NOT NULL, " +
-                            "URL varchar(40) NOT NULL, " +
-                            "PRIMARY KEY (ID))";
+                    Command.CommandText =
+                        "CREATE TABLE Insignias" +
+                        "(ID varchar(20) NOT NULL, " +
+                        "Name varchar(20) NOT NULL, " +
+                        "URL varchar(40) NOT NULL, " +
+                        "PRIMARY KEY (ID))";
 
-                        await Command.ExecuteNonQueryAsync();
-                    }
+                    await Command.ExecuteNonQueryAsync();
                 }
-                catch (Exception e) { Console.WriteLine(e); }
-                finally { c.Close(); }
             }
         }
 

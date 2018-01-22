@@ -22,6 +22,7 @@ namespace Dogmeat.Database
         {
             using (MySqlConnection c = new MySqlConnection(ConnectionString))
             {
+                await c.OpenAsync();
                 using (MySqlCommand Command = c.CreateCommand())
                 {
                     Command.Parameters.AddWithValue("ID", ID);
@@ -41,12 +42,11 @@ namespace Dogmeat.Database
 
             using (MySqlConnection c = new MySqlConnection(ConnectionString))
             {
+                await c.OpenAsync();
                 using (MySqlCommand Command = c.CreateCommand())
                 {
                     Command.Parameters.AddWithValue("ID", ID);
                     Command.CommandText = "SELECT * FROM Users WHERE ID = @ID";
-
-                    await c.OpenAsync();
 
                     using (MySqlDataReader Reader = Command.ExecuteReader())
                     {
@@ -70,6 +70,7 @@ namespace Dogmeat.Database
             bool Exists = false;
             using (MySqlConnection c = new MySqlConnection(ConnectionString))
             {
+                await c.OpenAsync();
                 using (MySqlCommand Command = c.CreateCommand())
                 {
                     Command.Parameters.AddWithValue("ID", ID);

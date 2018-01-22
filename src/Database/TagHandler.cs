@@ -14,6 +14,7 @@ namespace Dogmeat.Database
         {
             using (MySqlConnection c = new MySqlConnection(ConnectionString))
             {
+                await c.OpenAsync();
                 using (MySqlCommand Command = c.CreateCommand())
                 {
                     Command.Parameters.AddWithValue("ID", ID);
@@ -31,6 +32,7 @@ namespace Dogmeat.Database
             bool Exists = false;
             using (MySqlConnection c = new MySqlConnection(ConnectionString))
             {
+                await c.OpenAsync();
                 using (MySqlCommand Command = c.CreateCommand())
                 {
                     Command.Parameters.AddWithValue("ID", ID);
@@ -56,25 +58,21 @@ namespace Dogmeat.Database
 
             using (MySqlConnection c = new MySqlConnection(ConnectionString))
             {
-                try
+                await c.OpenAsync();
+                using (MySqlCommand Command = c.CreateCommand())
                 {
-                    using (MySqlCommand Command = c.CreateCommand())
-                    {
-                        Command.Parameters.AddWithValue("ID", ID);
-                        Command.CommandText = "SELECT * FROM Tags WHERE ID = @ID";
+                    Command.Parameters.AddWithValue("ID", ID);
+                    Command.CommandText = "SELECT * FROM Tags WHERE ID = @ID";
 
-                        c.OpenAsync().GetAwaiter().GetResult();
+                    c.OpenAsync().GetAwaiter().GetResult();
 
-                        using (MySqlDataReader Reader = Command.ExecuteReader())
-                            while (Reader.ReadAsync().GetAwaiter().GetResult())
-                            {
-                                Output.Body = Reader.GetString(1);
-                                Output.Owner = (ulong)Reader.GetValue(2);
-                            }
-                    }
+                    using (MySqlDataReader Reader = Command.ExecuteReader())
+                        while (Reader.ReadAsync().GetAwaiter().GetResult())
+                        {
+                            Output.Body = Reader.GetString(1);
+                            Output.Owner = (ulong)Reader.GetValue(2);
+                        }
                 }
-                catch (Exception e) { Console.WriteLine(e); }
-                finally { c.Close(); }
             }
 
             return Output;
@@ -90,34 +88,30 @@ namespace Dogmeat.Database
         {
             using (MySqlConnection c = new MySqlConnection(ConnectionString))
             {
-                try
+                await c.OpenAsync();
+                using (MySqlCommand Command = c.CreateCommand())
                 {
-                    using (MySqlCommand Command = c.CreateCommand())
+                    Command.Parameters.AddWithValue("ID", ID);
+
+                    if (!String.IsNullOrEmpty(Body) && Owner != ulong.MinValue)
                     {
-                        Command.Parameters.AddWithValue("ID", ID);
-
-                        if (!String.IsNullOrEmpty(Body) && Owner != ulong.MinValue)
-                        {
-                            Command.Parameters.AddWithValue("Body", Body);
-                            Command.Parameters.AddWithValue("Owner", Owner);
-                            Command.CommandText = "UPDATE Tags SET Body = @Body, Owner = @Owner WHERE ID = @ID";
-                        }
-                        else if (!String.IsNullOrEmpty(Body))
-                        {
-                            Command.Parameters.AddWithValue("Body", Body);
-                            Command.CommandText = "UPDATE Tags SET Body = @Body WHERE ID = @ID";
-                        }
-                        else
-                        {
-                            Command.Parameters.AddWithValue("Owner", Owner);
-                            Command.CommandText = "UPDATE Tags SET Owner = @Owner WHERE ID = @ID";
-                        }
-
-                        Utilities.MySql.ExecuteCommand(Command, Utilities.MySql.CommandExecuteType.NONQUERY);
+                        Command.Parameters.AddWithValue("Body", Body);
+                        Command.Parameters.AddWithValue("Owner", Owner);
+                        Command.CommandText = "UPDATE Tags SET Body = @Body, Owner = @Owner WHERE ID = @ID";
                     }
+                    else if (!String.IsNullOrEmpty(Body))
+                    {
+                        Command.Parameters.AddWithValue("Body", Body);
+                        Command.CommandText = "UPDATE Tags SET Body = @Body WHERE ID = @ID";
+                    }
+                    else
+                    {
+                        Command.Parameters.AddWithValue("Owner", Owner);
+                        Command.CommandText = "UPDATE Tags SET Owner = @Owner WHERE ID = @ID";
+                    }
+
+                    Utilities.MySql.ExecuteCommand(Command, Utilities.MySql.CommandExecuteType.NONQUERY);
                 }
-                catch (Exception e) { Console.WriteLine(e); }
-                finally { c.Close(); }
             }
         }
 

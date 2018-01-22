@@ -16,6 +16,7 @@ namespace Dogmeat.Database
         {
             using (MySqlConnection c = new MySqlConnection(ConnectionString))
             {
+                await c.OpenAsync();
                 using (MySqlCommand Command = c.CreateCommand())
                 {
                     Command.Parameters.AddWithValue("ID", ID);
@@ -35,33 +36,29 @@ namespace Dogmeat.Database
 
             using (MySqlConnection c = new MySqlConnection(ConnectionString))
             {
-                try
+                await c.OpenAsync();
+                c.OpenAsync().GetAwaiter().GetResult();
+                foreach (String ID in ids)
                 {
-                    c.OpenAsync().GetAwaiter().GetResult();
-                    foreach (String ID in ids)
+                    Insignia Insignia = new Insignia(ID, "", "");
+
+                    using (MySqlCommand Command = c.CreateCommand())
                     {
-                        Insignia Insignia = new Insignia(ID, "", "");
+                        Command.Parameters.AddWithValue("ID", ID);
+                        Command.CommandText = "SELECT * FROM Insignias WHERE ID = @ID";
 
-                        using (MySqlCommand Command = c.CreateCommand())
+                        using (MySqlDataReader Reader = Command.ExecuteReader())
                         {
-                            Command.Parameters.AddWithValue("ID", ID);
-                            Command.CommandText = "SELECT * FROM Insignias WHERE ID = @ID";
-
-                            using (MySqlDataReader Reader = Command.ExecuteReader())
+                            while (Reader.ReadAsync().GetAwaiter().GetResult())
                             {
-                                while (Reader.ReadAsync().GetAwaiter().GetResult())
-                                {
-                                    Insignia.Name = Reader.GetString(1);
-                                    Insignia.URL = Reader.GetString(2);
-                                }
+                                Insignia.Name = Reader.GetString(1);
+                                Insignia.URL = Reader.GetString(2);
                             }
                         }
-
-                        Insignias.Add(Insignia);
                     }
+
+                    Insignias.Add(Insignia);
                 }
-                catch (Exception e) { Console.WriteLine(e); }
-                finally { c.Close(); }
             }
             return Insignias;
         }
@@ -71,6 +68,7 @@ namespace Dogmeat.Database
             bool Exists = false;
             using (MySqlConnection c = new MySqlConnection(ConnectionString))
             {
+                await c.OpenAsync();
                 using (MySqlCommand Command = c.CreateCommand())
                 {
                     Command.Parameters.AddWithValue("ID", ID);
