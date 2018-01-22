@@ -79,7 +79,6 @@ namespace Dogmeat.Database
                 {
                     Command.CommandText = "SHOW TABLES LIKE 'Tags'";
 
-
                     if (await Command.ExecuteScalarAsync() != null)
                         return;
 
@@ -104,8 +103,6 @@ namespace Dogmeat.Database
                 {
 
                     Command.CommandText = "SHOW TABLES LIKE 'Insignias'";
-
-                    await c.OpenAsync();
 
                     if (await Command.ExecuteScalarAsync() != null)
                         return;
