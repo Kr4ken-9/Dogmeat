@@ -64,8 +64,6 @@ namespace Dogmeat.Database
                     Command.Parameters.AddWithValue("ID", ID);
                     Command.CommandText = "SELECT * FROM Tags WHERE ID = @ID";
 
-                    c.OpenAsync().GetAwaiter().GetResult();
-
                     using (MySqlDataReader Reader = Command.ExecuteReader())
                         while (Reader.ReadAsync().GetAwaiter().GetResult())
                         {

@@ -37,7 +37,6 @@ namespace Dogmeat.Database
             using (MySqlConnection c = new MySqlConnection(ConnectionString))
             {
                 await c.OpenAsync();
-                c.OpenAsync().GetAwaiter().GetResult();
                 foreach (String ID in ids)
                 {
                     Insignia Insignia = new Insignia(ID, "", "");
