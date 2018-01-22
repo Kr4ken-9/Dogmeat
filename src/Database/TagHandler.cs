@@ -6,54 +6,62 @@ namespace Dogmeat.Database
 {
     public class TagHandler
     {
-        public MySqlConnection Connection;
+        public String ConnectionString;
 
-        public TagHandler(MySqlConnection connection) => Connection = connection;
+        public TagHandler(String connectionString) => ConnectionString = connectionString;
 
         public async Task AddTag(String ID, String Body, ulong Owner)
         {
-            MySqlCommand Command = Connection.CreateCommand();
-            Command.Parameters.AddWithValue("ID", ID);
-            Command.Parameters.AddWithValue("Body", Body);
-            Command.Parameters.AddWithValue("Owner", Owner);
-            Command.CommandText = "INSERT INTO Tags VALUES(@ID, @Body, @Owner)";
+            using (MySqlConnection c = new MySqlConnection(ConnectionString))
+            {
+                await c.OpenAsync();
+                using (MySqlCommand Command = c.CreateCommand())
+                {
+                    Command.Parameters.AddWithValue("ID", ID);
+                    Command.Parameters.AddWithValue("Body", Body);
+                    Command.Parameters.AddWithValue("Owner", Owner);
+                    Command.CommandText = "INSERT INTO Tags VALUES(@ID, @Body, @Owner)";
 
-            await Utilities.MySql.ExecuteCommand(Command, Utilities.MySql.CommandExecuteType.NONQUERY);
+                    await Command.ExecuteNonQueryAsync();
+                }
+            }
         }
-        
+
         public async Task<bool> CheckTag(String ID)
         {
             bool Exists = false;
-            
-            MySqlCommand Command = Connection.CreateCommand();
-            Command.Parameters.AddWithValue("ID", ID);
-            Command.CommandText = "SELECT EXISTS(SELECT 1 FROM Tags WHERE ID = @ID LIMIT 1);";
+            using (MySqlConnection c = new MySqlConnection(ConnectionString))
+            {
+                await c.OpenAsync();
+                using (MySqlCommand Command = c.CreateCommand())
+                {
+                    Command.Parameters.AddWithValue("ID", ID);
+                    Command.CommandText = "SELECT EXISTS(SELECT 1 FROM Tags WHERE ID = @ID LIMIT 1);";
 
-            object Result =
-                await Utilities.MySql.ExecuteCommand(Command, Utilities.MySql.CommandExecuteType.SCALAR);
+                    object Result = await Command.ExecuteScalarAsync();
 
-            if (Result == null) return Exists;
-            
-            Int32.TryParse(Result.ToString(), out int exists);
+                    if (Result == null) return Exists;
 
-            Exists = exists != 0;
+                    Int32.TryParse(Result.ToString(), out int exists);
 
-            return Exists;
+                    Exists = exists != 0;
+
+                    return Exists;
+                }
+            }
         }
-        
+
         public async Task<Tag> GetTag(String ID)
         {
             Tag Output = new Tag(ID, "", uint.MinValue);
 
-            lock (Vars.DBHandler.Connection)
+            using (MySqlConnection c = new MySqlConnection(ConnectionString))
             {
-                try
+                await c.OpenAsync();
+                using (MySqlCommand Command = c.CreateCommand())
                 {
-                    MySqlCommand Command = Connection.CreateCommand();
                     Command.Parameters.AddWithValue("ID", ID);
                     Command.CommandText = "SELECT * FROM Tags WHERE ID = @ID";
-
-                    Connection.OpenAsync().GetAwaiter().GetResult();
 
                     using (MySqlDataReader Reader = Command.ExecuteReader())
                         while (Reader.ReadAsync().GetAwaiter().GetResult())
@@ -62,13 +70,11 @@ namespace Dogmeat.Database
                             Output.Owner = (ulong)Reader.GetValue(2);
                         }
                 }
-                catch (Exception e) { Console.WriteLine(e); }
-                finally { Connection.Close(); }
             }
 
             return Output;
         }
-        
+
         #region UpdateTag
 
         public async Task UpdateTag(String ID, ulong Owner) => UpdateTag(ID, "", Owner);
@@ -77,13 +83,13 @@ namespace Dogmeat.Database
 
         public async Task UpdateTag(String ID, String Body, ulong Owner)
         {
-            lock (Vars.DBHandler.Connection)
+            using (MySqlConnection c = new MySqlConnection(ConnectionString))
             {
-                try
+                await c.OpenAsync();
+                using (MySqlCommand Command = c.CreateCommand())
                 {
-                    MySqlCommand Command = Connection.CreateCommand();
                     Command.Parameters.AddWithValue("ID", ID);
-                    
+
                     if (!String.IsNullOrEmpty(Body) && Owner != ulong.MinValue)
                     {
                         Command.Parameters.AddWithValue("Body", Body);
@@ -101,13 +107,11 @@ namespace Dogmeat.Database
                         Command.CommandText = "UPDATE Tags SET Owner = @Owner WHERE ID = @ID";
                     }
 
-                    Utilities.MySql.ExecuteCommand(Command, Utilities.MySql.CommandExecuteType.NONQUERY);
+                    await Command.ExecuteNonQueryAsync();
                 }
-                catch (Exception e) { Console.WriteLine(e); }
-                finally { Connection.Close(); }
             }
         }
-        
+
         #endregion
     }
 }
