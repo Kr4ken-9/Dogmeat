@@ -101,7 +101,6 @@ namespace Dogmeat.Database
                 await c.OpenAsync();
                 using (MySqlCommand Command = c.CreateCommand())
                 {
-
                     Command.CommandText = "SHOW TABLES LIKE 'Insignias'";
 
                     if (await Command.ExecuteScalarAsync() != null)

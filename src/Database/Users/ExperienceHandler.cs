@@ -48,7 +48,7 @@ namespace Dogmeat.Database
                     Command.Parameters.AddWithValue("Experience", Experience);
                     Command.CommandText = "UPDATE Users SET Experience = Experience + @Experience WHERE ID = @ID";
 
-                    await Utilities.MySql.ExecuteCommand(Command, Utilities.MySql.CommandExecuteType.NONQUERY);
+                    await Command.ExecuteNonQueryAsync();
                 }
             }
         }
@@ -63,7 +63,7 @@ namespace Dogmeat.Database
                     Command.Parameters.AddWithValue("ID", ID);
                     Command.CommandText = "UPDATE Users SET Level = Level + 1 WHERE ID = @ID";
 
-                    await Utilities.MySql.ExecuteCommand(Command, Utilities.MySql.CommandExecuteType.NONQUERY);
+                    await Command.ExecuteNonQueryAsync();
                 }
             }
         }

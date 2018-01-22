@@ -24,7 +24,7 @@ namespace Dogmeat.Database
                     Command.Parameters.AddWithValue("URL", URL);
                     Command.CommandText = "INSERT INTO Insignias VALUES(@ID, @Name, @URL)";
 
-                    await Utilities.MySql.ExecuteCommand(Command, Utilities.MySql.CommandExecuteType.NONQUERY);
+                    await Command.ExecuteNonQueryAsync();
                 }
             }
         }
@@ -73,8 +73,7 @@ namespace Dogmeat.Database
                     Command.Parameters.AddWithValue("ID", ID);
                     Command.CommandText = "SELECT EXISTS(SELECT 1 FROM Insignias WHERE ID = @ID LIMIT 1);";
 
-                    object Result =
-                        await Utilities.MySql.ExecuteCommand(Command, Utilities.MySql.CommandExecuteType.SCALAR);
+                    object Result = await Command.ExecuteScalarAsync();
 
                     if (Result == null) return Exists;
 

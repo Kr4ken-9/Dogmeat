@@ -22,7 +22,7 @@ namespace Dogmeat.Database
                     Command.Parameters.AddWithValue("Owner", Owner);
                     Command.CommandText = "INSERT INTO Tags VALUES(@ID, @Body, @Owner)";
 
-                    await Utilities.MySql.ExecuteCommand(Command, Utilities.MySql.CommandExecuteType.NONQUERY);
+                    await Command.ExecuteNonQueryAsync();
                 }
             }
         }
@@ -38,8 +38,7 @@ namespace Dogmeat.Database
                     Command.Parameters.AddWithValue("ID", ID);
                     Command.CommandText = "SELECT EXISTS(SELECT 1 FROM Tags WHERE ID = @ID LIMIT 1);";
 
-                    object Result =
-                        await Utilities.MySql.ExecuteCommand(Command, Utilities.MySql.CommandExecuteType.SCALAR);
+                    object Result = await Command.ExecuteScalarAsync();
 
                     if (Result == null) return Exists;
 
@@ -108,7 +107,7 @@ namespace Dogmeat.Database
                         Command.CommandText = "UPDATE Tags SET Owner = @Owner WHERE ID = @ID";
                     }
 
-                    Utilities.MySql.ExecuteCommand(Command, Utilities.MySql.CommandExecuteType.NONQUERY);
+                    await Command.ExecuteNonQueryAsync();
                 }
             }
         }
