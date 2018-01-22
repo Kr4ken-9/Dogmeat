@@ -17,12 +17,6 @@ namespace Dogmeat.Commands
             UUser user = await Vars.DBHandler.UUIHandler.GetUser(target?.Id ?? Context.User.Id);
             long rank = await Vars.DBHandler.UUIHandler.ExpHandler.GetRank(user.ID);
 
-            if (rank == null)
-            {
-                ReplyAsync("The query failed for some reason...");
-                return;
-            }
-
             List<Action<EmbedFieldBuilder>> Fields = new List<Action<EmbedFieldBuilder>>
             {
                 await Utilities.Commands.CreateEmbedFieldAsync("Level", user.Level),
