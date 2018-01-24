@@ -21,7 +21,11 @@ namespace Dogmeat
         public async Task RunAsync()
         {
             Vars.Random = new Random();
-            Vars.Client = new DiscordSocketClient();
+            Vars.Client = new DiscordSocketClient(new DiscordSocketConfig
+            {
+                LogLevel = LogSeverity.Verbose,
+                WebSocketProvider = Discord.Net.Providers.WS4Net.WS4NetProvider.Instance
+            });
             Vars.CService = new CommandService();
 
             ConfigManager.LoadConfig();
@@ -29,9 +33,11 @@ namespace Dogmeat
             await CheckVariables();
             
             Vars.DBHandler = DatabaseHandler.LoadConnection();
-
+            Console.Write(Vars.Token);
             await Vars.Client.LoginAsync(TokenType.Bot, Vars.Token);
             await Vars.Client.StartAsync();
+
+            Vars.Client.Log += async (msg) => Console.WriteLine(msg.Message);
 
             Vars.Client.Ready += OnStart;
 

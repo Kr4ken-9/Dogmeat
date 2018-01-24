@@ -84,10 +84,11 @@ namespace Dogmeat.Commands
             String usage = $"~{command}";
             foreach (System.Reflection.ParameterInfo p in parameters)
             {
-                String arg = ", ";
+                String arg = " ";
+                arg += $"<{p.Name}";
                 if (p.DefaultValue != DBNull.Value)
-                    arg += "(Optional) ";
-                arg += $"<{p.Name}>";
+                    arg += " (Optional)";
+                arg += ">";
                 usage += arg;
             }
 
@@ -103,7 +104,7 @@ namespace Dogmeat.Commands
                 aliases = "None";
                     
             Action<EmbedFieldBuilder> e = await Utilities.Commands.CreateEmbedFieldAsync($"~{command}",
-                $"{summary}\n Usage: ``{usage}``\n Aliases: {aliases}");
+                $"\t{summary}\n\tUsage: ``{usage}``\n\tAliases: {aliases}");
 
             x.Add(e);
         }
