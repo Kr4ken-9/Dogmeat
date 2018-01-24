@@ -13,7 +13,9 @@ namespace Dogmeat.Utilities
     {
         #region Variables
 
-        public static bool ContinueShutdown;
+        private static bool continueShutdown;
+
+        public static bool ContinueShutdown { get => continueShutdown; set => continueShutdown = value; }
 
         public static IRole GetMasterRole(IGuild Guild) => Guild.Roles.FirstOrDefault(role => role.Name == "Master");
 

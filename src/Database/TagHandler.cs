@@ -6,9 +6,11 @@ namespace Dogmeat.Database
 {
     public class TagHandler
     {
-        public String ConnectionString;
+        private String connectionString;
 
-        public TagHandler(String connectionString) => ConnectionString = connectionString;
+        public string ConnectionString { get => connectionString; }
+
+        public TagHandler(String ConnectionString) => connectionString = ConnectionString;
 
         public async Task AddTag(String ID, String Body, ulong Owner)
         {
@@ -71,7 +73,6 @@ namespace Dogmeat.Database
                         }
                 }
             }
-
             return Output;
         }
 
@@ -111,7 +112,6 @@ namespace Dogmeat.Database
                 }
             }
         }
-
         #endregion
     }
 }

@@ -8,9 +8,11 @@ namespace Dogmeat.Database
 {
     public class ExperienceHandler
     {
-        public String ConnectionString;
+        private String connectionString;
 
-        public ExperienceHandler(String connectionString) => ConnectionString = connectionString;
+        public string ConnectionString { get => connectionString; }
+
+        public ExperienceHandler(String ConnectionString) => connectionString = ConnectionString;
 
         public event EventHandler<ExperienceEventArgs> ExperienceUpdate;
 
@@ -88,15 +90,19 @@ namespace Dogmeat.Database
 
     public class ExperienceEventArgs : EventArgs
     {
-        public UUser User;
-        public ushort Amount;
-        public SocketMessage Context;
+        private UUser user;
+        private ushort amount;
+        private SocketMessage context;
 
-        public ExperienceEventArgs(UUser user, ushort amount, SocketMessage context)
+        public UUser User { get => user;}
+        public ushort Amount { get => amount; }
+        public SocketMessage Context { get => context; }
+
+        public ExperienceEventArgs(UUser User, ushort Amount, SocketMessage Context)
         {
-            User = user;
-            Amount = amount;
-            Context = context;
+            user = User;
+            amount = Amount;
+            context = Context;
         }
     }
 }
