@@ -14,7 +14,15 @@ namespace Dogmeat.Commands
         [Command("rank"), Summary("Displays rank/exp info")]
         public async Task Rank(IUser target = null)
         {
-            UUser user = await Vars.DBHandler.UUIHandler.GetUser(target?.Id ?? Context.User.Id);
+            IUser targetUser = target ?? Context.User;
+
+            if (!await Vars.DBHandler.UUIHandler.CheckUser(targetUser.Id))
+            {
+                ReplyAsync($"{targetUser.Mention} is not in the database.");
+                return;
+            }
+
+            UUser user = await Vars.DBHandler.UUIHandler.GetUser(targetUser.Id);
             long rank = await Vars.DBHandler.UUIHandler.ExpHandler.GetRank(user.ID);
 
             List<Action<EmbedFieldBuilder>> Fields = new List<Action<EmbedFieldBuilder>>
@@ -26,8 +34,8 @@ namespace Dogmeat.Commands
             };
 
             Embed Embed = await Utilities.Commands.CreateEmbedAsync(
-                (target == null ? Context.User.Username : target.Username) + "'s Ranking",
-                Fields.ToArray(), Discord.Color.Default);
+                target.Username + "'s Profile", user.Description,
+                targetUser.GetAvatarUrl(), Fields.ToArray(), Discord.Color.Default);
 
             ReplyAsync("", embed: Embed);
         }

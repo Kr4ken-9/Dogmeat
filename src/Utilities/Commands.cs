@@ -85,6 +85,9 @@ namespace Dogmeat.Utilities
         public static async Task<Embed> CreateEmbedAsync(String Title, String Description, Color Color, String URL) =>
             await CreateEmbedAsync(Title, Color, null, URL, null, Description);
 
+        public static async Task<Embed> CreateEmbedAsync(String Title, String Description, String ThumbnailURL, Action<EmbedFieldBuilder>[] Fields, Color Color) =>
+            await CreateEmbedAsync(Title, Color, ThumbnailURL, null, Fields, Description);
+
         public static async Task<Embed> CreateEmbedAsync(String Title, String Description, Color Color, String URL, String ThumbnailURL) =>
             await CreateEmbedAsync(Title, Color, ThumbnailURL, URL, null, Description);
         #endregion
