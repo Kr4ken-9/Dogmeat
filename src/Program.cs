@@ -33,7 +33,6 @@ namespace Dogmeat
             await CheckVariables();
             
             Vars.DBHandler = DatabaseHandler.LoadConnection();
-            Console.Write(Vars.Token);
             await Vars.Client.LoginAsync(TokenType.Bot, Vars.Token);
             await Vars.Client.StartAsync();
 
