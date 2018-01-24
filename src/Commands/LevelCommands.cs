@@ -11,7 +11,7 @@ namespace Dogmeat.Commands
 {
     public class LevelCommands : ModuleBase
     {
-        [Command("rank"), Summary("Displays rank/exp info")]
+        [Command("rank"), Summary("Displays rank/exp info"), Alias("profile")]
         public async Task Rank(IUser target = null)
         {
             IUser targetUser = target ?? Context.User;
