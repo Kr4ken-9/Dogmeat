@@ -39,7 +39,6 @@ namespace Dogmeat
         private static string[] memes;
         private static bool keepAlive;
 
-
         // YOU ASKED FOR THIS KENNETH
 
         public static Random Random { get => random; set => random = value; }

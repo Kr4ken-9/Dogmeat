@@ -11,7 +11,6 @@ namespace Dogmeat.Database
         private ushort experience;
         private ushort level;
         
-
         public ulong ID { get => id; }
         public ushort Experience { get => experience; }
         public ushort Level { get => level; }

@@ -94,7 +94,7 @@ namespace Dogmeat.Database
         private ushort amount;
         private SocketMessage context;
 
-        public UUser User { get => user;}
+        public UUser User { get => user; }
         public ushort Amount { get => amount; }
         public SocketMessage Context { get => context; }
 
