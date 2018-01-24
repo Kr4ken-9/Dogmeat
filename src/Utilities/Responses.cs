@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Dogmeat.Utilities
 {
-    public class Responses
+    public static class Responses
     {
         public static async Task<String[]> DogmeatResponsesAsync()
         {
@@ -69,8 +69,8 @@ namespace Dogmeat.Utilities
             
             return Vars.RawResponses[Vars.Random.Next(0, Vars.RawResponses.Length)];
         }
-        
-        public static Dictionary<String, int[]> TailoredResponses = new Dictionary<String, int[]>
+
+        public static readonly Dictionary<String, int[]> TailoredResponses = new Dictionary<String, int[]>
         {
             #region Mexican
             { "JUAN", new[] { 19, 20 } },

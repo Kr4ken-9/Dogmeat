@@ -6,15 +6,17 @@ namespace Dogmeat.Database
 {
     public class UserInfoHandler
     {
-        public String ConnectionString;
+        private String connectionString;
+        private ExperienceHandler expHandler;
 
-        public UserInfoHandler(String connectionString)
+        public string ConnectionString { get => connectionString; }
+        public ExperienceHandler ExpHandler { get => expHandler; }
+
+        public UserInfoHandler(String ConnectionString)
         {
-            ConnectionString = connectionString;
-            ExpHandler = new ExperienceHandler(connectionString);
+            connectionString = ConnectionString;
+            expHandler = new ExperienceHandler(ConnectionString);
         }
-
-        public ExperienceHandler ExpHandler;
 
         public async Task AddUser(UUser User) => AddUser(User.ID, User.Experience, User.Description, User.Insignias);
 
@@ -38,7 +40,7 @@ namespace Dogmeat.Database
 
         public async Task<UUser> GetUser(ulong ID)
         {
-            UUser User = new UUser(ID, 0, 0, "", "", DateTime.MinValue);
+            UUser User = null;
 
             using (MySqlConnection c = new MySqlConnection(ConnectionString))
             {
@@ -52,11 +54,12 @@ namespace Dogmeat.Database
                     {
                         while (Reader.ReadAsync().GetAwaiter().GetResult())
                         {
-                            User.Experience = (ushort)Reader.GetInt16(1);
-                            User.Level = (ushort)Reader.GetInt16(2);
-                            User.Description = Reader.GetString(3);
-                            User.Insignias = Reader.GetString(4);
-                            User.LastChat = Reader.GetDateTime(5);
+                            ushort exp = (ushort)Reader.GetInt16(1);
+                            ushort level = (ushort)Reader.GetInt16(2);
+                            string description = Reader.GetString(3);
+                            string insignias = Reader.GetString(4);
+                            DateTime lastChat = Reader.GetDateTime(5);
+                            User = new UUser(ID, exp, level, description, insignias, DateTime.MinValue);
                         }
                     }
                 }

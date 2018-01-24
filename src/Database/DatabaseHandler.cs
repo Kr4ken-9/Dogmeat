@@ -9,28 +9,34 @@ namespace Dogmeat.Database
 {
     public class DatabaseHandler
     {
-        public String ConnectionString;
+        private String connectionString;
 
-        public Connection ConnectionStringObject;
+        private Connection connectionStringObject;
 
-        public UserInfoHandler UUIHandler;
+        private UserInfoHandler uuiHandler;
 
-        public TagHandler Tags;
+        private TagHandler tags;
 
-        public InsigniaHandler Insignias;
+        private InsigniaHandler insignias;
+
+        public string ConnectionString { get => connectionString; }
+        public Connection ConnectionStringObject { get => connectionStringObject; }
+        public UserInfoHandler UUIHandler { get => uuiHandler; }
+        public TagHandler Tags { get => tags; }
+        public InsigniaHandler Insignias { get => insignias; }
 
         public DatabaseHandler(Connection CString)
         {
-            ConnectionString = $"SERVER={CString.Server};" +
+            connectionString = $"SERVER={CString.Server};" +
                                $"DATABASE={CString.Database};" +
                                $"UID={CString.UID};" +
                                $"PASSWORD={CString.Password};" +
                                $"PORT={CString.Port};";
 
-            ConnectionStringObject = CString;
-            UUIHandler = new UserInfoHandler(ConnectionString);
-            Tags = new TagHandler(ConnectionString);
-            Insignias = new InsigniaHandler(ConnectionString);
+            connectionStringObject = CString;
+            uuiHandler = new UserInfoHandler(ConnectionString);
+            tags = new TagHandler(ConnectionString);
+            insignias = new InsigniaHandler(ConnectionString);
             CheckTables().GetAwaiter().GetResult();
         }
 
@@ -128,24 +134,23 @@ namespace Dogmeat.Database
             {
                 case "Y":
                 case "YES":
-                    Connection Connection = new Connection("", "", "", "", 0);
 
                     Console.WriteLine("Enter server address:");
-                    Connection.Server = Console.ReadLine();
+                    string server = Console.ReadLine();
 
                     Console.WriteLine("Enter database name:");
-                    Connection.Database = Console.ReadLine();
+                    string database = Console.ReadLine();
 
                     Console.WriteLine("Enter user name:");
-                    Connection.UID = Console.ReadLine();
+                    string uid = Console.ReadLine();
 
                     Console.WriteLine("Enter password:");
-                    Connection.Password = Console.ReadLine();
+                    string password = Console.ReadLine();
 
                     Console.WriteLine("Enter port:");
-                    Connection.Port = int.Parse(Console.ReadLine());
+                    int port = int.Parse(Console.ReadLine());
 
-                    return Connection;
+                    return new Connection(server, database, uid, password, port);
                 default:
                     return null;
             }

@@ -4,22 +4,28 @@ namespace Dogmeat.Database
 {
     public class UUser
     {
-        public ulong ID;
+        private ulong id;
+        private String insignias;
+        private String description;
+        private DateTime lastChat;
+        private ushort experience;
+        private ushort level;
         
-        public ushort Experience, Level;
+        public ulong ID { get => id; }
+        public ushort Experience { get => experience; }
+        public ushort Level { get => level; }
+        public string Description { get => description; }
+        public string Insignias { get => insignias; }
+        public DateTime LastChat { get => lastChat; }
 
-        public String Description, Insignias;
-
-        public DateTime LastChat;
-
-        public UUser(ulong id, ushort experience, ushort level, String description, String insignias, DateTime lastChat)
+        public UUser(ulong Id, ushort Experience, ushort Level, String Description, String Insignias, DateTime LastChat)
         {
-            ID = id;
-            Experience = experience;
-            Level = level;
-            Description = description;
-            Insignias = insignias;
-            LastChat = lastChat;
+            id = Id;
+            experience = Experience;
+            level = Level;
+            description = Description;
+            insignias = Insignias;
+            lastChat = LastChat;
         }
     }
 }

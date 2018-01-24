@@ -8,9 +8,11 @@ namespace Dogmeat.Database
 {
     public class InsigniaHandler
     {
-        private String ConnectionString;
+        private String connectionString;
 
-        public InsigniaHandler(String connectionString) => ConnectionString = connectionString;
+        public string ConnectionString { get => connectionString; }
+
+        public InsigniaHandler(String ConnectionString) => connectionString = ConnectionString;
 
         public async Task AddInsignia(String ID, String Name, String URL = "None")
         {
@@ -89,13 +91,19 @@ namespace Dogmeat.Database
 
     public class Insignia
     {
-        public String ID, Name, URL;
+        private String url;
+        private String id;
+        private String name;
+
+        public string ID { get => id; set => id = value; }
+        public string Name { get => name; set => name = value; }
+        public string URL { get => url; set => url = value; }
 
         public Insignia(String Id, String name, String url)
         {
-            ID = Id;
-            Name = name;
-            URL = url;
+            id = Id;
+            name = name;
+            url = url;
         }
     }
 }

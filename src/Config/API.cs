@@ -4,14 +4,16 @@ namespace Dogmeat.Config
 {
     public class API
     {
-        public String DiscordToken;
-        
-        public String SteamAPIKey;
-        
+        private String discordToken;
+        private String steamAPIKey;
+
+        public string DiscordToken { get => discordToken; }
+        public string SteamAPIKey { get => steamAPIKey; }
+
         public API(String Discordtoken, String SteamAPIkey)
         {
-            DiscordToken = Discordtoken;
-            SteamAPIKey = SteamAPIkey;
+            discordToken = Discordtoken;
+            steamAPIKey = SteamAPIkey;
         }
     }
 }

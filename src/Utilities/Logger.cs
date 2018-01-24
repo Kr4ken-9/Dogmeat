@@ -3,7 +3,7 @@ using Discord.WebSocket;
 
 namespace Dogmeat.Utilities
 {
-    public class Logger
+    public static class Logger
     {
         public static void Log(String Message, ConsoleColor Color = ConsoleColor.Gray)
         {

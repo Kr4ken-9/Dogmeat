@@ -4,17 +4,25 @@ namespace Dogmeat.Database
 {
     public class Connection
     {
-        public String Server, Database, UID, Password;
+        private String server;
+        private String database;
+        private String uid;
+        private String password;
+        private int port;
 
-        public int Port;
+        public string Server { get => server; }
+        public string Database { get => database; }
+        public string UID { get => uid; }
+        public string Password { get => password; }
+        public int Port { get => port; }
 
-        public Connection(String SERVER, String DATABASE, String uid, String PASSWORD, int PORT)
+        public Connection(String SERVER, String DATABASE, String UID, String PASSWORD, int PORT)
         {
-            Server = SERVER;
-            Database = DATABASE;
-            UID = uid;
-            Password = PASSWORD;
-            Port = PORT;
+            server = SERVER;
+            database = DATABASE;
+            uid = UID;
+            password = PASSWORD;
+            port = PORT;
         }
     }
 }

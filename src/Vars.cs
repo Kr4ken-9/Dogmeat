@@ -7,32 +7,56 @@ using SteamWebAPI2.Interfaces;
 
 namespace Dogmeat
 {
-    public class Vars
+    public static class Vars
     {
-        public static Random Random;
-        
-        public static String Token = "", SteamAPIKey = "", LatestCommit;
-        
-        public static IChannel Logging, Commands;
-        
-        public static String[] RawResponses, Memes, Answers;
-        
-        public static bool KeepAlive = true, UnderMaintenance = true;
+        private static Random random;
 
-        public static DatabaseHandler DBHandler;
+        public static String SteamAPIKey = "", LatestCommit;
 
-        public static SteamUser SteamInterface;
+        private static IChannel commands;
 
-        public static IGuild Main;
+        private static String[] answers;
 
-        public static DiscordSocketClient Client;
+        private static bool underMaintenance = true;
 
-        public static CommandService CService;
+        private static DatabaseHandler dbHandler;
 
-        public static OverwritePermissions MutedChannelPermissions =
+        private static SteamUser steamInterface;
+
+        private static IGuild main;
+
+        private static DiscordSocketClient client;
+
+        private static CommandService cService;
+
+        private static OverwritePermissions mutedChannelPermissions =
             new OverwritePermissions(sendMessages: PermValue.Deny);
 
-        public static GuildPermissions MutedPermissions = new GuildPermissions(sendMessages: false);
+        private static GuildPermissions mutedPermissions = new GuildPermissions(sendMessages: false);
+        private static string token;
+        private static IChannel logging;
+        private static string[] rawResponses;
+        private static string[] memes;
+        private static bool keepAlive;
+
+        // YOU ASKED FOR THIS KENNETH
+
+        public static Random Random { get => random; set => random = value; }
+        public static string Token { get => token; set => token = value; }
+        public static IChannel Logging { get => logging; set => logging = value; }
+        public static IChannel Commands { get => commands; set => commands = value; }
+        public static string[] RawResponses { get => rawResponses; set => rawResponses = value; }
+        public static string[] Memes { get => memes; set => memes = value; }
+        public static string[] Answers { get => answers; set => answers = value; }
+        public static bool KeepAlive { get => keepAlive; set => keepAlive = value; }
+        public static bool UnderMaintenance { get => underMaintenance; set => underMaintenance = value; }
+        public static DatabaseHandler DBHandler { get => dbHandler; set => dbHandler = value; }
+        public static SteamUser SteamInterface { get => steamInterface; set => steamInterface = value; }
+        public static IGuild Main { get => main; set => main = value; }
+        public static DiscordSocketClient Client { get => client; set => client = value; }
+        public static CommandService CService { get => cService; set => cService = value; }
+        public static OverwritePermissions MutedChannelPermissions { get => mutedChannelPermissions; set => mutedChannelPermissions = value; }
+        public static GuildPermissions MutedPermissions { get => mutedPermissions; set => mutedPermissions = value; }
 
         // Make sure this is synchronized with database time zone
         public static DateTime Now() =>

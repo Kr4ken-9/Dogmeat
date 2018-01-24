@@ -9,11 +9,13 @@ using Dogmeat.Config;
 
 namespace Dogmeat.Utilities
 {
-    public class Misc
+    public static class Misc
     {
         #region Variables
 
-        public static bool ContinueShutdown;
+        private static bool continueShutdown;
+
+        public static bool ContinueShutdown { get => continueShutdown; set => continueShutdown = value; }
 
         public static IRole GetMasterRole(IGuild Guild) => Guild.Roles.FirstOrDefault(role => role.Name == "Master");
 
