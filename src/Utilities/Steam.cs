@@ -5,7 +5,7 @@ using Steam.Models.SteamCommunity;
 
 namespace Dogmeat.Utilities
 {
-    public class Steam
+    public static class Steam
     {
         public static async Task<SteamCommunityProfileModel> GetProfile(String Input)
         {

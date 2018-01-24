@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 
 namespace Dogmeat.Config
 {
-    public class ConfigManager
+    public static class ConfigManager
     {
         public static String ConfigPath(String File)
         {

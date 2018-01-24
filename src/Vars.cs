@@ -7,7 +7,7 @@ using SteamWebAPI2.Interfaces;
 
 namespace Dogmeat
 {
-    public class Vars
+    public static class Vars
     {
         private static Random random;
 

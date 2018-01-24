@@ -2,7 +2,7 @@
 
 namespace Dogmeat
 {
-    public class Colors
+    public static class Colors
     {
         public static readonly Color SexyPurple = new Color(153, 0, 255);
         

@@ -11,7 +11,7 @@ using Dogmeat.Utilities;
 
 namespace Dogmeat   
 {
-    public class MessageHandler
+    public static class MessageHandler
     {
         public static async Task InitializeListener() => Vars.Client.MessageReceived += async msg =>
         {

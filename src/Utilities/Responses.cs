@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Dogmeat.Utilities
 {
-    public class Responses
+    public static class Responses
     {
         public static async Task<String[]> DogmeatResponsesAsync()
         {

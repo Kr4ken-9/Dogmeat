@@ -7,7 +7,7 @@ using Steam.Models.SteamCommunity;
 
 namespace Dogmeat.Utilities
 {
-    public class Commands
+    public static class Commands
     {
         public static async Task<EMaster> CheckMasterAsync(IGuild Guild, IUser User)
         {
