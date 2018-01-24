@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Dogmeat.Utilities;
+using System.Linq;
 
 namespace Dogmeat.Commands
 {
@@ -17,17 +18,28 @@ namespace Dogmeat.Commands
 
             List<Action<EmbedFieldBuilder>> Fields = new List<Action<EmbedFieldBuilder>>
             {
-                await Utilities.Commands.CreateEmbedFieldAsync("Commands",
-                    "~Help, ~Info, ~Meme, ~Steambans [Link], ~Steamprofile [Link]"),
-                await Utilities.Commands.CreateEmbedFieldAsync("Administrative Commands",
-                    "~Ban [User], ~Kick [User], ~Mute [User], ~Purge [Amount] [User], ~Softban [User]"),
                 await Utilities.Commands.CreateEmbedFieldAsync("Using Administrative Commands",
                     "Administrative commands can only be issued by users in a role named \"Master.\""),
                 await Utilities.Commands.CreateEmbedFieldAsync("How To Disable Replies",
                     "No. My offensive replies are one of my main features. If you don't like it, kick me."),
                 await Utilities.Commands.CreateEmbedFieldAsync("Disclaimer",
-                    "I am currently in a closed alpha, meaning I am unreliable. Ergo, do not expect me to be reliable.")
+                    "I am currently in a closed alpha, meaning I am unreliable. Ergo, do not expect me to be reliable."),
+                // "\u200B" is the unicode character for a zero width space.
+                await Utilities.Commands.CreateEmbedFieldAsync("\u200B", "**Commands**")
             };
+
+            Assembly assembly = Assembly.GetExecutingAssembly();
+
+            // Get all methods in this assembly with CommandAttribute.
+            // All of our commands have CommandAttribute.
+
+            var commands = assembly.GetTypes()
+                .SelectMany(x => x.GetMethods())
+                .Where(x => x.GetCustomAttribute(typeof(CommandAttribute), false) != null)
+                .ToArray();
+
+            foreach(MethodInfo x in commands)
+                await CreateCommandField(Fields, x);
 
             Embed Embed = await Utilities.Commands.CreateEmbedAsync("Dogmeat Manual", Colors.SexyBlue,
                 "https://cdn.discordapp.com/app-icons/272798023816445955/fdef8956d05fdb4d04b0ccbb811c2fc5.jpg",
@@ -59,5 +71,41 @@ namespace Dogmeat.Commands
         
         [Command("meme"), Summary("Only the dankest")]
         public async Task Meme() => ReplyAsync(Vars.Memes[Vars.Random.Next(0, Vars.Memes.Length + 1)]);
+
+        public async Task CreateCommandField(List<Action<EmbedFieldBuilder>> x, MethodInfo m)
+        {
+            SummaryAttribute sAttribute = (SummaryAttribute)m.GetCustomAttribute(typeof(SummaryAttribute), false);
+            String summary = sAttribute == null ? "No summary provided." : sAttribute.Text;
+
+            CommandAttribute cAttribute = (CommandAttribute)m.GetCustomAttribute(typeof(CommandAttribute), false);
+            String command = cAttribute == null ? "Unknown command" : cAttribute.Text;
+
+            System.Reflection.ParameterInfo[] parameters = m.GetParameters();
+            String usage = $"~{command}";
+            foreach (System.Reflection.ParameterInfo p in parameters)
+            {
+                String arg = ", ";
+                if (p.DefaultValue != DBNull.Value)
+                    arg += "(Optional) ";
+                arg += $"<{p.Name}>";
+                usage += arg;
+            }
+
+            String aliases;
+            AliasAttribute aAttribute = (AliasAttribute)m.GetCustomAttribute(typeof(AliasAttribute), false);
+            if (aAttribute != null)
+            {
+                aliases = "";
+                foreach (string s in aAttribute.Aliases)
+                    aliases += $"~{s} ";
+            }
+            else
+                aliases = "None";
+                    
+            Action<EmbedFieldBuilder> e = await Utilities.Commands.CreateEmbedFieldAsync($"~{command}",
+                $"{summary}\n Usage: ``{usage}``\n Aliases: {aliases}");
+
+            x.Add(e);
+        }
     }
 }
