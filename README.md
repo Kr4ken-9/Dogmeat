@@ -35,6 +35,23 @@ General Commands
 
 ---
 
+Database Commands
+
+|  Command      | Parameter      | Description                                            |
+|:-------------:|:--------------:|:------------------------------------------------------:|
+| Tag           | ID, Body       | Retrieves a user-configurable output for given tag     |
+| Insignia      | User           | Retrieves all insignias for the given user.            |
+
+---
+
+Level Commands
+
+|  Command      | Parameter      | Description                                            | Alias      |
+|:-------------:|:--------------:|:------------------------------------------------------:| :---------:
+| Rank          | (optional) User| Sends your user profile in an embed.                   | Profile    |
+
+---
+
 Administrative Commands
 
 |  Command      | Parameter      | Description                                                 |
