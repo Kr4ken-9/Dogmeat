@@ -107,20 +107,27 @@ namespace Dogmeat.Utilities
             String command = cAttribute == null ? "Unknown command" : cAttribute.Text;
 
             var parameters = m.GetParameters();
+            
             StringBuilder usage = new StringBuilder($"~{command} ");
+            
             foreach (var p in parameters)
             {
                 usage.Append($"<{p.Name}");
+                
                 if (p.DefaultValue != DBNull.Value)
                     usage.Append(" (Optional)");
+                
                 usage.Append("> ");
             }
 
             AliasAttribute aAttribute = (AliasAttribute)m.GetCustomAttribute(typeof(AliasAttribute), false);
+            
             StringBuilder aliases = new StringBuilder("None");
+            
             if (aAttribute != null)
             {
                 aliases.Clear();
+                
                 foreach (string s in aAttribute.Aliases)
                     aliases.Append($"~{s} ");
             }
