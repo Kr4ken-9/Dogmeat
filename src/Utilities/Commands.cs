@@ -1,9 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
-using Steam.Models.SteamCommunity;
 
 namespace Dogmeat.Utilities
 {
@@ -53,8 +53,10 @@ namespace Dogmeat.Utilities
                 F.Value = Value;
             };
         }
+        
+        #region CreateEmbedAsync
 
-        public static async Task<Embed> CreateEmbedAsync(String Title, Color? Color = null, String ThumbnailURL = null, String URL = null, Action<EmbedFieldBuilder>[] Fields = null, String Description = null)
+        public static async Task<Embed> CreateEmbedAsync(String Title, Color? Color = null, String ThumbnailURL = null, String URL = null, IEnumerable<Action<EmbedFieldBuilder>> Fields = null, String Description = null)
         {
             EmbedBuilder Embed = new EmbedBuilder
             {
@@ -67,29 +69,30 @@ namespace Dogmeat.Utilities
 
             if (Fields == null) return Embed.Build();
             
-            for (int i = 0; i < Fields.Length; i++)
-                Embed.AddField(Fields[i]);
+            foreach(var Field in Fields)
+                Embed.AddField(Field);
 
             return Embed.Build();
         }
-        #region CreateEmbedAsync
-        public static async Task<Embed> CreateEmbedAsync(String Title, Action<EmbedFieldBuilder>[] Fields, Color Color) =>
-            await CreateEmbedAsync(Title, Color, null, null, Fields, null);
+        
+        public static async Task<Embed> CreateEmbedAsync(String Title, IEnumerable<Action<EmbedFieldBuilder>> Fields, Color Color) =>
+            await CreateEmbedAsync(Title, Color, null, null, Fields);
 
         public static async Task<Embed> CreateEmbedAsync(String Title, String Description, Color Color) =>
             await CreateEmbedAsync(Title, Color, null, null, null, Description);
 
-        public static async Task<Embed> CreateEmbedAsync(String Title, String Description, Action<EmbedFieldBuilder>[] Fields, Color Color) =>
+        public static async Task<Embed> CreateEmbedAsync(String Title, String Description, IEnumerable<Action<EmbedFieldBuilder>> Fields, Color Color) =>
             await CreateEmbedAsync(Title, Color, null, null, Fields, Description);
 
         public static async Task<Embed> CreateEmbedAsync(String Title, String Description, Color Color, String URL) =>
             await CreateEmbedAsync(Title, Color, null, URL, null, Description);
 
-        public static async Task<Embed> CreateEmbedAsync(String Title, String Description, String ThumbnailURL, Action<EmbedFieldBuilder>[] Fields, Color Color) =>
+        public static async Task<Embed> CreateEmbedAsync(String Title, String Description, String ThumbnailURL, IEnumerable<Action<EmbedFieldBuilder>> Fields, Color Color) =>
             await CreateEmbedAsync(Title, Color, ThumbnailURL, null, Fields, Description);
 
         public static async Task<Embed> CreateEmbedAsync(String Title, String Description, Color Color, String URL, String ThumbnailURL) =>
             await CreateEmbedAsync(Title, Color, ThumbnailURL, URL, null, Description);
+        
         #endregion
     }
 }

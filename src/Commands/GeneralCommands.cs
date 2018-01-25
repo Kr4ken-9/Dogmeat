@@ -33,7 +33,7 @@ namespace Dogmeat.Commands
             // Get all methods in this assembly with CommandAttribute.
             // All of our commands have CommandAttribute.
 
-            var commands = assembly.GetTypes()
+            MethodInfo[] commands = assembly.GetTypes()
                 .SelectMany(x => x.GetMethods())
                 .Where(x => x.GetCustomAttribute(typeof(CommandAttribute), false) != null)
                 .ToArray();
