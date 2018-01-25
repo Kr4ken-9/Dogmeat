@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
-using Steam.Models.SteamCommunity;
+using System.Reflection;
+using Discord.Commands;
+using System.Text;
 
 namespace Dogmeat.Utilities
 {
@@ -53,8 +56,10 @@ namespace Dogmeat.Utilities
                 F.Value = Value;
             };
         }
+        
+        #region CreateEmbedAsync
 
-        public static async Task<Embed> CreateEmbedAsync(String Title, Color? Color = null, String ThumbnailURL = null, String URL = null, Action<EmbedFieldBuilder>[] Fields = null, String Description = null)
+        public static async Task<Embed> CreateEmbedAsync(String Title, Color? Color = null, String ThumbnailURL = null, String URL = null, IEnumerable<Action<EmbedFieldBuilder>> Fields = null, String Description = null)
         {
             EmbedBuilder Embed = new EmbedBuilder
             {
@@ -67,29 +72,66 @@ namespace Dogmeat.Utilities
 
             if (Fields == null) return Embed.Build();
             
-            for (int i = 0; i < Fields.Length; i++)
-                Embed.AddField(Fields[i]);
+            foreach(var Field in Fields)
+                Embed.AddField(Field);
 
             return Embed.Build();
         }
-        #region CreateEmbedAsync
-        public static async Task<Embed> CreateEmbedAsync(String Title, Action<EmbedFieldBuilder>[] Fields, Color Color) =>
-            await CreateEmbedAsync(Title, Color, null, null, Fields, null);
+        
+        public static async Task<Embed> CreateEmbedAsync(String Title, IEnumerable<Action<EmbedFieldBuilder>> Fields, Color Color) =>
+            await CreateEmbedAsync(Title, Color, null, null, Fields);
 
         public static async Task<Embed> CreateEmbedAsync(String Title, String Description, Color Color) =>
             await CreateEmbedAsync(Title, Color, null, null, null, Description);
 
-        public static async Task<Embed> CreateEmbedAsync(String Title, String Description, Action<EmbedFieldBuilder>[] Fields, Color Color) =>
+        public static async Task<Embed> CreateEmbedAsync(String Title, String Description, IEnumerable<Action<EmbedFieldBuilder>> Fields, Color Color) =>
             await CreateEmbedAsync(Title, Color, null, null, Fields, Description);
 
         public static async Task<Embed> CreateEmbedAsync(String Title, String Description, Color Color, String URL) =>
             await CreateEmbedAsync(Title, Color, null, URL, null, Description);
 
-        public static async Task<Embed> CreateEmbedAsync(String Title, String Description, String ThumbnailURL, Action<EmbedFieldBuilder>[] Fields, Color Color) =>
+        public static async Task<Embed> CreateEmbedAsync(String Title, String Description, String ThumbnailURL, IEnumerable<Action<EmbedFieldBuilder>> Fields, Color Color) =>
             await CreateEmbedAsync(Title, Color, ThumbnailURL, null, Fields, Description);
 
         public static async Task<Embed> CreateEmbedAsync(String Title, String Description, Color Color, String URL, String ThumbnailURL) =>
             await CreateEmbedAsync(Title, Color, ThumbnailURL, URL, null, Description);
+
         #endregion
+
+        public static async Task CreateCommandField(List<Action<EmbedFieldBuilder>> x, MethodInfo m)
+        {
+            SummaryAttribute sAttribute = (SummaryAttribute)m.GetCustomAttribute(typeof(SummaryAttribute), false);
+            String summary = sAttribute == null ? "No summary provided." : sAttribute.Text;
+
+            CommandAttribute cAttribute = (CommandAttribute)m.GetCustomAttribute(typeof(CommandAttribute), false);
+            String command = cAttribute == null ? "Unknown command" : cAttribute.Text;
+
+            var parameters = m.GetParameters();
+            StringBuilder usage = new StringBuilder($"~{command} ");
+            
+            foreach (var p in parameters)
+            {
+                usage.Append($"<{p.Name}");
+                
+                if (p.DefaultValue != DBNull.Value)
+                    usage.Append(" (Optional)");
+                
+                usage.Append("> ");
+            }
+
+            AliasAttribute aAttribute = (AliasAttribute)m.GetCustomAttribute(typeof(AliasAttribute), false);
+            StringBuilder aliases = new StringBuilder("None");
+            
+            if (aAttribute != null)
+            {
+                aliases.Clear();
+                
+                foreach (string s in aAttribute.Aliases)
+                    aliases.Append($"~{s} ");
+            }
+
+            x.Add(await CreateEmbedFieldAsync($"~{command}",
+                $"\t{summary}\n\tUsage: ``{usage}``\n\tAliases: {aliases}"));
+        }
     }
 }
