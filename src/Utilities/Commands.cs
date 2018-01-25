@@ -107,7 +107,6 @@ namespace Dogmeat.Utilities
             String command = cAttribute == null ? "Unknown command" : cAttribute.Text;
 
             var parameters = m.GetParameters();
-            
             StringBuilder usage = new StringBuilder($"~{command} ");
             
             foreach (var p in parameters)
@@ -121,7 +120,6 @@ namespace Dogmeat.Utilities
             }
 
             AliasAttribute aAttribute = (AliasAttribute)m.GetCustomAttribute(typeof(AliasAttribute), false);
-            
             StringBuilder aliases = new StringBuilder("None");
             
             if (aAttribute != null)
@@ -132,10 +130,8 @@ namespace Dogmeat.Utilities
                     aliases.Append($"~{s} ");
             }
 
-            Action<EmbedFieldBuilder> e = await CreateEmbedFieldAsync($"~{command}",
-                $"\t{summary}\n\tUsage: ``{usage}``\n\tAliases: {aliases}");
-
-            x.Add(e);
+            x.Add(await CreateEmbedFieldAsync($"~{command}",
+                $"\t{summary}\n\tUsage: ``{usage}``\n\tAliases: {aliases}"));
         }
     }
 }
