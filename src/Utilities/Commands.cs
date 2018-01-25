@@ -4,6 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
+using System.Reflection;
+using Discord.Commands;
+using System.Text;
 
 namespace Dogmeat.Utilities
 {
@@ -92,7 +95,40 @@ namespace Dogmeat.Utilities
 
         public static async Task<Embed> CreateEmbedAsync(String Title, String Description, Color Color, String URL, String ThumbnailURL) =>
             await CreateEmbedAsync(Title, Color, ThumbnailURL, URL, null, Description);
-        
+
         #endregion
+
+        public static async Task CreateCommandField(List<Action<EmbedFieldBuilder>> x, MethodInfo m)
+        {
+            SummaryAttribute sAttribute = (SummaryAttribute)m.GetCustomAttribute(typeof(SummaryAttribute), false);
+            String summary = sAttribute == null ? "No summary provided." : sAttribute.Text;
+
+            CommandAttribute cAttribute = (CommandAttribute)m.GetCustomAttribute(typeof(CommandAttribute), false);
+            String command = cAttribute == null ? "Unknown command" : cAttribute.Text;
+
+            var parameters = m.GetParameters();
+            StringBuilder usage = new StringBuilder($"~{command} ");
+            foreach (var p in parameters)
+            {
+                usage.Append($"<{p.Name}");
+                if (p.DefaultValue != DBNull.Value)
+                    usage.Append(" (Optional)");
+                usage.Append("> ");
+            }
+
+            AliasAttribute aAttribute = (AliasAttribute)m.GetCustomAttribute(typeof(AliasAttribute), false);
+            StringBuilder aliases = new StringBuilder("None");
+            if (aAttribute != null)
+            {
+                aliases.Clear();
+                foreach (string s in aAttribute.Aliases)
+                    aliases.Append($"~{s} ");
+            }
+
+            Action<EmbedFieldBuilder> e = await CreateEmbedFieldAsync($"~{command}",
+                $"\t{summary}\n\tUsage: ``{usage}``\n\tAliases: {aliases}");
+
+            x.Add(e);
+        }
     }
 }

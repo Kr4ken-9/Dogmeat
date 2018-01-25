@@ -39,7 +39,7 @@ namespace Dogmeat.Commands
                 .ToArray();
 
             foreach(MethodInfo x in commands)
-                await CreateCommandField(Fields, x);
+                await Utilities.Commands.CreateCommandField(Fields, x);
 
             Embed Embed = await Utilities.Commands.CreateEmbedAsync("Dogmeat Manual", Colors.SexyBlue,
                 "https://cdn.discordapp.com/app-icons/272798023816445955/fdef8956d05fdb4d04b0ccbb811c2fc5.jpg",
@@ -71,42 +71,5 @@ namespace Dogmeat.Commands
         
         [Command("meme"), Summary("Only the dankest")]
         public async Task Meme() => ReplyAsync(Vars.Memes[Vars.Random.Next(0, Vars.Memes.Length + 1)]);
-
-        public async Task CreateCommandField(List<Action<EmbedFieldBuilder>> x, MethodInfo m)
-        {
-            SummaryAttribute sAttribute = (SummaryAttribute)m.GetCustomAttribute(typeof(SummaryAttribute), false);
-            String summary = sAttribute == null ? "No summary provided." : sAttribute.Text;
-
-            CommandAttribute cAttribute = (CommandAttribute)m.GetCustomAttribute(typeof(CommandAttribute), false);
-            String command = cAttribute == null ? "Unknown command" : cAttribute.Text;
-
-            System.Reflection.ParameterInfo[] parameters = m.GetParameters();
-            String usage = $"~{command}";
-            foreach (System.Reflection.ParameterInfo p in parameters)
-            {
-                String arg = " ";
-                arg += $"<{p.Name}";
-                if (p.DefaultValue != DBNull.Value)
-                    arg += " (Optional)";
-                arg += ">";
-                usage += arg;
-            }
-
-            String aliases;
-            AliasAttribute aAttribute = (AliasAttribute)m.GetCustomAttribute(typeof(AliasAttribute), false);
-            if (aAttribute != null)
-            {
-                aliases = "";
-                foreach (string s in aAttribute.Aliases)
-                    aliases += $"~{s} ";
-            }
-            else
-                aliases = "None";
-                    
-            Action<EmbedFieldBuilder> e = await Utilities.Commands.CreateEmbedFieldAsync($"~{command}",
-                $"\t{summary}\n\tUsage: ``{usage}``\n\tAliases: {aliases}");
-
-            x.Add(e);
-        }
     }
 }
