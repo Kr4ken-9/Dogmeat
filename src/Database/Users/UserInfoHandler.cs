@@ -20,7 +20,7 @@ namespace Dogmeat.Database
 
         public async Task AddUser(UUser User) => AddUser(User.ID, User.Experience, User.Description, User.Insignias);
 
-        public async Task AddUser(ulong ID, ushort Experience = 0, String Description = "None", String Insignias = "None")
+        public async Task AddUser(ulong ID, ulong Experience = 0, String Description = "None", String Insignias = "None")
         {
             using (MySqlConnection c = new MySqlConnection(ConnectionString))
             {
@@ -54,7 +54,7 @@ namespace Dogmeat.Database
                     {
                         while (Reader.ReadAsync().GetAwaiter().GetResult())
                         {
-                            ushort exp = (ushort)Reader.GetInt16(1);
+                            ulong exp = (ulong)Reader.GetInt16(1);
                             ushort level = (ushort)Reader.GetInt16(2);
                             string description = Reader.GetString(3);
                             string insignias = Reader.GetString(4);

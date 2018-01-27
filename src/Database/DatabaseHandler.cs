@@ -2,16 +2,19 @@
 using System.IO;
 using System.Threading.Tasks;
 using Dogmeat.Config;
+using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 
 namespace Dogmeat.Database
 {
-    public class DatabaseHandler
+    public class DatabaseHandler : DbContext
     {
+        #region Fields/Properties
+        
         private String connectionString;
-
-        private Connection connectionStringObject;
 
         private UserInfoHandler uuiHandler;
 
@@ -19,25 +22,30 @@ namespace Dogmeat.Database
 
         private InsigniaHandler insignias;
 
-        public string ConnectionString { get => connectionString; }
-        public Connection ConnectionStringObject { get => connectionStringObject; }
-        public UserInfoHandler UUIHandler { get => uuiHandler; }
-        public TagHandler Tags { get => tags; }
-        public InsigniaHandler Insignias { get => insignias; }
+        public String ConnectionString { get => connectionString; private set => connectionString = value; }
+        public UserInfoHandler UUIHandler { get => uuiHandler; private set => uuiHandler = value; }
+        public TagHandler TagHandler { get => tags; private set => tags = value; }
+        public InsigniaHandler InsigniaHandler { get => insignias; private set => insignias = value; }
+        public DbSet<UUser> Users { get; set; }
+        public DbSet<Tag> Tags { get; set; }
+        public DbSet<Insignia> Insignias { get; set; }
 
-        public DatabaseHandler(Connection CString)
+        #endregion
+        
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            connectionString = $"SERVER={CString.Server};" +
-                               $"DATABASE={CString.Database};" +
-                               $"UID={CString.UID};" +
-                               $"PASSWORD={CString.Password};" +
-                               $"PORT={CString.Port};";
+            ConnectionString = $"SERVER={Vars.ConnectionString.Server};" +
+                               $"DATABASE={Vars.ConnectionString.Database};" +
+                               $"UID={Vars.ConnectionString.UID};" +
+                               $"PASSWORD={Vars.ConnectionString.Password};" +
+                               $"PORT={Vars.ConnectionString.Port};";
 
-            connectionStringObject = CString;
-            uuiHandler = new UserInfoHandler(ConnectionString);
-            tags = new TagHandler(ConnectionString);
-            insignias = new InsigniaHandler(ConnectionString);
-            CheckTables().GetAwaiter().GetResult();
+            optionsBuilder.UseMySql(ConnectionString);
+            
+            UUIHandler = new UserInfoHandler(ConnectionString);
+            TagHandler = new TagHandler(ConnectionString);
+            InsigniaHandler = new InsigniaHandler(ConnectionString);
+            //CheckTables().GetAwaiter().GetResult();
         }
 
         #region Tables
@@ -158,14 +166,14 @@ namespace Dogmeat.Database
 
         public void SaveConnection() =>
             File.WriteAllText(ConfigManager.ConfigPath("mysql.json"),
-                JsonConvert.SerializeObject(ConnectionStringObject, Formatting.Indented));
+                JsonConvert.SerializeObject(Vars.ConnectionString, Formatting.Indented));
 
-        public static DatabaseHandler LoadConnection()
+        public static void LoadConnection()
         {
             Connection C = JsonConvert.DeserializeObject<Connection>
                 (File.ReadAllText(ConfigManager.ConfigPath("mysql.json")));
 
-            return new DatabaseHandler(C);
+            Vars.ConnectionString = C;
         }
 
         #endregion

@@ -8,6 +8,7 @@ using Discord.WebSocket;
 using Dogmeat.Config;
 using Dogmeat.Database;
 using Dogmeat.Utilities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Dogmeat   
 {
@@ -121,26 +122,26 @@ namespace Dogmeat
         
         #endregion
 
-        private static async Task HandleExperience(SocketMessage Context)
+        private static async Task HandleExperience(SocketMessage MessageContext)
         {
-            UUser Author;
-
-            if (!await Vars.DBHandler.UUIHandler.CheckUser(Context.Author.Id))
+            using (DatabaseHandler Context = new DatabaseHandler())
             {
-                Author = new UUser(Context.Author.Id, 0, 0, "None", "APart", Vars.Now());
-                await Vars.DBHandler.UUIHandler.AddUser(Author);
-
-                Vars.DBHandler.UUIHandler.ExpHandler.OnExperienceUpdate(Author, ExperienceHandler.CalculateExperience(), Context);
-                return;
-            }
-            
-            Author = await Vars.DBHandler.UUIHandler.GetUser(Context.Author.Id);
-            
-            if ((Vars.Now() - Author.LastChat).TotalSeconds >= 120)
-            {
-                Vars.DBHandler.UUIHandler.ExpHandler.OnExperienceUpdate(Author, ExperienceHandler.CalculateExperience(), Context);
-            }
+                await Context.Database.EnsureCreatedAsync();
                 
+                UUser Author = await Context.Users.FirstAsync(user => user.ID == MessageContext.Author.Id);
+                if (Author == null)
+                {
+                    Author = new UUser(MessageContext.Author.Id, 0, 0, "None", "APart", Vars.Now());
+                    await Context.AddAsync(Author);
+                    await Context.SaveChangesAsync();
+                    
+                    Context.UUIHandler.ExpHandler.OnExperienceUpdate(Author, ExperienceHandler.CalculateExperience(), MessageContext);
+                    return;
+                }
+                
+                if((Vars.Now() - Author.LastChat).TotalSeconds >= 120)
+                    Context.UUIHandler.ExpHandler.OnExperienceUpdate(Author, ExperienceHandler.CalculateExperience(), MessageContext);
+            }
         }
 
         private static async Task HandleCommand(SocketMessage CommandParameter)

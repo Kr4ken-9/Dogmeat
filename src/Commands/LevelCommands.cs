@@ -4,6 +4,7 @@ using Dogmeat.Database;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,14 +17,19 @@ namespace Dogmeat.Commands
         {
             IUser targetUser = target ?? Context.User;
 
-            if (!await Vars.DBHandler.UUIHandler.CheckUser(targetUser.Id))
+            using (DatabaseHandler Context = new DatabaseHandler())
             {
-                ReplyAsync($"{targetUser.Mention} is not in the database.");
-                return;
-            }
+                UUser User = Context.Users.First(user => user.ID == targetUser.Id);
 
-            UUser user = await Vars.DBHandler.UUIHandler.GetUser(targetUser.Id);
-            long rank = await Vars.DBHandler.UUIHandler.ExpHandler.GetRank(user.ID);
+                if (User == null)
+                {
+                    ReplyAsync($"{targetUser.Mention} is not in the database.");
+                    return;
+                }
+            }
+            
+            //TODO: Bother Extra To Do This
+            /*long rank = await Vars.DBHandler.UUIHandler.ExpHandler.GetRank(user.ID);
 
             List<Action<EmbedFieldBuilder>> Fields = new List<Action<EmbedFieldBuilder>>
             {
@@ -37,7 +43,7 @@ namespace Dogmeat.Commands
                 target.Username + "'s Profile", user.Description,
                 targetUser.GetAvatarUrl(), Fields.ToArray(), Discord.Color.Default);
 
-            ReplyAsync("", embed: Embed);
+            ReplyAsync("", embed: Embed);*/
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Discord;
+using Microsoft.EntityFrameworkCore;
 using MySql.Data.MySqlClient;
 
 namespace Dogmeat.Database
@@ -31,36 +32,15 @@ namespace Dogmeat.Database
             }
         }
 
-        public async Task<IEnumerable<Insignia>> GetInsignia(String IDs)
+        public static async Task<IEnumerable<Insignia>> GetInsignias(String IDs)
         {
             List<Insignia> Insignias = new List<Insignia>();
             String[] ids = IDs.Split(';');
 
-            using (MySqlConnection c = new MySqlConnection(ConnectionString))
-            {
-                await c.OpenAsync();
+            using (DatabaseHandler Context = new DatabaseHandler())
                 foreach (String ID in ids)
-                {
-                    Insignia Insignia = new Insignia(ID, "", "");
+                    Insignias.Add(await Context.Insignias.FirstAsync(i => i.ID == ID));
 
-                    using (MySqlCommand Command = c.CreateCommand())
-                    {
-                        Command.Parameters.AddWithValue("ID", ID);
-                        Command.CommandText = "SELECT * FROM Insignias WHERE ID = @ID";
-
-                        using (MySqlDataReader Reader = Command.ExecuteReader())
-                        {
-                            while (Reader.ReadAsync().GetAwaiter().GetResult())
-                            {
-                                Insignia.Name = Reader.GetString(1);
-                                Insignia.URL = Reader.GetString(2);
-                            }
-                        }
-                    }
-
-                    Insignias.Add(Insignia);
-                }
-            }
             return Insignias;
         }
 

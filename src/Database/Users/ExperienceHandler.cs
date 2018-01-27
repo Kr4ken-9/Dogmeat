@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
 using Discord.WebSocket;
 using Discord;
+using Microsoft.EntityFrameworkCore;
 
 namespace Dogmeat.Database
 {
@@ -19,56 +20,32 @@ namespace Dogmeat.Database
         public void OnExperienceUpdate(UUser User, ushort Experience, SocketMessage Context) =>
             ExperienceUpdate(this, new ExperienceEventArgs(User, Experience, Context));
 
-        public async Task IncreaseExperience(ulong ID, ushort Experience, SocketMessage context)
+        public async Task IncreaseExperience(ulong ID, ushort Experience, SocketMessage MessageContext)
         {
-            await AddExperience(ID, Experience);
-
-            UUser user = await Vars.DBHandler.UUIHandler.GetUser(ID);
-            if (CalculateLevelThreshold(user.Level) < user.Experience)
+            using (DatabaseHandler Context = new DatabaseHandler())
             {
-                await IncrementLevel(user.ID);
+                UUser User = await Context.Users.FirstAsync(user => user.ID == ID);
+                await Context.AddAsync(User);
+                
+                User.Experience += Experience;
 
-                Embed Embed = await Utilities.Commands.CreateEmbedAsync("Level Up!",
-                $"You leveled up to level {user.Level + 1}!", Discord.Color.Default);
+                if (CalculateLevelThreshold(User.Level) < User.Experience)
+                {
+                    User.Level++;
 
-                await context.Channel.SendMessageAsync("", embed: Embed);
+                    Embed Embed = await Utilities.Commands.CreateEmbedAsync("Level Up!",
+                        $"You leveled up to level {User.Level}!", Colors.SexyOrange);
+
+                    MessageContext.Channel.SendMessageAsync("", embed: Embed);
+                }
+                
+                await Context.SaveChangesAsync();
             }
         }
 
-        public static int CalculateLevelThreshold(int level) => 5 * level * level + 50 * level + 100;
+        public static ushort CalculateLevelThreshold(int level) => (ushort)(5 * level * level + 50 * level + 100);
 
         public static Byte CalculateExperience() => (Byte)Vars.Random.Next(0, 11);
-
-        public async Task AddExperience(ulong ID, ushort Experience)
-        {
-            using (MySqlConnection c = new MySqlConnection(ConnectionString))
-            {
-                await c.OpenAsync();
-                using (MySqlCommand Command = c.CreateCommand())
-                {
-                    Command.Parameters.AddWithValue("ID", ID);
-                    Command.Parameters.AddWithValue("Experience", Experience);
-                    Command.CommandText = "UPDATE Users SET Experience = Experience + @Experience WHERE ID = @ID";
-
-                    await Command.ExecuteNonQueryAsync();
-                }
-            }
-        }
-
-        public async Task IncrementLevel(ulong ID)
-        {
-            using (MySqlConnection c = new MySqlConnection(ConnectionString))
-            {
-                await c.OpenAsync();
-                using (MySqlCommand Command = c.CreateCommand())
-                {
-                    Command.Parameters.AddWithValue("ID", ID);
-                    Command.CommandText = "UPDATE Users SET Level = Level + 1 WHERE ID = @ID";
-
-                    await Command.ExecuteNonQueryAsync();
-                }
-            }
-        }
 
         public async Task<long> GetRank(ulong ID)
         {
