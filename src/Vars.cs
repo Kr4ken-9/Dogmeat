@@ -4,6 +4,7 @@ using Discord.Commands;
 using Discord.WebSocket;
 using Dogmeat.Database;
 using SteamWebAPI2.Interfaces;
+using System.Runtime.InteropServices;
 
 namespace Dogmeat
 {
@@ -59,7 +60,11 @@ namespace Dogmeat
         public static Connection ConnectionString { get => cstring; set => cstring = value; }
 
         // Make sure this is synchronized with database time zone
-        public static DateTime Now() =>
-            TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.UtcNow, "EST");
+        public static DateTime Now()
+        {
+            string timeZoneId = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "Eastern Standard Time" : "EST";
+            return TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.UtcNow, timeZoneId);
+        }
+            
     }
 }
