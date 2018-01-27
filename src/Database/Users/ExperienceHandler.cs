@@ -24,7 +24,8 @@ namespace Dogmeat.Database
         {
             using (DatabaseHandler Context = new DatabaseHandler())
             {
-                UUser User = await Context.Users.FirstAsync(user => user.ID == ID);
+                await Context.Database.EnsureCreatedAsync();
+                UUser User = await Context.Users.FirstOrDefaultAsync(user => user.ID == ID);
                 await Context.AddAsync(User);
                 
                 User.Experience += Experience;
@@ -51,7 +52,9 @@ namespace Dogmeat.Database
         {
             using (DatabaseHandler Context = new DatabaseHandler())
             {
-                UUser User = await Context.Users.FirstAsync(user => user.ID == ID);
+                await Context.Database.EnsureCreatedAsync();
+                
+                UUser User = await Context.Users.FirstOrDefaultAsync(user => user.ID == ID);
                 return await Context.Users.CountAsync(user => user.Experience > User.Experience) + 1;
             }
         }

@@ -12,6 +12,9 @@ namespace Dogmeat.Database
         public string Body { get => body; set => body = value; }
         public ulong Owner { get => owner; set => owner = value; }
 
+        // Entity Framework requires parameterless constructor
+        public Tag() {}
+        
         public Tag(string id, string body, ulong owner)
         {
             ID = id;

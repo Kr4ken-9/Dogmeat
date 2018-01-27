@@ -16,7 +16,9 @@ namespace Dogmeat.Commands
         {
             using (DatabaseHandler DbContext = new DatabaseHandler())
             {
-                Database.Tag Tag = await DbContext.Tags.FirstAsync(tag => tag.ID == ID);
+                await DbContext.Database.EnsureCreatedAsync();
+                
+                Tag Tag = await DbContext.Tags.FirstOrDefaultAsync(tag => tag.ID == ID);
 
                 if (Tag == null)
                 {
@@ -82,10 +84,12 @@ namespace Dogmeat.Commands
 
             using (DatabaseHandler DbContext = new DatabaseHandler())
             {
+                await DbContext.Database.EnsureCreatedAsync();
+                
                 if (Target == null)
                 {
                     Target = Context.User;
-                    UTarget = await DbContext.Users.FirstAsync(user => user.ID == Target.Id);
+                    UTarget = await DbContext.Users.FirstOrDefaultAsync(user => user.ID == Target.Id);
 
                     if (UTarget.Insignias == "None")
                     {
@@ -99,7 +103,7 @@ namespace Dogmeat.Commands
                     return;
                 }
                 
-                UTarget = await DbContext.Users.FirstAsync(user => user.ID == Target.Id);
+                UTarget = await DbContext.Users.FirstOrDefaultAsync(user => user.ID == Target.Id);
 
                 if (UTarget == null)
                 {

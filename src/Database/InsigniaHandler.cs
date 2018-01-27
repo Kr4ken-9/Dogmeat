@@ -38,8 +38,12 @@ namespace Dogmeat.Database
             String[] ids = IDs.Split(';');
 
             using (DatabaseHandler Context = new DatabaseHandler())
+            {
+                await Context.Database.EnsureCreatedAsync();
+                
                 foreach (String ID in ids)
-                    Insignias.Add(await Context.Insignias.FirstAsync(i => i.ID == ID));
+                    Insignias.Add(await Context.Insignias.FirstOrDefaultAsync(i => i.ID == ID));
+            }
 
             return Insignias;
         }
@@ -78,6 +82,9 @@ namespace Dogmeat.Database
         public string ID { get => id; set => id = value; }
         public string Name { get => name; set => name = value; }
         public string URL { get => url; set => url = value; }
+        
+        // Entity Framework requires parameterless constructor
+        public Insignia() {}
 
         public Insignia(String Id, String name, String url)
         {

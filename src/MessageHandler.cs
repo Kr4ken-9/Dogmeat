@@ -31,8 +31,7 @@ namespace Dogmeat
                          CompareOptions.IgnoreCase) >= 0 && !msg.Author.IsBot)
                 Patronization(msg);
 
-            else if (!msg.Author.IsBot && !msg.Content.StartsWith("~") && Vars.Commands.Id != msg.Channel.Id
-                     && msg.Channel.Id == 222826708972208128)
+            else if (!msg.Author.IsBot && !msg.Content.StartsWith("~") && msg.Channel.Id == 222826708972208128)
                 HandleExperience(msg);
             else
                 HandleCommand(msg);
@@ -128,11 +127,11 @@ namespace Dogmeat
             {
                 await Context.Database.EnsureCreatedAsync();
                 
-                UUser Author = await Context.Users.FirstAsync(user => user.ID == MessageContext.Author.Id);
+                UUser Author = await Context.Users.FirstOrDefaultAsync(user => user.ID == MessageContext.Author.Id);
                 if (Author == null)
                 {
                     Author = new UUser(MessageContext.Author.Id, 0, 0, "None", "APart", Vars.Now());
-                    await Context.AddAsync(Author);
+                    await Context.Users.AddAsync(Author);
                     await Context.SaveChangesAsync();
                     
                     Context.UUIHandler.ExpHandler.OnExperienceUpdate(Author, ExperienceHandler.CalculateExperience(), MessageContext);

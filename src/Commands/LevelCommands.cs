@@ -1,12 +1,10 @@
 ﻿using Discord;
 using Discord.Commands;
 using Dogmeat.Database;
-using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace Dogmeat.Commands
 {
@@ -16,21 +14,21 @@ namespace Dogmeat.Commands
         public async Task Rank(IUser target = null)
         {
             IUser targetUser = target ?? Context.User;
-
             UUser User;
+            int rank;
 
             using (DatabaseHandler Context = new DatabaseHandler())
             {
-                User = Context.Users.First(user => user.ID == targetUser.Id);
+                await Context.Database.EnsureCreatedAsync();
+                User = await Context.Users.FirstOrDefaultAsync(user => user.ID == targetUser.Id);
 
                 if (User == null)
                 {
                     ReplyAsync($"{targetUser.Mention} is not in the database.");
                     return;
                 }
+                rank = await Context.Users.CountAsync(user => user.Experience > User.Experience) + 1;
             }
-
-            int rank = await Vars.DBHandler.uuiHandler.ExpHandler.GetRank(User.ID);
 
             List<Action<EmbedFieldBuilder>> Fields = new List<Action<EmbedFieldBuilder>>
             {
@@ -42,7 +40,7 @@ namespace Dogmeat.Commands
 
             Embed Embed = await Utilities.Commands.CreateEmbedAsync(
                 target.Username + "'s Profile", User.Description,
-                targetUser.GetAvatarUrl(), Fields.ToArray(), Discord.Color.Default);
+                targetUser.GetAvatarUrl(), Fields.ToArray(), Color.Default);
 
             ReplyAsync("", embed: Embed);
         }
