@@ -47,20 +47,12 @@ namespace Dogmeat.Database
 
         public static Byte CalculateExperience() => (Byte)Vars.Random.Next(0, 11);
 
-        public async Task<long> GetRank(ulong ID)
+        public async Task<int> GetRank(ulong ID)
         {
-            using (MySqlConnection c = new MySqlConnection(ConnectionString))
+            using (DatabaseHandler Context = new DatabaseHandler())
             {
-                await c.OpenAsync();
-                using (MySqlCommand Command = c.CreateCommand())
-                {
-                    Command.Parameters.AddWithValue("ID", ID);
-                    Command.CommandText =
-                        "SELECT COUNT(*) AS rank FROM Users WHERE Experience > (SELECT Experience FROM Users WHERE ID = @ID)";
-                    object res = await Command.ExecuteScalarAsync();
-
-                    return (long)res + 1;
-                }
+                UUser User = await Context.Users.FirstAsync(user => user.ID == ID);
+                return await Context.Users.CountAsync(user => user.Experience > User.Experience) + 1;
             }
         }
     }

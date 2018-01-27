@@ -17,9 +17,11 @@ namespace Dogmeat.Commands
         {
             IUser targetUser = target ?? Context.User;
 
+            UUser User;
+
             using (DatabaseHandler Context = new DatabaseHandler())
             {
-                UUser User = Context.Users.First(user => user.ID == targetUser.Id);
+                User = Context.Users.First(user => user.ID == targetUser.Id);
 
                 if (User == null)
                 {
@@ -27,23 +29,22 @@ namespace Dogmeat.Commands
                     return;
                 }
             }
-            
-            //TODO: Bother Extra To Do This
-            /*long rank = await Vars.DBHandler.UUIHandler.ExpHandler.GetRank(user.ID);
+
+            int rank = await Vars.DBHandler.uuiHandler.ExpHandler.GetRank(User.ID);
 
             List<Action<EmbedFieldBuilder>> Fields = new List<Action<EmbedFieldBuilder>>
             {
-                await Utilities.Commands.CreateEmbedFieldAsync("Level", user.Level),
+                await Utilities.Commands.CreateEmbedFieldAsync("Level", User.Level),
                 await Utilities.Commands.CreateEmbedFieldAsync("Experience",
-                    $"{user.Experience} / {ExperienceHandler.CalculateLevelThreshold(user.Level)}"),
+                    $"{User.Experience} / {ExperienceHandler.CalculateLevelThreshold(User.Level)}"),
                 await Utilities.Commands.CreateEmbedFieldAsync("Rank", $"#{rank}")
             };
 
             Embed Embed = await Utilities.Commands.CreateEmbedAsync(
-                target.Username + "'s Profile", user.Description,
+                target.Username + "'s Profile", User.Description,
                 targetUser.GetAvatarUrl(), Fields.ToArray(), Discord.Color.Default);
 
-            ReplyAsync("", embed: Embed);*/
+            ReplyAsync("", embed: Embed);
         }
     }
 }
