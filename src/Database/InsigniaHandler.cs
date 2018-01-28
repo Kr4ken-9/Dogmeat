@@ -17,18 +17,13 @@ namespace Dogmeat.Database
 
         public async Task AddInsignia(String ID, String Name, String URL = "None")
         {
-            using (MySqlConnection c = new MySqlConnection(ConnectionString))
+            using (DatabaseHandler Context = new DatabaseHandler())
             {
-                await c.OpenAsync();
-                using (MySqlCommand Command = c.CreateCommand())
-                {
-                    Command.Parameters.AddWithValue("ID", ID);
-                    Command.Parameters.AddWithValue("Name", Name);
-                    Command.Parameters.AddWithValue("URL", URL);
-                    Command.CommandText = "INSERT INTO Insignias VALUES(@ID, @Name, @URL)";
+                await Context.Database.EnsureCreatedAsync();
 
-                    await Command.ExecuteNonQueryAsync();
-                }
+                Insignia insignia = new Insignia(ID, Name, URL);
+                await Context.Insignias.AddAsync(insignia);
+                await Context.SaveChangesAsync();
             }
         }
 
@@ -50,25 +45,11 @@ namespace Dogmeat.Database
 
         public async Task<bool> CheckInsignia(String ID)
         {
-            bool Exists = false;
-            using (MySqlConnection c = new MySqlConnection(ConnectionString))
+            using (DatabaseHandler Context = new DatabaseHandler())
             {
-                await c.OpenAsync();
-                using (MySqlCommand Command = c.CreateCommand())
-                {
-                    Command.Parameters.AddWithValue("ID", ID);
-                    Command.CommandText = "SELECT EXISTS(SELECT 1 FROM Insignias WHERE ID = @ID LIMIT 1);";
+                await Context.Database.EnsureCreatedAsync();
 
-                    object Result = await Command.ExecuteScalarAsync();
-
-                    if (Result == null) return Exists;
-
-                    Int32.TryParse(Result.ToString(), out int exists);
-
-                    Exists = exists != 0;
-
-                    return Exists;
-                }
+                return await Context.Users.AnyAsync(x => x.ID.ToString() == ID);
             }
         }
     }
