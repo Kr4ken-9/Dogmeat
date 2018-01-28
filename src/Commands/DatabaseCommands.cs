@@ -17,7 +17,7 @@ namespace Dogmeat.Commands
             using (DatabaseHandler DbContext = new DatabaseHandler())
             {
                 await DbContext.Database.EnsureCreatedAsync();
-                
+
                 Tag Tag = await DbContext.Tags.FirstOrDefaultAsync(tag => tag.ID == ID);
 
                 if (Tag == null)
@@ -27,7 +27,7 @@ namespace Dogmeat.Commands
                         ReplyAsync("ID and Body must not be empty or null");
                         return;
                     }
-                
+
                     if (ID.Length > 20)
                     {
                         ReplyAsync("ID must be ten characters or less");
@@ -46,7 +46,7 @@ namespace Dogmeat.Commands
                     ReplyAsync($"Added tag `{ID}` with Body: ```{Body}```");
                     return;
                 }
-                
+
                 if (Tag.Owner == Context.User.Id && !String.IsNullOrEmpty(Body))
                 {
                     if (MentionUtils.TryParseUser(Body, out ulong userId))
@@ -54,11 +54,11 @@ namespace Dogmeat.Commands
                         await DbContext.Tags.AddAsync(Tag);
                         Tag.Owner = userId;
                         await DbContext.SaveChangesAsync();
-                    
+
                         ReplyAsync($"Owner for tag `{ID}` changed to `{userId}`");
                         return;
                     }
-                
+
                     if (Body.Length > 2000)
                     {
                         ReplyAsync("Body must be two thousand characters or less");
@@ -68,7 +68,7 @@ namespace Dogmeat.Commands
                     await DbContext.Tags.AddAsync(Tag);
                     Tag.Body = Body;
                     await DbContext.SaveChangesAsync();
-                
+
                     ReplyAsync($"Body for tag `{ID}` changed to ```{Body}```");
                     return;
                 }
@@ -85,11 +85,17 @@ namespace Dogmeat.Commands
             using (DatabaseHandler DbContext = new DatabaseHandler())
             {
                 await DbContext.Database.EnsureCreatedAsync();
-                
+
                 if (Target == null)
                 {
                     Target = Context.User;
                     UTarget = await DbContext.Users.FirstOrDefaultAsync(user => user.ID == Target.Id);
+
+                    if (UTarget == null)
+                    {
+                        ReplyAsync($"{Context.User.Id} is not in the database.");
+                        return;
+                    }
 
                     if (UTarget.Insignias == "None")
                     {
@@ -102,7 +108,7 @@ namespace Dogmeat.Commands
 
                     return;
                 }
-                
+
                 UTarget = await DbContext.Users.FirstOrDefaultAsync(user => user.ID == Target.Id);
 
                 if (UTarget == null)
@@ -121,7 +127,7 @@ namespace Dogmeat.Commands
                     await InsigniaHandler.GetInsignias(UTarget.Insignias)));
             }
         }
-        
+
         private async Task<Embed> GenerateInsignias(IUser Target, IEnumerable<Insignia> Insignias)
         {
             List<Action<EmbedFieldBuilder>> Fields = new List<Action<EmbedFieldBuilder>>();
@@ -129,8 +135,9 @@ namespace Dogmeat.Commands
             foreach (Insignia I in Insignias)
                 Fields.Add(await Utilities.Commands.CreateEmbedFieldAsync(I.ID, I.Name));
 
+
             return await Utilities.Commands.CreateEmbedAsync($"Insignias for {Target.Username}",
-                Colors.SexyPurple, Insignias.First().URL, "", Fields.ToArray());
+                Colors.SexyPurple, Insignias.First().URL, "", Fields);
         }
     }
 }

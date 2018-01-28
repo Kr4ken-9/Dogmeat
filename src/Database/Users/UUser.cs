@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Dogmeat.Database
 {
@@ -13,6 +14,7 @@ namespace Dogmeat.Database
         private ushort level;
         
         [Required]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public ulong ID { get => id; set => id = value; }
         
         [Required]

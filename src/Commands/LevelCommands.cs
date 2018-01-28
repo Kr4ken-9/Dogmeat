@@ -13,36 +13,43 @@ namespace Dogmeat.Commands
         [Command("rank"), Summary("Displays rank/exp info"), Alias("profile")]
         public async Task Rank(IUser target = null)
         {
-            IUser targetUser = target ?? Context.User;
-            UUser User;
-            int rank;
-
-            using (DatabaseHandler Context = new DatabaseHandler())
+            try
             {
-                await Context.Database.EnsureCreatedAsync();
-                User = await Context.Users.FirstOrDefaultAsync(user => user.ID == targetUser.Id);
+                IUser targetUser = target ?? Context.User;
+                UUser User;
+                int rank;
 
-                if (User == null)
+                using (DatabaseHandler Context = new DatabaseHandler())
                 {
-                    ReplyAsync($"{targetUser.Mention} is not in the database.");
-                    return;
+                    await Context.Database.EnsureCreatedAsync();
+                    User = await Context.Users.FirstOrDefaultAsync(user => user.ID == targetUser.Id);
+
+                    if (User == null)
+                    {
+                        ReplyAsync($"{targetUser.Mention} is not in the database.");
+                        return;
+                    }
+                    rank = await Context.Users.CountAsync(user => user.Experience > User.Experience) + 1;
                 }
-                rank = await Context.Users.CountAsync(user => user.Experience > User.Experience) + 1;
-            }
 
-            List<Action<EmbedFieldBuilder>> Fields = new List<Action<EmbedFieldBuilder>>
-            {
-                await Utilities.Commands.CreateEmbedFieldAsync("Level", User.Level),
-                await Utilities.Commands.CreateEmbedFieldAsync("Experience",
+                List<Action<EmbedFieldBuilder>> Fields = new List<Action<EmbedFieldBuilder>>
+                {
+                    await Utilities.Commands.CreateEmbedFieldAsync("Level", User.Level),
+                    await Utilities.Commands.CreateEmbedFieldAsync("Experience",
                     $"{User.Experience} / {ExperienceHandler.CalculateLevelThreshold(User.Level)}"),
-                await Utilities.Commands.CreateEmbedFieldAsync("Rank", $"#{rank}")
-            };
+                    await Utilities.Commands.CreateEmbedFieldAsync("Rank", $"#{rank}"),
+                };
 
-            Embed Embed = await Utilities.Commands.CreateEmbedAsync(
-                target.Username + "'s Profile", User.Description,
-                targetUser.GetAvatarUrl(), Fields.ToArray(), Color.Default);
+                Embed Embed = await Utilities.Commands.CreateEmbedAsync(
+                    targetUser.Username + "'s Profile", User.Description,
+                    targetUser.GetAvatarUrl(), Fields, Color.Default);
 
-            ReplyAsync("", embed: Embed);
+                ReplyAsync("", embed: Embed);
+            }
+            catch (Exception e)
+            {
+                Console.Write(e.ToString());
+            }
         }
     }
 }
