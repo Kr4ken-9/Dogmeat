@@ -4,6 +4,7 @@ using Discord.Commands;
 using Discord.WebSocket;
 using Dogmeat.Database;
 using SteamWebAPI2.Interfaces;
+using System.Runtime.InteropServices;
 
 namespace Dogmeat
 {
@@ -13,13 +14,13 @@ namespace Dogmeat
 
         public static String SteamAPIKey = "", LatestCommit;
 
+        private static Connection cstring;
+
         private static IChannel commands;
 
         private static String[] answers;
 
         private static bool underMaintenance = true;
-
-        private static DatabaseHandler dbHandler;
 
         private static SteamUser steamInterface;
 
@@ -50,16 +51,19 @@ namespace Dogmeat
         public static string[] Answers { get => answers; set => answers = value; }
         public static bool KeepAlive { get => keepAlive; set => keepAlive = value; }
         public static bool UnderMaintenance { get => underMaintenance; set => underMaintenance = value; }
-        public static DatabaseHandler DBHandler { get => dbHandler; set => dbHandler = value; }
         public static SteamUser SteamInterface { get => steamInterface; set => steamInterface = value; }
         public static IGuild Main { get => main; set => main = value; }
         public static DiscordSocketClient Client { get => client; set => client = value; }
         public static CommandService CService { get => cService; set => cService = value; }
         public static OverwritePermissions MutedChannelPermissions { get => mutedChannelPermissions; set => mutedChannelPermissions = value; }
         public static GuildPermissions MutedPermissions { get => mutedPermissions; set => mutedPermissions = value; }
+        public static Connection ConnectionString { get => cstring; set => cstring = value; }
 
         // Make sure this is synchronized with database time zone
-        public static DateTime Now() =>
-            TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.UtcNow, "EST");
+        public static DateTime Now()
+        {
+            string timeZoneId = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "Eastern Standard Time" : "EST";
+            return TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.UtcNow, timeZoneId);
+        }       
     }
 }

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Dogmeat.Database;
+using Microsoft.EntityFrameworkCore;
 
 namespace Dogmeat.Commands
 {
@@ -13,105 +14,120 @@ namespace Dogmeat.Commands
         [Command("tag"), Summary("Retrieves a user-configurable output for given tag")]
         public async Task Tag([Summary("User to retrieve profile for")] String ID, [RemainderAttribute] String Body = "")
         {
-            if (!await Vars.DBHandler.Tags.CheckTag(ID))
+            using (DatabaseHandler DbContext = new DatabaseHandler())
             {
-                if (String.IsNullOrEmpty(Body) || String.IsNullOrEmpty(ID))
+                await DbContext.Database.EnsureCreatedAsync();
+
+                Tag Tag = await DbContext.Tags.FirstOrDefaultAsync(tag => tag.ID == ID);
+
+                if (Tag == null)
                 {
-                    ReplyAsync("ID and Body must not be empty or null");
-                    return;
-                }
-                
-                if (ID.Length > 10)
-                {
-                    ReplyAsync("ID must be ten characters or less");
+                    if (String.IsNullOrEmpty(Body) || String.IsNullOrEmpty(ID))
+                    {
+                        ReplyAsync("ID and Body must not be empty or null");
+                        return;
+                    }
+
+                    if (ID.Length > 20)
+                    {
+                        ReplyAsync("ID must be ten characters or less");
+                        return;
+                    }
+
+                    if (Body.Length > 2000)
+                    {
+                        ReplyAsync("Body must be two thousand characters or less");
+                        return;
+                    }
+
+                    await DbContext.Tags.AddAsync(new Tag(ID, Body, Context.User.Id));
+                    await DbContext.SaveChangesAsync();
+
+                    ReplyAsync($"Added tag `{ID}` with Body: ```{Body}```");
                     return;
                 }
 
-                if (Body.Length > 3000)
+                if (Tag.Owner == Context.User.Id && !String.IsNullOrEmpty(Body))
                 {
-                    ReplyAsync("Body must be three thousand characters or less");
+                    if (MentionUtils.TryParseUser(Body, out ulong userId))
+                    {
+                        DbContext.Tags.Update(Tag);
+                        Tag.Owner = userId;
+                        await DbContext.SaveChangesAsync();
+
+                        ReplyAsync($"Owner for tag `{ID}` changed to `{userId}`");
+                        return;
+                    }
+
+                    if (Body.Length > 2000)
+                    {
+                        ReplyAsync("Body must be two thousand characters or less");
+                        return;
+                    }
+
+                    DbContext.Tags.Update(Tag);
+                    Tag.Body = Body;
+                    await DbContext.SaveChangesAsync();
+
+                    ReplyAsync($"Body for tag `{ID}` changed to ```{Body}```");
                     return;
                 }
-                
-                Vars.DBHandler.Tags.AddTag(ID, Body, Context.User.Id);
-                ReplyAsync($"Added tag `{ID}` with Body: ```{Body}```");
-                return;
+
+                ReplyAsync(Tag.Body);
             }
-
-            Tag Tag = await Vars.DBHandler.Tags.GetTag(ID);
-
-            if (Tag.Owner == Context.User.Id && !String.IsNullOrEmpty(Body))
-            {
-                if (MentionUtils.TryParseUser(Body, out ulong userId))
-                {
-                    Vars.DBHandler.Tags.UpdateTag(ID, userId);
-                    
-                    ReplyAsync($"Owner for tag `{ID}` changed to `{userId}`");
-                    return;
-                }
-                
-                if (Body.Length > 3000)
-                {
-                    ReplyAsync("Body must be three thousand characters or less");
-                    return;
-                }
-
-                Vars.DBHandler.Tags.UpdateTag(ID, Body);
-                
-                ReplyAsync($"Body for tag `{ID}` changed to ```{Body}```");
-                return;
-            }
-
-            ReplyAsync(Tag.Body);
         }
 
         [Command("insignias"), Summary("Retrieves insignias for given user")]
         public async Task Insignias([Summary("User to retrieve insignias for")] IUser Target = null)
         {
             UUser UTarget;
-            
-            if (Target == null)
+
+            using (DatabaseHandler DbContext = new DatabaseHandler())
             {
-                Target = Context.User;
-                
-                if (!await Vars.DBHandler.UUIHandler.CheckUser(Target.Id))
+                await DbContext.Database.EnsureCreatedAsync();
+
+                if (Target == null)
                 {
-                    await ReplyAsync($"{Context.User.Id} is not in the database.");
+                    Target = Context.User;
+                    UTarget = await DbContext.Users.FirstOrDefaultAsync(user => user.ID == Target.Id);
+
+                    if (UTarget == null)
+                    {
+                        ReplyAsync($"{Context.User.Id} is not in the database.");
+                        return;
+                    }
+
+                    if (UTarget.Insignias == "None")
+                    {
+                        ReplyAsync($"{Target.Mention} has no insignias.");
+                        return;
+                    }
+
+                    ReplyAsync("", embed: await GenerateInsignias(Target, await
+                        Utilities.Insignias.GetInsignias(UTarget.Insignias)));
+
                     return;
                 }
 
-                UTarget = await Vars.DBHandler.UUIHandler.GetUser(Target.Id);
+                UTarget = await DbContext.Users.FirstOrDefaultAsync(user => user.ID == Target.Id);
+
+                if (UTarget == null)
+                {
+                    ReplyAsync($"{Context.User.Id} is not in the database.");
+                    return;
+                }
 
                 if (UTarget.Insignias == "None")
                 {
-                    await ReplyAsync($"{Target.Mention} has no insignias.");
+                    ReplyAsync($"{Target.Mention} has no insignias.");
                     return;
                 }
 
-                ReplyAsync("", embed: await GenerateInsignias(Target, await
-                    Vars.DBHandler.Insignias.GetInsignia(UTarget.Insignias)));
-                
-                return;
+                ReplyAsync("", embed: await GenerateInsignias(Target,
+                    await Utilities.Insignias.GetInsignias(UTarget.Insignias)));
             }
-            
-            if (!await Vars.DBHandler.UUIHandler.CheckUser(Target.Id))
-            {
-                await ReplyAsync($"{Context.User.Id} is not in the database.");
-                return;
-            }
-
-            UTarget = await Vars.DBHandler.UUIHandler.GetUser(Target.Id);
-            
-            if (UTarget.Insignias == "None")
-            {
-                await ReplyAsync($"{Target.Mention} has no insignias.");
-                return;
-            }
-
-            ReplyAsync("", embed: await GenerateInsignias(Target, 
-                await Vars.DBHandler.Insignias.GetInsignia(UTarget.Insignias)));
         }
-        
+
         private async Task<Embed> GenerateInsignias(IUser Target, IEnumerable<Insignia> Insignias)
         {
             List<Action<EmbedFieldBuilder>> Fields = new List<Action<EmbedFieldBuilder>>();
@@ -119,8 +135,9 @@ namespace Dogmeat.Commands
             foreach (Insignia I in Insignias)
                 Fields.Add(await Utilities.Commands.CreateEmbedFieldAsync(I.ID, I.Name));
 
+
             return await Utilities.Commands.CreateEmbedAsync($"Insignias for {Target.Username}",
-                Colors.SexyPurple, Insignias.First().URL, "", Fields.ToArray());
+                Colors.SexyPurple, Insignias.First().URL, "", Fields);
         }
     }
 }

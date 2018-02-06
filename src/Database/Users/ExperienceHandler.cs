@@ -1,108 +1,37 @@
 ﻿using System;
 using System.Threading.Tasks;
-using MySql.Data.MySqlClient;
 using Discord.WebSocket;
 using Discord;
+using Microsoft.EntityFrameworkCore;
 
 namespace Dogmeat.Database
 {
-    public class ExperienceHandler
+    public static class ExperienceHandler
     {
-        private String connectionString;
-
-        public string ConnectionString { get => connectionString; }
-
-        public ExperienceHandler(String ConnectionString) => connectionString = ConnectionString;
-
-        public event EventHandler<ExperienceEventArgs> ExperienceUpdate;
-
-        public void OnExperienceUpdate(UUser User, ushort Experience, SocketMessage Context) =>
-            ExperienceUpdate(this, new ExperienceEventArgs(User, Experience, Context));
-
-        public async Task IncreaseExperience(ulong ID, ushort Experience, SocketMessage context)
+        public static async Task IncreaseExperience(UUser User, ushort Experience, SocketMessage MessageContext)
         {
-            await AddExperience(ID, Experience);
-
-            UUser user = await Vars.DBHandler.UUIHandler.GetUser(ID);
-            if (CalculateLevelThreshold(user.Level) < user.Experience)
+            using (DatabaseHandler Context = new DatabaseHandler())
             {
-                await IncrementLevel(user.ID);
+                await Context.Database.EnsureCreatedAsync();
+                Context.Users.Update(User);
+                
+                User.Experience += Experience;
+                
+                if (CalculateLevelThreshold(User.Level) < User.Experience)
+                {
+                    User.Level++;
 
-                Embed Embed = await Utilities.Commands.CreateEmbedAsync("Level Up!",
-                $"You leveled up to level {user.Level + 1}!", Discord.Color.Default);
+                    Embed Embed = await Utilities.Commands.CreateEmbedAsync("Level Up!",
+                        $"You leveled up to level {User.Level}!", Colors.SexyOrange);
 
-                await context.Channel.SendMessageAsync("", embed: Embed);
+                    MessageContext.Channel.SendMessageAsync("", embed: Embed);
+                }
+                await Context.SaveChangesAsync();
             }
         }
 
-        public static int CalculateLevelThreshold(int level) => 5 * level * level + 50 * level + 100;
+        public static ushort CalculateLevelThreshold(int level) => (ushort)(5 * level * level + 50 * level + 100);
 
         public static Byte CalculateExperience() => (Byte)Vars.Random.Next(0, 11);
-
-        public async Task AddExperience(ulong ID, ushort Experience)
-        {
-            using (MySqlConnection c = new MySqlConnection(ConnectionString))
-            {
-                await c.OpenAsync();
-                using (MySqlCommand Command = c.CreateCommand())
-                {
-                    Command.Parameters.AddWithValue("ID", ID);
-                    Command.Parameters.AddWithValue("Experience", Experience);
-                    Command.CommandText = "UPDATE Users SET Experience = Experience + @Experience WHERE ID = @ID";
-
-                    await Command.ExecuteNonQueryAsync();
-                }
-            }
-        }
-
-        public async Task IncrementLevel(ulong ID)
-        {
-            using (MySqlConnection c = new MySqlConnection(ConnectionString))
-            {
-                await c.OpenAsync();
-                using (MySqlCommand Command = c.CreateCommand())
-                {
-                    Command.Parameters.AddWithValue("ID", ID);
-                    Command.CommandText = "UPDATE Users SET Level = Level + 1 WHERE ID = @ID";
-
-                    await Command.ExecuteNonQueryAsync();
-                }
-            }
-        }
-
-        public async Task<long> GetRank(ulong ID)
-        {
-            using (MySqlConnection c = new MySqlConnection(ConnectionString))
-            {
-                await c.OpenAsync();
-                using (MySqlCommand Command = c.CreateCommand())
-                {
-                    Command.Parameters.AddWithValue("ID", ID);
-                    Command.CommandText =
-                        "SELECT COUNT(*) AS rank FROM Users WHERE Experience > (SELECT Experience FROM Users WHERE ID = @ID)";
-                    object res = await Command.ExecuteScalarAsync();
-
-                    return (long)res + 1;
-                }
-            }
-        }
-    }
-
-    public class ExperienceEventArgs : EventArgs
-    {
-        private UUser user;
-        private ushort amount;
-        private SocketMessage context;
-
-        public UUser User { get => user; }
-        public ushort Amount { get => amount; }
-        public SocketMessage Context { get => context; }
-
-        public ExperienceEventArgs(UUser User, ushort Amount, SocketMessage Context)
-        {
-            user = User;
-            amount = Amount;
-            context = Context;
-        }
     }
 }

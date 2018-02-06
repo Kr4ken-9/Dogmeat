@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Globalization;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using Discord.Commands;
 using Discord.WebSocket;
 using Dogmeat.Config;
 using Dogmeat.Database;
 using Dogmeat.Utilities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Dogmeat   
 {
@@ -15,23 +15,25 @@ namespace Dogmeat
     {
         public static async Task InitializeListener() => Vars.Client.MessageReceived += async msg =>
         {
+            if (msg.Author.IsBot)
+                return;
+            
             if (msg.Channel.Id == Vars.Commands.Id)
                 HandleOwnerCommand(msg);
             
             else if (CultureInfo.InvariantCulture.CompareInfo.IndexOf(msg.Content, "Dogmeat",
-                    CompareOptions.IgnoreCase) >= 0 && !msg.Author.IsBot)
+                    CompareOptions.IgnoreCase) >= 0)
                 MentionedAsync(msg);
                 
             else if (CultureInfo.InvariantCulture.CompareInfo.IndexOf(msg.Content, "Taemgod",
-                         CompareOptions.IgnoreCase) >= 0 && !msg.Author.IsBot)
+                         CompareOptions.IgnoreCase) >= 0)
                 DefConAsync(msg);
                 
             else if (CultureInfo.InvariantCulture.CompareInfo.IndexOf(msg.Content, "Good boy",
-                         CompareOptions.IgnoreCase) >= 0 && !msg.Author.IsBot)
+                         CompareOptions.IgnoreCase) >= 0)
                 Patronization(msg);
 
-            else if (!msg.Author.IsBot && !msg.Content.StartsWith("~") && Vars.Commands.Id != msg.Channel.Id
-                     && msg.Channel.Id == 222826708972208128)
+            else if (!msg.Content.StartsWith("~") && msg.Channel.Id == 222826708972208128)
                 HandleExperience(msg);
             else
                 HandleCommand(msg);
@@ -121,26 +123,26 @@ namespace Dogmeat
         
         #endregion
 
-        private static async Task HandleExperience(SocketMessage Context)
+        private static async Task HandleExperience(SocketMessage MessageContext)
         {
-            UUser Author;
-
-            if (!await Vars.DBHandler.UUIHandler.CheckUser(Context.Author.Id))
+            using (DatabaseHandler Context = new DatabaseHandler())
             {
-                Author = new UUser(Context.Author.Id, 0, 0, "None", "APart", Vars.Now());
-                await Vars.DBHandler.UUIHandler.AddUser(Author);
-
-                Vars.DBHandler.UUIHandler.ExpHandler.OnExperienceUpdate(Author, ExperienceHandler.CalculateExperience(), Context);
-                return;
-            }
-            
-            Author = await Vars.DBHandler.UUIHandler.GetUser(Context.Author.Id);
-            
-            if ((Vars.Now() - Author.LastChat).TotalSeconds >= 120)
-            {
-                Vars.DBHandler.UUIHandler.ExpHandler.OnExperienceUpdate(Author, ExperienceHandler.CalculateExperience(), Context);
-            }
+                await Context.Database.EnsureCreatedAsync();
                 
+                UUser Author = await Context.Users.FirstOrDefaultAsync(user => user.ID == MessageContext.Author.Id);
+                if (Author == null)
+                {
+                    Author = new UUser(MessageContext.Author.Id, 0, 0, "None", "APart", Vars.Now());
+                    await Context.Users.AddAsync(Author);
+                    await Context.SaveChangesAsync();
+                    
+                    await ExperienceHandler.IncreaseExperience(Author, ExperienceHandler.CalculateExperience(), MessageContext);
+                    return;
+                }
+                
+                if((Vars.Now() - Author.LastChat).TotalSeconds >= 120)
+                    await ExperienceHandler.IncreaseExperience(Author, ExperienceHandler.CalculateExperience(), MessageContext);
+            }
         }
 
         private static async Task HandleCommand(SocketMessage CommandParameter)

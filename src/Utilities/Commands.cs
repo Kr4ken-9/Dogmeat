@@ -56,7 +56,17 @@ namespace Dogmeat.Utilities
                 F.Value = Value;
             };
         }
-        
+
+        public static async Task<Action<EmbedFieldBuilder>> CreateEmbedFieldAsync(String Name, object Value, bool inline)
+        {
+            return F =>
+            {
+                F.IsInline = inline;
+                F.Name = Name;
+                F.Value = Value;
+            };
+        }
+
         #region CreateEmbedAsync
 
         public static async Task<Embed> CreateEmbedAsync(String Title, Color? Color = null, String ThumbnailURL = null, String URL = null, IEnumerable<Action<EmbedFieldBuilder>> Fields = null, String Description = null)

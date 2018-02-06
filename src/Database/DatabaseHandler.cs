@@ -1,130 +1,29 @@
 ﻿using System;
 using System.IO;
-using System.Threading.Tasks;
 using Dogmeat.Config;
-using MySql.Data.MySqlClient;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
 namespace Dogmeat.Database
 {
-    public class DatabaseHandler
+    public class DatabaseHandler : DbContext
     {
-        private String connectionString;
-
-        private Connection connectionStringObject;
-
-        private UserInfoHandler uuiHandler;
-
-        private TagHandler tags;
-
-        private InsigniaHandler insignias;
-
-        public string ConnectionString { get => connectionString; }
-        public Connection ConnectionStringObject { get => connectionStringObject; }
-        public UserInfoHandler UUIHandler { get => uuiHandler; }
-        public TagHandler Tags { get => tags; }
-        public InsigniaHandler Insignias { get => insignias; }
-
-        public DatabaseHandler(Connection CString)
-        {
-            connectionString = $"SERVER={CString.Server};" +
-                               $"DATABASE={CString.Database};" +
-                               $"UID={CString.UID};" +
-                               $"PASSWORD={CString.Password};" +
-                               $"PORT={CString.Port};";
-
-            connectionStringObject = CString;
-            uuiHandler = new UserInfoHandler(ConnectionString);
-            tags = new TagHandler(ConnectionString);
-            insignias = new InsigniaHandler(ConnectionString);
-            CheckTables().GetAwaiter().GetResult();
-        }
-
-        #region Tables
-
-        private async Task CheckTables()
-        {
-            await CheckUsersTable();
-            await CheckTagsTable();
-            await CheckInsignasTable();
-        }
-
-        private async Task CheckUsersTable()
-        {
-            using (MySqlConnection c = new MySqlConnection(ConnectionString))
-            {
-                await c.OpenAsync();
-                using (MySqlCommand Command = c.CreateCommand())
-                {
-                    Command.CommandText = "SHOW TABLES LIKE 'Users'";
-
-                    if (await Command.ExecuteScalarAsync() != null)
-                        return;
-
-                    Command.CommandText =
-                        "CREATE TABLE Users" +
-                        "(ID BIGINT UNSIGNED NOT NULL, " +
-                        "Experience MEDIUMINT UNSIGNED NOT NULL, " +
-                        "Level SMALLINT UNSIGNED NOT NULL, " +
-                        "Description varchar(50) NOT NULL, " +
-                        "Insignias varchar(100) NOT NULL, " +
-                        "LastChat timestamp NOT NULL DEFAULT NOW() ON UPDATE CURRENT_TIMESTAMP, " +
-                        "PRIMARY KEY (ID))";
-
-                    await Command.ExecuteNonQueryAsync();
-                }
-            }
-        }
-
-        private async Task CheckTagsTable()
-        {
-            using (MySqlConnection c = new MySqlConnection(ConnectionString))
-            {
-                await c.OpenAsync();
-                using (MySqlCommand Command = c.CreateCommand())
-                {
-                    Command.CommandText = "SHOW TABLES LIKE 'Tags'";
-
-                    if (await Command.ExecuteScalarAsync() != null)
-                        return;
-
-                    Command.CommandText =
-                        "CREATE TABLE Tags" +
-                        "(ID varchar(20) NOT NULL, " +
-                        "Body varchar(3000) NOT NULL, " +
-                        "Owner BIGINT UNSIGNED NOT NULL, " +
-                        "PRIMARY KEY (ID))";
-
-                    await Command.ExecuteNonQueryAsync();
-                }
-            }
-        }
-
-        private async Task CheckInsignasTable()
-        {
-            using (MySqlConnection c = new MySqlConnection(ConnectionString))
-            {
-                await c.OpenAsync();
-                using (MySqlCommand Command = c.CreateCommand())
-                {
-                    Command.CommandText = "SHOW TABLES LIKE 'Insignias'";
-
-                    if (await Command.ExecuteScalarAsync() != null)
-                        return;
-
-                    Command.CommandText =
-                        "CREATE TABLE Insignias" +
-                        "(ID varchar(20) NOT NULL, " +
-                        "Name varchar(20) NOT NULL, " +
-                        "URL varchar(40) NOT NULL, " +
-                        "PRIMARY KEY (ID))";
-
-                    await Command.ExecuteNonQueryAsync();
-                }
-            }
-        }
+        #region Fields/Properties
+        
+        public DbSet<UUser> Users { get; set; }
+        public DbSet<Tag> Tags { get; set; }
+        public DbSet<Insignia> Insignias { get; set; }
 
         #endregion
+        
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseMySql($"SERVER={Vars.ConnectionString.Server};" +
+                                    $"DATABASE={Vars.ConnectionString.Database};" +
+                                    $"UID={Vars.ConnectionString.UID};" +
+                                    $"PASSWORD={Vars.ConnectionString.Password};" +
+                                    $"PORT={Vars.ConnectionString.Port};");
+        }
 
         #region Connections
 
@@ -158,14 +57,14 @@ namespace Dogmeat.Database
 
         public void SaveConnection() =>
             File.WriteAllText(ConfigManager.ConfigPath("mysql.json"),
-                JsonConvert.SerializeObject(ConnectionStringObject, Formatting.Indented));
+                JsonConvert.SerializeObject(Vars.ConnectionString, Formatting.Indented));
 
-        public static DatabaseHandler LoadConnection()
+        public static void LoadConnection()
         {
             Connection C = JsonConvert.DeserializeObject<Connection>
                 (File.ReadAllText(ConfigManager.ConfigPath("mysql.json")));
 
-            return new DatabaseHandler(C);
+            Vars.ConnectionString = C;
         }
 
         #endregion
