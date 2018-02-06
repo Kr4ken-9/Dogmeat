@@ -64,7 +64,6 @@ namespace Dogmeat
         {
             string timeZoneId = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "Eastern Standard Time" : "EST";
             return TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.UtcNow, timeZoneId);
-        }
-            
+        }       
     }
 }
