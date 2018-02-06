@@ -13,3 +13,5 @@ https://kr4ken-9.github.io/Dogmeat
 **Credits**
 
 Thank you [Bond-009](https://github.com/Bond-009/) for your example integration of [SteamWebAPI2](https://github.com/babelshift/SteamWebAPI2) which can be found [here](https://github.com/Bond-009/iTool.DiscordBot).
+
+Huge thanks to [ExtraConcentratedJuice](https://github.com/ExtraConcentratedJuice/) for helping with various parts of the project, namely Entity Framework, and revitalizing my interest in Dogmeat. You should check out his discord emoji website, [EmojiSite](https://emoji.cirno.pw/), which is also open-source.
