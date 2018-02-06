@@ -5,42 +5,31 @@ namespace Dogmeat.Database
 {
     public class UUser
     {
-        private ulong id;
-        private String insignias;
-        private String description;
-        private DateTime lastChat;
-        private ulong experience;
-        private ushort level;
+        public ulong ID { get; set; }
         
-        [Required]
-        public ulong ID { get => id; set => id = value; }
+        public ulong Experience { get; set; }
         
-        [Required]
-        public ulong Experience { get => experience; set => experience = value; }
+        public ushort Level { get; set; }
         
-        [Required]
-        public ushort Level { get => level; set => level = value; }
+        [MaxLength(150)]
+        public string Description { get; set; }
         
-        [Required]
-        public string Description { get => description; set => description = value; }
+        [MaxLength(300)]
+        public string Insignias { get; set; }
         
-        [Required]
-        public string Insignias { get => insignias; set => insignias = value; }
-        
-        [Required]
-        public DateTime LastChat { get => lastChat; set => lastChat = value; }
+        public DateTime LastChat { get; set; }
         
         // Entity Framework requires parameterless constructor
         public UUser() {}
 
-        public UUser(ulong Id, ulong Experience, ushort Level, String Description, String Insignias, DateTime LastChat)
+        public UUser(ulong id, ulong experience, ushort level, String description, String insignias, DateTime lastChat)
         {
-            ID = Id;
-            this.Experience = Experience;
-            this.Level = Level;
-            this.Description = Description;
-            this.Insignias = Insignias;
-            this.LastChat = LastChat;
+            ID = id;
+            Experience = experience;
+            Level = level;
+            Description = description;
+            Insignias = insignias;
+            LastChat = lastChat;
         }
     }
 }

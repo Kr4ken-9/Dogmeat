@@ -2,7 +2,6 @@
 using Discord.Commands;
 using Dogmeat.Database;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
@@ -30,7 +29,7 @@ namespace Dogmeat.Commands
                 rank = await Context.Users.CountAsync(user => user.Experience > User.Experience) + 1;
             }
 
-            List<Action<EmbedFieldBuilder>> Fields = new List<Action<EmbedFieldBuilder>>
+            Action<EmbedFieldBuilder>[] Fields = 
             {
                 await Utilities.Commands.CreateEmbedFieldAsync("Level", User.Level),
                 await Utilities.Commands.CreateEmbedFieldAsync("Experience",
@@ -38,9 +37,8 @@ namespace Dogmeat.Commands
                 await Utilities.Commands.CreateEmbedFieldAsync("Rank", $"#{rank}")
             };
 
-            Embed Embed = await Utilities.Commands.CreateEmbedAsync(
-                target.Username + "'s Profile", User.Description,
-                targetUser.GetAvatarUrl(), Fields.ToArray(), Color.Default);
+            Embed Embed = await Utilities.Commands.CreateEmbedAsync(target.Username + "'s Profile", User.Description,
+                targetUser.GetAvatarUrl(), Fields, Color.Default);
 
             ReplyAsync("", embed: Embed);
         }

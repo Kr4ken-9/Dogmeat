@@ -32,7 +32,6 @@ namespace Dogmeat
 
             await CheckVariables();
             
-            DatabaseHandler.LoadConnection();
             await Vars.Client.LoginAsync(TokenType.Bot, Vars.Token);
             await Vars.Client.StartAsync();
 
@@ -53,13 +52,7 @@ namespace Dogmeat
             MessageHandler.InitializeListener();
             await Vars.CService.AddModulesAsync(Assembly.GetEntryAssembly());
 
-            using (DatabaseHandler Context = new DatabaseHandler())
-            {
-                await Context.Database.EnsureCreatedAsync();
-
-                Context.UUIHandler.ExpHandler.ExperienceUpdate += async (sender, args) =>
-                    await Context.UUIHandler.ExpHandler.IncreaseExperience(args.User.ID, args.Amount, args.Context);
-            }
+            DatabaseHandler.LoadConnection();
             
             CancellationToken Token = new CancellationTokenSource().Token;
 

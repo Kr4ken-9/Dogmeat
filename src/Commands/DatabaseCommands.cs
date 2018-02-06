@@ -51,7 +51,7 @@ namespace Dogmeat.Commands
                 {
                     if (MentionUtils.TryParseUser(Body, out ulong userId))
                     {
-                        await DbContext.Tags.AddAsync(Tag);
+                        DbContext.Tags.Update(Tag);
                         Tag.Owner = userId;
                         await DbContext.SaveChangesAsync();
                     
@@ -65,7 +65,7 @@ namespace Dogmeat.Commands
                         return;
                     }
 
-                    await DbContext.Tags.AddAsync(Tag);
+                    DbContext.Tags.Update(Tag);
                     Tag.Body = Body;
                     await DbContext.SaveChangesAsync();
                 
@@ -98,7 +98,7 @@ namespace Dogmeat.Commands
                     }
 
                     ReplyAsync("", embed: await GenerateInsignias(Target, await
-                        InsigniaHandler.GetInsignias(UTarget.Insignias)));
+                        Utilities.Insignias.GetInsignias(UTarget.Insignias)));
 
                     return;
                 }
@@ -118,7 +118,7 @@ namespace Dogmeat.Commands
                 }
 
                 ReplyAsync("", embed: await GenerateInsignias(Target,
-                    await InsigniaHandler.GetInsignias(UTarget.Insignias)));
+                    await Utilities.Insignias.GetInsignias(UTarget.Insignias)));
             }
         }
         

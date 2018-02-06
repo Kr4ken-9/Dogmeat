@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Globalization;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using Discord.Commands;
 using Discord.WebSocket;
@@ -16,22 +15,25 @@ namespace Dogmeat
     {
         public static async Task InitializeListener() => Vars.Client.MessageReceived += async msg =>
         {
+            if (msg.Author.IsBot)
+                return;
+            
             if (msg.Channel.Id == Vars.Commands.Id)
                 HandleOwnerCommand(msg);
             
             else if (CultureInfo.InvariantCulture.CompareInfo.IndexOf(msg.Content, "Dogmeat",
-                    CompareOptions.IgnoreCase) >= 0 && !msg.Author.IsBot)
+                    CompareOptions.IgnoreCase) >= 0)
                 MentionedAsync(msg);
                 
             else if (CultureInfo.InvariantCulture.CompareInfo.IndexOf(msg.Content, "Taemgod",
-                         CompareOptions.IgnoreCase) >= 0 && !msg.Author.IsBot)
+                         CompareOptions.IgnoreCase) >= 0)
                 DefConAsync(msg);
                 
             else if (CultureInfo.InvariantCulture.CompareInfo.IndexOf(msg.Content, "Good boy",
-                         CompareOptions.IgnoreCase) >= 0 && !msg.Author.IsBot)
+                         CompareOptions.IgnoreCase) >= 0)
                 Patronization(msg);
 
-            else if (!msg.Author.IsBot && !msg.Content.StartsWith("~") && msg.Channel.Id == 222826708972208128)
+            else if (!msg.Content.StartsWith("~") && msg.Channel.Id == 222826708972208128)
                 HandleExperience(msg);
             else
                 HandleCommand(msg);
@@ -134,12 +136,12 @@ namespace Dogmeat
                     await Context.Users.AddAsync(Author);
                     await Context.SaveChangesAsync();
                     
-                    Context.UUIHandler.ExpHandler.OnExperienceUpdate(Author, ExperienceHandler.CalculateExperience(), MessageContext);
+                    await ExperienceHandler.IncreaseExperience(Author, ExperienceHandler.CalculateExperience(), MessageContext);
                     return;
                 }
                 
                 if((Vars.Now() - Author.LastChat).TotalSeconds >= 120)
-                    Context.UUIHandler.ExpHandler.OnExperienceUpdate(Author, ExperienceHandler.CalculateExperience(), MessageContext);
+                    await ExperienceHandler.IncreaseExperience(Author, ExperienceHandler.CalculateExperience(), MessageContext);
             }
         }
 
