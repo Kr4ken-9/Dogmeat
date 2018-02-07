@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using Dogmeat.Config;
+using Dogmeat.Database.Servers;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
@@ -13,6 +14,8 @@ namespace Dogmeat.Database
         public DbSet<UUser> Users { get; set; }
         public DbSet<Tag> Tags { get; set; }
         public DbSet<Insignia> Insignias { get; set; }
+        public DbSet<TempBan> TempBans { get; set; }
+        public DbSet<Reminder> Reminders { get; set; }
 
         #endregion
         

@@ -7,6 +7,7 @@ using Discord.WebSocket;
 using System.Reflection;
 using Discord.Commands;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Dogmeat.Utilities
 {
@@ -142,6 +143,39 @@ namespace Dogmeat.Utilities
 
             x.Add(await CreateEmbedFieldAsync($"~{command}",
                 $"\t{summary}\n\tUsage: ``{usage}``\n\tAliases: {aliases}"));
+        }
+        
+        public static DateTime ParseDateFromString(String Input)
+        {
+            if (Input.Contains("day"))
+            {
+                Regex.Replace(Input, "[^0-9.]", "");
+
+                return Vars.Now().AddDays(double.Parse(Input));
+            }
+            
+            if (Input.Contains("minute"))
+            {
+                Regex.Replace(Input, "[^0-9.]", "");
+
+                return Vars.Now().AddMinutes(double.Parse(Input));
+            }
+            
+            if (Input.Contains("second"))
+            {
+                Regex.Replace(Input, "[^0-9.]", "");
+
+                return Vars.Now().AddSeconds(double.Parse(Input));
+            }
+            
+            if (Input.Contains("year"))
+            {
+                Regex.Replace(Input, "[^0-9.]", "");
+
+                return Vars.Now().AddYears(int.Parse(Input));
+            }
+
+            return DateTime.MaxValue;
         }
     }
 }

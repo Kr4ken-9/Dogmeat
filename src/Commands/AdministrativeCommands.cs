@@ -5,6 +5,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
+using Dogmeat.Database;
+using Dogmeat.Database.Servers;
 using Dogmeat.Utilities;
 
 namespace Dogmeat.Commands
@@ -106,6 +108,31 @@ namespace Dogmeat.Commands
                 User.Guild.AddBanAsync(User);
             else
                 User.Guild.AddBanAsync(User, 0, Reason);
+        }
+
+        [Command("tempban"), Summary("Bans a user for a specified amount of time")]
+        public async Task TempBan([Summary("User to tempban")] IGuildUser User,
+            [Summary("Amount of time to ban")] String Length, [Summary("Reason for ban")] String Reason = null)
+        {
+            if (!await Utilities.Commands.CommandMasterAsync(Context.Guild, Context.User, Context.Channel)) return;
+
+            DateTime UnbanDate = Utilities.Commands.ParseDateFromString(Length);
+
+            ReplyAsync($"{User.Mention} banned until {UnbanDate.ToShortDateString()}");
+
+            if (Reason == null)
+                User.Guild.AddBanAsync(User, 7);
+            else
+                User.Guild.AddBanAsync(User, 7, Reason);
+
+            using (DatabaseHandler DbContext = new DatabaseHandler())
+            {
+                await DbContext.Database.EnsureCreatedAsync();
+                
+                TempBan TBan = new TempBan(User.Id, User.Guild.Id, UnbanDate);
+                await DbContext.TempBans.AddAsync(TBan);
+                await DbContext.SaveChangesAsync();
+            }
         }
     }
 }
