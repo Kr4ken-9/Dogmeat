@@ -116,9 +116,9 @@ namespace Dogmeat.Commands
         {
             if (!await Utilities.Commands.CommandMasterAsync(Context.Guild, Context.User, Context.Channel)) return;
 
-            DateTime UnbanDate = Utilities.Commands.ParseDateFromString(Length);
+            DateTime UnbanDate = Utilities.Commands.ParseDateFromString(Length.ToUpperInvariant());
 
-            ReplyAsync($"{User.Mention} banned until {UnbanDate.ToShortDateString()}");
+            ReplyAsync($"{User.Mention} banned until {UnbanDate.ToLongDateString()}");
 
             if (Reason == null)
                 User.Guild.AddBanAsync(User, 7);

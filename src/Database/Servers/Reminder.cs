@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Dogmeat.Database.Servers
 {
@@ -8,6 +9,8 @@ namespace Dogmeat.Database.Servers
         public ulong ServerID { get; set; }
         public ulong ChannelID { get; set; }
         public DateTime RemindDate { get; set; }
+        
+        [MaxLength(2000)]
         public string Content { get; set; }
         
         public Reminder() {}
