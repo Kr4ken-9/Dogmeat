@@ -22,7 +22,7 @@ namespace Dogmeat.Database
                     User.Level++;
 
                     Embed Embed = await Utilities.Commands.CreateEmbedAsync("Level Up!",
-                        $"{MessageContext.Author.Mention}, you leveled up to level {User.Level}!", Colors.SexyOrange);
+                        $"{MessageContext.Author.Mention} leveled up to level {User.Level}!", Colors.SexyOrange);
 
                     MessageContext.Channel.SendMessageAsync("", embed: Embed);
                 }
