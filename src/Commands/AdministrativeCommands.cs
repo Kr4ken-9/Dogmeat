@@ -111,25 +111,27 @@ namespace Dogmeat.Commands
         }
 
         [Command("tempban"), Summary("Bans a user for a specified amount of time")]
-        public async Task TempBan([Summary("User to tempban")] IGuildUser User,
+        public async Task TempBan([Summary("User to tempban")] IUser User,
             [Summary("Amount of time to ban")] String Length, [Summary("Reason for ban")] String Reason = null)
         {
             if (!await Utilities.Commands.CommandMasterAsync(Context.Guild, Context.User, Context.Channel)) return;
 
             DateTime UnbanDate = Utilities.Commands.ParseDateFromString(Length.ToUpperInvariant());
 
-            ReplyAsync($"{User.Mention} banned until {UnbanDate.ToLongDateString()}");
+            ReplyAsync($"{User.Mention} banned until {UnbanDate.ToString()}");
+            (await User.GetOrCreateDMChannelAsync()).SendMessageAsync(
+                $"You are banned from {Context.Guild.Name} until {UnbanDate.ToString()}");
 
             if (Reason == null)
-                User.Guild.AddBanAsync(User, 7);
+                Context.Guild.AddBanAsync(User, 7);
             else
-                User.Guild.AddBanAsync(User, 7, Reason);
+                Context.Guild.AddBanAsync(User, 7, Reason);
 
             using (DatabaseHandler DbContext = new DatabaseHandler())
             {
                 await DbContext.Database.EnsureCreatedAsync();
                 
-                TempBan TBan = new TempBan(User.Id, User.Guild.Id, UnbanDate);
+                TempBan TBan = new TempBan(User.Id, Context.Guild.Id, UnbanDate);
                 await DbContext.TempBans.AddAsync(TBan);
                 await DbContext.SaveChangesAsync();
             }

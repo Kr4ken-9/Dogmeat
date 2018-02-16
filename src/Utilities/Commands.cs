@@ -160,20 +160,20 @@ namespace Dogmeat.Utilities
             {
                 String AllInts = Input.Replace("D", "");
                 if (int.TryParse(AllInts, out int tm))
-                    return DateTime.Now.AddDays(tm);
+                    return Vars.Now().AddDays(tm);
             }
 
             if (Input.Contains("H"))
             {
                 String AllInts1 = Input.Replace("H", "");
                 if (int.TryParse(AllInts1, out int tm1))
-                    return DateTime.Now.AddHours(tm1);
+                    return Vars.Now().AddHours(tm1);
             }
 
             if (!Input.Contains("M")) return DateTime.MaxValue;
 
             String AllInts2 = Input.Replace("M", "");
-            return int.TryParse(AllInts2, out int tm2) ? DateTime.Now.AddMinutes(tm2) : DateTime.MaxValue;
+            return int.TryParse(AllInts2, out int tm2) ? Vars.Now().AddMinutes(tm2) : DateTime.MaxValue;
         }
     }
 }

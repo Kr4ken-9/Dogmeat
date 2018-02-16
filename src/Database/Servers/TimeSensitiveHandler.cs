@@ -2,8 +2,8 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Discord;
 using Discord.WebSocket;
+using Dogmeat.Utilities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Dogmeat.Database.Servers
@@ -30,7 +30,10 @@ namespace Dogmeat.Database.Servers
                             (await User.GetOrCreateDMChannelAsync()).SendMessageAsync(
                                 $"You have been unbanned from {Guild.Name}");
 
-                            Context.TempBans.Remove(Ban);
+                            Context.TempBans.Remove(Ban); //TODO: Why does this hang thread?!?!
+                            await Context.SaveChangesAsync();
+                            
+                            Logger.Log($"Unbanned {User.Username}");
                         }
                     }
 
@@ -52,7 +55,7 @@ namespace Dogmeat.Database.Servers
                     
                     await Context.SaveChangesAsync();
                 }
-                
+                Logger.Log("Time Sensitives Checked");
                 Thread.Sleep(60000);
             }
             Task.Delay(-1);

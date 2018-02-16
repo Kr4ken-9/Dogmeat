@@ -38,7 +38,7 @@ namespace Dogmeat
         private static IChannel logging;
         private static string[] rawResponses;
         private static string[] memes;
-        private static bool keepAlive;
+        private static bool keepAlive = true;
 
         // YOU ASKED FOR THIS KENNETH
 

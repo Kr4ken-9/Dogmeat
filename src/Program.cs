@@ -9,6 +9,7 @@ using Discord.WebSocket;
 using Dogmeat.Config;
 using Dogmeat.Utilities;
 using Dogmeat.Database;
+using Dogmeat.Database.Servers;
 using Newtonsoft.Json;
 using SteamWebAPI2.Interfaces;
 
@@ -57,6 +58,7 @@ namespace Dogmeat
             CancellationToken Token = new CancellationTokenSource().Token;
 
             new Task(() => Misc.UpdateVarsAsync(), Token, TaskCreationOptions.LongRunning).Start();
+            new Task(() => TimeSensitiveHandler.RunConstantChecks(), Token, TaskCreationOptions.LongRunning).Start();
 
             if (Vars.UnderMaintenance)
                 Vars.Client.SetGameAsync("Under Maintenace");
