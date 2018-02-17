@@ -139,9 +139,14 @@ namespace Dogmeat
                     await ExperienceHandler.IncreaseExperience(Author, ExperienceHandler.CalculateExperience(), MessageContext);
                     return;
                 }
-                
+
                 if((Vars.Now() - Author.LastChat).TotalSeconds >= 120)
+                {
                     await ExperienceHandler.IncreaseExperience(Author, ExperienceHandler.CalculateExperience(), MessageContext);
+                    Author.LastChat = Vars.Now();
+                }
+
+                await Context.SaveChangesAsync();
             }
         }
 
