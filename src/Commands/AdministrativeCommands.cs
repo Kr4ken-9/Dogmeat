@@ -17,7 +17,7 @@ namespace Dogmeat.Commands
         public async Task Ban([Summary("User of person to ban")] IGuildUser User, [Summary("Reason for ban")] String Reason = null)
         {
             if (!await Utilities.Commands.CommandMasterAsync(Context.Guild, Context.User, Context.Channel)) return;
-            
+
             ReplyAsync($"{User.Mention} is no more.");
 
             if (Reason == null)
@@ -25,16 +25,16 @@ namespace Dogmeat.Commands
             else
                 User.Guild.AddBanAsync(User, 7, Reason);
         }
-        
+
         [Command("kick"), Summary("Kicks specified user")]
         public async Task Kick([Summary("User to kick")] IGuildUser User, [Summary("Reason for kick")] String Reason = null)
         {
             if (!await Utilities.Commands.CommandMasterAsync(Context.Guild, Context.User, Context.Channel)) return;
-                
+
             ReplyAsync($"{User.Mention} is no more.");
             User.KickAsync(Reason);
         }
-        
+
         [Command("mute"), Summary("Mutes a user")]
         public async Task Mute([Summary("User to mute")] IGuildUser User)
         {
@@ -50,7 +50,7 @@ namespace Dogmeat.Commands
 
             if (Muted == null)
                 Muted = Misc.GetMutedRole(Context.Guild);
-            
+
             if (!User.RoleIds.Contains(Muted.Id))
             {
                 User.AddRoleAsync(Muted);
@@ -62,7 +62,7 @@ namespace Dogmeat.Commands
                 ReplyAsync($"{User.Mention} has been unmuted.");
             }
         }
-        
+
         [Command("purge"), Alias("prune"), Summary("Purges messages on executed channel.")]
         public async Task Purge([Summary("Number of messages to purge")] int count, [Summary("User to prune")] IGuildUser User = null)
         {
@@ -73,7 +73,7 @@ namespace Dogmeat.Commands
                 Context.Channel.DeleteMessagesAsync(await Context.Channel.GetMessagesAsync(count).Flatten());
 
                 IEnumerable<IMessage> DeleteMe =
-                    new List<IMessage> {await Context.Channel.SendMessageAsync($"Purged {count} messages.")};
+                    new List<IMessage> { await Context.Channel.SendMessageAsync($"Purged {count} messages.") };
 
                 Thread.Sleep(5000);
 
@@ -92,16 +92,16 @@ namespace Dogmeat.Commands
                 };
 
                 Thread.Sleep(5000);
-                
+
                 Context.Channel.DeleteMessagesAsync(DeleteMe);
             }
         }
-        
+
         [Command("softban"), Summary("Bans a user without removing his messages")]
         public async Task SoftBan([Summary("User to softban")] IGuildUser User, [Summary("Reason for ban")] String Reason = null)
         {
             if (!await Utilities.Commands.CommandMasterAsync(Context.Guild, Context.User, Context.Channel)) return;
-            
+
             ReplyAsync($"{User.Mention} is no more.");
 
             if (Reason == null)
@@ -116,21 +116,29 @@ namespace Dogmeat.Commands
         {
             if (!await Utilities.Commands.CommandMasterAsync(Context.Guild, Context.User, Context.Channel)) return;
 
-            DateTime UnbanDate = Utilities.Commands.ParseDateFromString(Length.ToUpperInvariant());
-
-            ReplyAsync($"{User.Mention} banned until {UnbanDate.ToString()}");
-            (await User.GetOrCreateDMChannelAsync()).SendMessageAsync(
-                $"You are banned from {Context.Guild.Name} until {UnbanDate.ToString()}");
-
-            if (Reason == null)
-                Context.Guild.AddBanAsync(User, 7);
-            else
-                Context.Guild.AddBanAsync(User, 7, Reason);
-
             using (DatabaseHandler DbContext = new DatabaseHandler())
             {
+                TempBan t = DbContext.TempBans.FirstOrDefault(x => x.ID == User.Id);
+
+                if (t != null)
+                {
+                    ReplyAsync($"That user is already banned until {t.UnbanTime.ToString()}.");
+                    return;
+                }
+
+                DateTime UnbanDate = Utilities.Commands.ParseDateFromString(Length.ToUpperInvariant());
+
+                ReplyAsync($"{User.Mention} banned until {UnbanDate.ToString()}");
+                (await User.GetOrCreateDMChannelAsync()).SendMessageAsync(
+                    $"You are banned from {Context.Guild.Name} until {UnbanDate.ToString()}");
+
+                if (Reason == null)
+                    Context.Guild.AddBanAsync(User, 7);
+                else
+                    Context.Guild.AddBanAsync(User, 7, Reason);
+
                 await DbContext.Database.EnsureCreatedAsync();
-                
+
                 TempBan TBan = new TempBan(User.Id, Context.Guild.Id, UnbanDate);
                 await DbContext.TempBans.AddAsync(TBan);
                 await DbContext.SaveChangesAsync();
