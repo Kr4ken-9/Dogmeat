@@ -6,6 +6,8 @@ using Discord.WebSocket;
 using Dogmeat.Utilities;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Net;
+using Discord;
 
 namespace Dogmeat.Database.Servers
 {
@@ -30,11 +32,36 @@ namespace Dogmeat.Database.Servers
                             if (User == null || Guild == null)
                                 continue;
 
-                            try { await Guild.RemoveBanAsync(Ban.ID); }
-                            catch (Discord.Net.HttpException e) { }
+                            IDMChannel dmChannel = await User.GetOrCreateDMChannelAsync();
 
-                            (await User.GetOrCreateDMChannelAsync()).SendMessageAsync(
-                                $"You have been unbanned from {Guild.Name}");
+                            try
+                            {
+                                await Guild.RemoveBanAsync(Ban.ID);
+                                dmChannel.SendMessageAsync($"You have been unbanned from {Guild.Name}.");
+                            }
+                            catch (Discord.Net.HttpException e)
+                            {
+                                Logger.Log($"An HttpException was thrown while attempting to unban '{User.Username}' from '{Guild.Name}':\n" +
+                                    $"Response Code: {e.HttpCode}, Discord Code: {e.DiscordCode}");
+
+                                switch (e.HttpCode)
+                                {
+                                    case HttpStatusCode.Forbidden:
+                                        dmChannel.SendMessageAsync($"You were supposed to be unbanned from {Guild.Name}," +
+                                            $" but I lacked the permissions to unban you.");
+                                        break;
+
+                                    case HttpStatusCode.NotFound:
+                                        dmChannel.SendMessageAsync($"You were supposed to be unbanned from {Guild.Name}," +
+                                            $" but it seems that you were already unbanned.");
+                                        break;
+
+                                    case default:
+                                        dmChannel.SendMessageAsync($"You were supposed to be unbanned from {Guild.Name}," +
+                                            $" but something went wrong and I don't know what.");
+                                        break;
+                                }
+                            }
 
                             Context.TempBans.Remove(Ban); //TODO: Why does this hang thread?!?!
 
